@@ -27,6 +27,7 @@ import { PrivateRoute } from "../auth/PrivateRoute";
 import { Feedback } from "../pages/Feedback/Feedback";
 import { HelpSupport } from "../pages/Help-Support/HelpSupport";
 import Chat from "../chat/Chat";
+import LibraryPage from "../pages/Library/Library";
 
 export const Routing = () => {
   const authContext = useContext(AuthContext);
@@ -228,6 +229,11 @@ export const Routing = () => {
             <Route
               path="/help-support"
               element={<PrivateRoute component={HelpSupport} />}
+            />
+            {/* ✅ Added a library route for embedding the library page in the campus connect */}
+            <Route
+              path="/library"
+              element={<PrivateRoute component={LibraryPage} />}
             />
           </Routes>
         </BrowserRouter>
