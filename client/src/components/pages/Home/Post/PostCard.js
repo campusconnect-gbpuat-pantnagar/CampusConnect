@@ -226,6 +226,7 @@ export const PostCard = ({ post }) => {
         </Typography>
       </CardContent>
       <div className="centered-image-container">
+{/*  TODO✅: Implement rendering the media files  */}
         {post.picture.length > 0 && (
           <img
             className="centered-image"
