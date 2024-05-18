@@ -29,6 +29,7 @@ import { HelpSupport } from "../pages/Help-Support/HelpSupport";
 import Chat from "../chat/Chat";
 import LibraryPage from "../pages/Library/Library";
 import LoginPage from "../pages/Auth/Login/login";
+import VerifyEmailPage from "../pages/Auth/Verify-email/verifyEmail";
 
 export const Routing = () => {
   const authContext = useContext(AuthContext);
@@ -238,6 +239,8 @@ export const Routing = () => {
             />
             {/* TODO ✅ : Implements a route for login with new auth flow   */}
             <Route path="/new/login" element={<LoginPage />} />
+            {/* TODO ✅ : Implements a route for verify-email with new auth flow   */}
+            <Route path="/new/verify-email" element={<VerifyEmailPage />} />
           </Routes>
         </BrowserRouter>
       </ThemeProvider>

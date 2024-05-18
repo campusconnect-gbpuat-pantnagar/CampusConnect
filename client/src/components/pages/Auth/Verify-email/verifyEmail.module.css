@@ -1,0 +1,32 @@
+@import url("https://fonts.googleapis.com/css2?family=Outfit:wght@200;300;400;500;600;700;800&family=Work+Sans:wght@300;400;500;600&display=swap");
+
+.YourEmail {
+  position: relative;
+  width: 100%;
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  background-color: rgba(0, 0, 0, 0.02);
+  border: 1px solid rgba(0, 0, 0, 0.08);
+  padding: 0.5rem 0.2rem;
+}
+.YourEmail > p {
+  width: 100%;
+  padding-left: 2.5rem;
+  font-size: 1rem;
+  font-weight: 500;
+  margin: 0;
+  text-overflow: ellipsis;
+  overflow-x: hidden;
+  white-space: nowrap;
+}
+
+.YourEmail > span > svg {
+  position: absolute;
+  font-size: 1.8rem;
+  top: 0.4rem;
+  left: 0.4rem;
+}
+.OtpContainer {
+  width: 100%;
+}
