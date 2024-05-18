@@ -27,6 +27,20 @@
   top: 0.4rem;
   left: 0.4rem;
 }
-.OtpContainer {
+
+.ResendOtp {
   width: 100%;
+  margin-top: 0.2rem;
+  color: gray;
+  font-size: 0.9rem;
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  gap: 0.5rem;
+}
+.ResendOtp > span {
+  color: #000;
+  font-weight: 600;
+  font-size: 1rem;
+  cursor: pointer;
 }

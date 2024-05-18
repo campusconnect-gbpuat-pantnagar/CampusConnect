@@ -13,7 +13,7 @@ const LoginPage = () => {
     username: "",
     password: "",
   });
-  const [typePassword, setTypePassword] = useState("text");
+  const [typePassword, setTypePassword] = useState("password");
   const navigate = useNavigate();
   const validationSchema = Yup.object({
     username: Yup.string()
@@ -38,6 +38,7 @@ const LoginPage = () => {
   // ✅ TODO: send the signin request to the backend server
   const FormSubmitHandler = (data) => {
     console.log(data);
+    alert(`username: ${data.username}, password: ${data.password}`);
   };
 
   // TODO ✅:  redirectToSignUp
