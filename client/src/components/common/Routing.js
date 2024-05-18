@@ -28,6 +28,7 @@ import { Feedback } from "../pages/Feedback/Feedback";
 import { HelpSupport } from "../pages/Help-Support/HelpSupport";
 import Chat from "../chat/Chat";
 import LibraryPage from "../pages/Library/Library";
+import LoginPage from "../pages/Auth/Login/login";
 
 export const Routing = () => {
   const authContext = useContext(AuthContext);
@@ -235,6 +236,8 @@ export const Routing = () => {
               path="/library"
               element={<PrivateRoute component={LibraryPage} />}
             />
+            {/* TODO ✅ : Implements a route for login with new auth flow   */}
+            <Route path="/new/login" element={<LoginPage />} />
           </Routes>
         </BrowserRouter>
       </ThemeProvider>

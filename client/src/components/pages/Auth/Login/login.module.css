@@ -1,0 +1,97 @@
+@import url("https://fonts.googleapis.com/css2?family=Outfit:wght@200;300;400;500;600;700;800&family=Work+Sans:wght@300;400;500;600&display=swap");
+
+.login {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #f8f6f4;
+  font-family: "Work sans";
+}
+
+.wrapper {
+  position: relative;
+  width: 435px;
+}
+
+.image_1 {
+  position: absolute;
+  bottom: -12px;
+  left: -191px;
+  z-index: 99;
+}
+
+.image_2 {
+  position: absolute;
+  bottom: 0;
+  right: -129px;
+}
+
+.form {
+  width: 100%;
+  min-height: 60vh;
+  position: relative;
+  z-index: 9;
+  background: #fff;
+  box-shadow: rgba(0, 0, 0, 0.16) 0px 24px 48px;
+  border-radius: 1rem;
+  padding: 2.375rem 2rem 3rem;
+}
+
+.logo {
+  display: flex;
+  justify-content: flex-start;
+  width: 100%;
+}
+.logo > img {
+  width: 100%;
+  height: 80px;
+  align-self: start;
+  object-fit: contain;
+}
+.signinInfo {
+  margin-top: 1rem;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 0.3rem;
+}
+
+.signinInfo > h3 {
+  font-size: 1.2rem;
+  color: black;
+  font-weight: 700;
+  margin: 0px;
+}
+.signinInfo > p {
+  color: gray;
+  font-size: 0.9rem;
+}
+@media (max-width: 991px) {
+  .inner {
+    width: 400px;
+    left: 4%;
+  }
+}
+@media (max-width: 767px) {
+  .wrapper {
+    width: 100%;
+    left: 0;
+  }
+
+  .image_1,
+  .image_2 {
+    display: none;
+  }
+
+  .form {
+    padding: 35px;
+    box-shadow: none;
+  }
+
+  .login {
+    background: none;
+  }
+}
