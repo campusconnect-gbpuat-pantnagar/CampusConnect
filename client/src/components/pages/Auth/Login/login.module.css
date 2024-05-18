@@ -27,8 +27,9 @@
   right: -129px;
 }
 
-.form {
+.formContainer {
   width: 100%;
+  /* Min height can be creat a problem i large devices */
   min-height: 60vh;
   position: relative;
   z-index: 9;
@@ -69,6 +70,31 @@
   color: gray;
   font-size: 0.9rem;
 }
+.Formik {
+  width: 100%;
+}
+.FormikForm {
+  margin-top: 1rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+.DontHaveAccount {
+  width: 100%;
+  margin-top: 2rem;
+  color: gray;
+  font-size: 0.9rem;
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  gap: 0.5rem;
+}
+.DontHaveAccount > span {
+  color: #000;
+  font-weight: 600;
+  font-size: 1rem;
+  cursor: pointer;
+}
 @media (max-width: 991px) {
   .inner {
     width: 400px;
@@ -86,9 +112,9 @@
     display: none;
   }
 
-  .form {
-    padding: 35px;
-    box-shadow: none;
+  .formContainer {
+    /* padding: 35px; */
+    /* box-shadow: none; */
   }
 
   .login {
