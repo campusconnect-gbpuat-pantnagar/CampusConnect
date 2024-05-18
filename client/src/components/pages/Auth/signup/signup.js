@@ -10,6 +10,7 @@ import SubmitButton from "../_components/form/button/button";
 import { useLocation, useNavigate } from "react-router-dom";
 import StepTwoForm from "./step-two-form/step-two-form";
 import StepOneForm from "./step-one-form/step-one-form";
+import SignUpStyles from "./signup.module.css";
 const SignUpPage = () => {
   const navigate = useNavigate();
 
@@ -21,7 +22,9 @@ const SignUpPage = () => {
     navigate("/new/signup", { state: { studentId: data.studentId } });
   };
 
-  const SteptwoSubmitHandler = (data) => {};
+  const SteptwoSubmitHandler = (data) => {
+    console.log(data);
+  };
   console.log(state);
   // TODO ✅:  redirectToSignUp
   const redirectToSignIn = () => {
@@ -30,7 +33,7 @@ const SignUpPage = () => {
 
   return (
     <div className={StyleSheet.login}>
-      <div className={StyleSheet.wrapper}>
+      <div className={`${StyleSheet.wrapper} ${SignUpStyles.wrapper}`}>
         <img
           src="/newlogin.png"
           className={StyleSheet.image_1}

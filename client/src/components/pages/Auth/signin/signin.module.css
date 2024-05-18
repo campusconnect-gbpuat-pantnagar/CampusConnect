@@ -12,7 +12,7 @@
 
 .wrapper {
   position: relative;
-  /* width: 435px; */
+
 }
 
 .image_1 {
@@ -95,6 +95,10 @@
   font-weight: 600;
   font-size: 1rem;
   cursor: pointer;
+}
+.usernameIcon {
+  font-weight: 700;
+  font-size: 1.3rem;
 }
 @media (max-width: 991px) {
   .inner {

@@ -47,4 +47,7 @@
   font-weight: 400;
   font-size: 0.8rem;
   text-transform: lowercase;
+  width: 300px;
+  text-wrap: wrap;
+  word-break: break-all;
 }

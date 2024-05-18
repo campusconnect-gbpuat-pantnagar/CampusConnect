@@ -11,3 +11,16 @@
 .PreviousIcon {
   order: 0;
 }
+
+.usernameIcon {
+  font-weight: 700;
+  font-size: 1.3rem;
+}
+
+@media (max-width: 767px) {
+  .NameContainer,
+  .FormButtons {
+    flex-direction: column;
+    gap: 0px;
+  }
+}

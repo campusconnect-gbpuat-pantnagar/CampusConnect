@@ -24,8 +24,8 @@ const SignInPage = () => {
       .required("Password is required")
       .max(60, "Password cannot exceed 60 characters")
       .matches(
-        /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/,
-        "Password must contain at least 1 lowercase letter, 1 uppercase letter, 1 number, and 1 special character"
+        /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$#!%*?&]{8,}$/,
+        "Password must contain at least 1 lowercase letter, 1 uppercase letter, 1 number, and 1 special character {@$#!%*?&}"
       ),
   });
 
@@ -71,10 +71,15 @@ const SignInPage = () => {
           >
             {(formik) => (
               <Form className={StyleSheet.FormikForm}>
-                <FormInput label={"username"} name={"username"} />
+                <FormInput
+                  label={"username"}
+                  name={"username"}
+                  FirstIconClassName={StyleSheet.usernameIcon}
+                  FirstIcon={<span>@</span>}
+                />
                 <FormInput
                   label={"password"}
-                  Icon={Icon}
+                  SecondIcon={Icon}
                   type={typePassword}
                   IconClickHandler={IconClickHandler}
                   name={"password"}

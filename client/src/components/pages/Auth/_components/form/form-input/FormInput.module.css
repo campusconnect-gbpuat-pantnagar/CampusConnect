@@ -45,10 +45,18 @@
 .inputIconSecond > svg {
   font-size: 1.5rem;
 }
+.inputIconFirst {
+  position: absolute;
+  cursor: pointer;
+  left: 8px;
+}
 .FormInputContainer > p {
   margin: 0px;
   color: red;
   font-weight: 400;
   font-size: 0.8rem;
   text-transform: lowercase;
+  width: 350px;
+  text-wrap: wrap;
+  /* word-break: break-all; */
 }

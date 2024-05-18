@@ -28,7 +28,7 @@ const StepTwoForm = ({ SteptwoSubmitHandler }) => {
     email: Yup.string()
       .email("Invalid email address")
       .required("Email is required")
-      .matches(/@.*gbpuat.*\..+$/, "Email must be university email."),
+      .matches(/@.*gbpuat.*\..+$/, "Email must be gbpuat university email."),
 
     firstName: Yup.string()
       .required("First name is required")
@@ -56,10 +56,11 @@ const StepTwoForm = ({ SteptwoSubmitHandler }) => {
 
     password: Yup.string()
       .required("Password is required")
+      .min(8)
       .max(60, "Password cannot exceed 60 characters")
       .matches(
-        /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/,
-        "Password must contain at least 1 lowercase letter, 1 uppercase letter, 1 number, and 1 special character"
+        /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$#!%*?&]{8,}$/,
+        "Password must contain at least 1 lowercase letter, 1 uppercase letter, 1 number, and 1 special character {@$#!%*?&}"
       ),
   });
 
@@ -108,10 +109,16 @@ const StepTwoForm = ({ SteptwoSubmitHandler }) => {
               placeholder={""}
             />
           </div>
-          <FormInput label={"Username"} name={"username"} placeholder={""} />
+          <FormInput
+            label={"Username"}
+            FirstIconClassName={StepTwoFormStyles.usernameIcon}
+            FirstIcon={<span>@</span>}
+            name={"username"}
+            placeholder={""}
+          />
           <FormInput
             label={"password"}
-            Icon={Icon}
+            SecondIcon={Icon}
             type={typePassword}
             IconClickHandler={IconClickHandler}
             name={"password"}
