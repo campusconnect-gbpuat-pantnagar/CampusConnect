@@ -1,0 +1,13 @@
+.NameContainer,
+.FormButtons {
+  display: flex;
+  gap: 1.5rem;
+}
+
+.PreviousButton {
+  flex-direction: row-reverse;
+}
+
+.PreviousIcon {
+  order: 0;
+}

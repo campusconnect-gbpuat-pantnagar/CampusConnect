@@ -2,6 +2,7 @@
 
 .login {
   min-height: 100vh;
+  width: 100%;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -11,7 +12,7 @@
 
 .wrapper {
   position: relative;
-  width: 435px;
+  /* width: 435px; */
 }
 
 .image_1 {

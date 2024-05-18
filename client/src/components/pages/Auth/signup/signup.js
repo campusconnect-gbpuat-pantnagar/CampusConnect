@@ -7,23 +7,22 @@ import VisibilityOff from "@material-ui/icons/VisibilityOff";
 import Visibility from "@material-ui/icons/Visibility";
 import ArrowRight from "@material-ui/icons/ArrowRight";
 import SubmitButton from "../_components/form/button/button";
-import { useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
+import StepTwoForm from "./step-two-form/step-two-form";
+import StepOneForm from "./step-one-form/step-one-form";
 const SignUpPage = () => {
-  const [formData, setFormData] = useState({
-    studentId: "",
-  });
   const navigate = useNavigate();
-  const validationSchema = Yup.object({
-    studentId: Yup.string().required("student Id is required").max(60),
-  });
 
-  const stepOneSubmitHandler = (data) => {
+  const { state } = useLocation();
+
+  const StepOneSubmitHandler = (data) => {
     console.log(data);
     // TODO ✅ : Fetch the student data using student Id from gbpuat-email-checker service and validate
-
-    alert(`studentId: ${data.studentId}, `);
+    navigate("/new/signup", { state: { studentId: data.studentId } });
   };
 
+  const SteptwoSubmitHandler = (data) => {};
+  console.log(state);
   // TODO ✅:  redirectToSignUp
   const redirectToSignIn = () => {
     navigate("/new/signin");
@@ -45,29 +44,13 @@ const SignUpPage = () => {
             <h3>Create your account</h3>
             <p>Welcome! Please fill in the details to get started.</p>
           </div>
-          <Formik
-            enableReinitialize
-            initialValues={{ ...formData }}
-            validationSchema={validationSchema}
-            onSubmit={stepOneSubmitHandler}
-            className={StyleSheet.Formik}
-          >
-            {(formik) => (
-              <Form className={StyleSheet.FormikForm}>
-                <FormInput
-                  label={"student Id"}
-                  name={"studentId"}
-                  placeholder={"565XX or 565XX@gbpuat.ac.in"}
-                />
 
-                <SubmitButton
-                  type={"submit"}
-                  btnText={"Continue"}
-                  Icon={<ArrowRight />}
-                />
-              </Form>
-            )}
-          </Formik>
+          {state?.studentId ? (
+            <StepTwoForm SteptwoSubmitHandler={SteptwoSubmitHandler} />
+          ) : (
+            <StepOneForm StepOneSubmitHandler={StepOneSubmitHandler} />
+          )}
+
           <div className={StyleSheet.DontHaveAccount}>
             <p>Already have an account?</p>
             <span onClick={redirectToSignIn}>Sign In</span>

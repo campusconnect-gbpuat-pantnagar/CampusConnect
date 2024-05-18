@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import StyleSheet from "../signin/signin.module.css";
 import VerifyStyles from "./verifyEmail.module.css";
 import SubmitButton from "../_components/form/button/button.js";
-import { useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import AccountCircleIcon from "@material-ui/icons/AccountCircle";
 
 import * as Yup from "yup";
@@ -16,7 +16,8 @@ const VerifyEmailPage = () => {
   });
 
   const navigate = useNavigate();
-
+  const location = useLocation();
+  console.log(location);
   const validationSchema = Yup.object({
     otp: Yup.string()
       .required("One Time Password is required")
