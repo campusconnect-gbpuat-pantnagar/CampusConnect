@@ -31,6 +31,7 @@ const FormInput = ({
           onFocus={() => setIsInputFocused(true)}
           {...field}
           {...props}
+          placeholder={placeholder}
           onBlur={handleBlur}
           style={inputStyle}
         />

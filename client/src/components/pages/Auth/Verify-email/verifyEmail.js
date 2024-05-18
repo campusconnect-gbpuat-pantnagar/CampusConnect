@@ -1,14 +1,13 @@
 import React, { useState } from "react";
-import StyleSheet from "../Login/login.module.css";
+import StyleSheet from "../signin/signin.module.css";
 import VerifyStyles from "./verifyEmail.module.css";
-import SubmitButton from "../_components/form/button/button";
+import SubmitButton from "../_components/form/button/button.js";
 import { useNavigate } from "react-router-dom";
 import AccountCircleIcon from "@material-ui/icons/AccountCircle";
 
 import * as Yup from "yup";
 import { Form, Formik } from "formik";
 
-import ArrowRight from "@material-ui/icons/ArrowRight";
 import FormOtpInput from "../_components/form/form-otp-input/form-otp-input.js";
 const VerifyEmailPage = () => {
   const [formData, setFormData] = useState({
@@ -26,10 +25,6 @@ const VerifyEmailPage = () => {
     email: Yup.string().required("Email is required").max(60),
   });
 
-  //  redirectToSignUp
-  const redirectToSignUp = () => {
-    navigate("/new/signup");
-  };
   const FormSubmitHandler = (data) => {
     console.log(data);
     alert(`otp: ${data.otp}, email: ${data.email}`);
@@ -51,7 +46,7 @@ const VerifyEmailPage = () => {
           <div className={StyleSheet.signinInfo}>
             <h3>Veriy Your Email</h3>
             <p>to Continue to CampusConnect </p>
-            <p style={{ textAlign: "center" }}>
+            <p style={{ textAlign: "center", fontWeight: 500 }}>
               We will send you a One Time Password on your Email.
             </p>
           </div>

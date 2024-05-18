@@ -28,8 +28,9 @@ import { Feedback } from "../pages/Feedback/Feedback";
 import { HelpSupport } from "../pages/Help-Support/HelpSupport";
 import Chat from "../chat/Chat";
 import LibraryPage from "../pages/Library/Library";
-import LoginPage from "../pages/Auth/Login/login";
-import VerifyEmailPage from "../pages/Auth/Verify-email/verifyEmail";
+import SignInPage from "../pages/Auth/signin/signin";
+import VerifyEmailPage from "../pages/Auth/verify-email/verifyEmail";
+import SignUpPage from "../pages/Auth/signup/signup";
 
 export const Routing = () => {
   const authContext = useContext(AuthContext);
@@ -238,7 +239,9 @@ export const Routing = () => {
               element={<PrivateRoute component={LibraryPage} />}
             />
             {/* TODO ✅ : Implements a route for login with new auth flow   */}
-            <Route path="/new/login" element={<LoginPage />} />
+            <Route path="/new/signin" element={<SignInPage />} />
+            {/* TODO ✅ : Implements a route for login with new auth flow   */}
+            <Route path="/new/signup" element={<SignUpPage />} />
             {/* TODO ✅ : Implements a route for verify-email with new auth flow   */}
             <Route path="/new/verify-email" element={<VerifyEmailPage />} />
           </Routes>

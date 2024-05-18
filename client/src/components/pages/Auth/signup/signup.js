@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import StyleSheet from "./login.module.css";
+import StyleSheet from "../signin/signin.module.css";
 import FormInput from "../_components/form/form-input/FormInput";
 import * as Yup from "yup";
 import { Form, Formik } from "formik";
@@ -8,42 +8,25 @@ import Visibility from "@material-ui/icons/Visibility";
 import ArrowRight from "@material-ui/icons/ArrowRight";
 import SubmitButton from "../_components/form/button/button";
 import { useNavigate } from "react-router-dom";
-const LoginPage = () => {
+const SignUpPage = () => {
   const [formData, setFormData] = useState({
-    username: "",
-    password: "",
+    studentId: "",
   });
-  const [typePassword, setTypePassword] = useState("password");
   const navigate = useNavigate();
   const validationSchema = Yup.object({
-    username: Yup.string()
-      .required("Username is required")
-      .max(60, "Username cannot exceed 60 characters"),
-
-    password: Yup.string()
-      .required("Password is required")
-      .max(60, "Password cannot exceed 60 characters")
-      .matches(
-        /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/,
-        "Password must contain at least 1 lowercase letter, 1 uppercase letter, 1 number, and 1 special character"
-      ),
+    studentId: Yup.string().required("student Id is required").max(60),
   });
 
-  const Icon = typePassword === "password" ? <Visibility /> : <VisibilityOff />;
-
-  const IconClickHandler = () => {
-    setTypePassword(typePassword === "text" ? "password" : "text");
-  };
-
-  // ✅ TODO: send the signin request to the backend server
-  const FormSubmitHandler = (data) => {
+  const stepOneSubmitHandler = (data) => {
     console.log(data);
-    alert(`username: ${data.username}, password: ${data.password}`);
+    // TODO ✅ : Fetch the student data using student Id from gbpuat-email-checker service and validate
+
+    alert(`studentId: ${data.studentId}, `);
   };
 
   // TODO ✅:  redirectToSignUp
-  const redirectToSignUp = () => {
-    navigate("/new/signup");
+  const redirectToSignIn = () => {
+    navigate("/new/signin");
   };
 
   return (
@@ -59,31 +42,24 @@ const LoginPage = () => {
             <img src="/cc_logo_mobile.png" alt="campusconnect_logo" />
           </div>
           <div className={StyleSheet.signinInfo}>
-            <h3>Sign in to CampusConnect</h3>
-            <p>Welcome back! Please sign in to continue</p>
+            <h3>Create your account</h3>
+            <p>Welcome! Please fill in the details to get started.</p>
           </div>
           <Formik
             enableReinitialize
             initialValues={{ ...formData }}
             validationSchema={validationSchema}
-            onSubmit={FormSubmitHandler}
+            onSubmit={stepOneSubmitHandler}
             className={StyleSheet.Formik}
           >
             {(formik) => (
               <Form className={StyleSheet.FormikForm}>
                 <FormInput
-                  label={"username"}
-                  name={"username"}
-                  placeholder={""}
+                  label={"student Id"}
+                  name={"studentId"}
+                  placeholder={"565XX or 565XX@gbpuat.ac.in"}
                 />
-                <FormInput
-                  label={"password"}
-                  Icon={Icon}
-                  type={typePassword}
-                  IconClickHandler={IconClickHandler}
-                  name={"password"}
-                  placeholder={"jofsdgfg"}
-                />
+
                 <SubmitButton
                   type={"submit"}
                   btnText={"Continue"}
@@ -93,8 +69,8 @@ const LoginPage = () => {
             )}
           </Formik>
           <div className={StyleSheet.DontHaveAccount}>
-            <p>Don't have an account?</p>
-            <span onClick={redirectToSignUp}>Sign up</span>
+            <p>Already have an account?</p>
+            <span onClick={redirectToSignIn}>Sign In</span>
           </div>
         </div>
         <img src="/newlogin1.png" alt="fgfgdg" className={StyleSheet.image_2} />
@@ -103,4 +79,4 @@ const LoginPage = () => {
   );
 };
 
-export default LoginPage;
+export default SignUpPage;
