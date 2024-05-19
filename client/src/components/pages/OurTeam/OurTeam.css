@@ -1,0 +1,45 @@
+.member-card {
+  width: 200px; 
+  height: 280px; 
+  border-radius: 20px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  transition: box-shadow 0.3s ease;
+  margin-bottom: 20px;
+}
+
+.member-card:hover {
+  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+  transform: translateY(-5px);
+}
+
+.member-photo {
+  width: 100px; 
+  height: 100px; 
+  border-radius: 50%;
+  object-fit: cover;
+  margin: 20px auto; 
+  transition: transform 0.3s ease;
+}
+
+.member-photo:hover {
+  transform: scale(1.05);
+}
+
+.card-title {
+  font-size: 16px;
+}
+
+.card-text {
+  font-size: 14px;
+}
+
+@media (max-width: 768px) {
+  .our-group-container {
+    padding-top: 1250px; 
+  }
+
+  .main-div {
+    height: 1950px;
+  }
+}
+

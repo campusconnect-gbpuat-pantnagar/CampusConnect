@@ -74,6 +74,8 @@ export const POLL_LOADING = "poll_loading"
 export const POLL_GET_ALL = "poll_get_all"
 export const POLL_ERROR = "poll_error"
 export const POLL_CREATE = "poll_create"
+export const POLL_VOTE = "poll_vote"
+export const POLL_SUCCESS = "poll_success"
 
 //Ads
 export const ADS_LOADING = "ads_loading"

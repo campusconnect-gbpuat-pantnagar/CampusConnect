@@ -124,16 +124,16 @@ export const AdsCard = ({ ads }) => {
                   Delete
                 </MenuItem>
               ) : null}
-              <MenuItem onClick={handleClose} style={styleTheme}>
+              {/* <MenuItem onClick={handleClose} style={styleTheme}>
                 Share
-              </MenuItem>
+              </MenuItem> */}
               <MenuItem onClick={handleBookmarkBtn} style={styleTheme}>
                 {bookmarkStatus ? "Remove Bookmark" : "Bookmark"}
               </MenuItem>
 
-              <MenuItem onClick={handleClose} style={styleTheme}>
+              {/* <MenuItem onClick={handleClose} style={styleTheme}>
                 Report Post
-              </MenuItem>
+              </MenuItem> */}
             </Menu>
           </>
         }

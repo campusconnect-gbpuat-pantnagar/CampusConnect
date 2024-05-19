@@ -3,6 +3,7 @@ import React, { useEffect, useState, useContext } from "react"
 import { Modal } from "react-bootstrap"
 import { API } from "../../../utils/proxy"
 import { AuthContext } from "../../../context/authContext/authContext"
+import { toast } from 'react-toastify';
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -47,7 +48,7 @@ export const ProfilePictureModal = ({ show, onHide, userContext }) => {
       }
     } catch (error) {
       setLoading(false)
-      alert(error.response.data.errorMsg)
+      toast.error(error.response.data.errorMsg, { theme: `${authContext.theme === "dark" ? "dark" : "light"}` });
     }
   }
 

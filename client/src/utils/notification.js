@@ -13,7 +13,6 @@ export const requestFirebaseNotificationPermission = async () => {
           console.log('Notification permission granted.');
           return getToken(messaging, { vapidKey: process.env.REACT_APP_FIREBASE_VAPID_KEY });
         } else {
-          alert("You have disabled notifications. You can change this in the settings to receive notifications.");
           throw new Error('User did not grant permission.');
         }
       })
@@ -35,7 +34,7 @@ export const requestFirebaseNotificationPermission = async () => {
       return await getToken(messaging, { vapidKey: process.env.REACT_APP_FIREBASE_VAPID_KEY });
     }
   } else {
-    alert("You have disabled notifications. You can change this in the settings to receive notifications.");
+    // can add something later
   }
 };
 

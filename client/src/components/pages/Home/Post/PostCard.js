@@ -164,13 +164,14 @@ export const PostCard = ({ post }) => {
         }
         action={
           <>
+          {authContext.user._id === post.user._id ? (
             <IconButton
               aria-label="settings"
               onClick={handleMoreOption}
               style={styleTheme}
             >
               <MoreHorizIcon />
-            </IconButton>
+            </IconButton> ) : null }
             <Menu
               id="fade-menu"
               anchorEl={moreOption}
@@ -198,9 +199,9 @@ export const PostCard = ({ post }) => {
               ) : null}
               {/* <MenuItem onClick={handleClose} style={styleTheme}>Share</MenuItem>
               <MenuItem onClick={handleClose} style={styleTheme}>Bookmark</MenuItem> */}
-              <MenuItem onClick={handleClose} style={styleTheme}>
+              {/* <MenuItem onClick={handleClose} style={styleTheme}>
                 Report Post
-              </MenuItem>
+              </MenuItem> */}
             </Menu>
           </>
         }
@@ -251,9 +252,9 @@ export const PostCard = ({ post }) => {
             <IconButton onClick={toggleComments}>
               <FontAwesomeIcon icon={faComment} style={styleTheme} />
             </IconButton>
-            <IconButton>
+            {/* <IconButton>
               <FontAwesomeIcon icon={faShareSquare} style={styleTheme} />
-            </IconButton>
+            </IconButton> */}
           </Grid>
           <Grid item>
             <IconButton onClick={handleBookmarkBtn} style={styleTheme}>

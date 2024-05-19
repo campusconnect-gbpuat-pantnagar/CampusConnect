@@ -18,6 +18,7 @@ import { v4 as uuid } from "uuid";
 import { AuthContext } from "../../../../context/authContext/authContext";
 import { ModalContext } from "../../../../context/modalContext";
 import { ModalType } from "../../../../context/modalContext/modalTypes";
+import { sendNotificationToUser } from "../../../../utils/notification";
 export const ChatAction = ({ userData }) => {
   const textAreaRef = useRef();
   const { modalState, setModalState, onClose } = useContext(ModalContext);
@@ -111,6 +112,8 @@ export const ChatAction = ({ userData }) => {
         },
         [chatId + ".date"]: serverTimestamp(),
       });
+      sendNotificationToUser("New Message", `You have a new message from ${userData?.name}`, `${userData?.appUserId}_self`);
+
     } catch (error) {
       console.log(error);
     } finally {

@@ -21,6 +21,7 @@ import HeaderMobile from "../../common/Header/HeaderMobile"
 export const SettingsPrivacy = () => {
   const authContext = useContext(AuthContext)
   const [isThemeDark, setIsThemeDark] = useState(false)
+  const [notification, setNotification] = useState(Notification.permission === "granted")
   //   console.log(isThemeDark)
   const handleTheme = () => {
     // console.log(isThemeDark)
@@ -43,6 +44,10 @@ export const SettingsPrivacy = () => {
       setIsThemeDark(false)
     }
   }, [authContext.theme])
+
+  const handleNotification = () => {
+
+  }
 
   const styleTheme =
     authContext.theme === "dark"
@@ -133,6 +138,22 @@ export const SettingsPrivacy = () => {
                           </Grid> */}
                         </Grid>
                       </li>
+                      <FormControl className="mt-3" component="fieldset">
+                      <FormGroup aria-label="position" row>
+                        <Typography className="my-auto">Notifications</Typography>
+                        <FormControlLabel
+                          className="ml-0 my-auto"
+                          value="dark"
+                          control={
+                            <Switch
+                              color="primary"
+                              onChange={handleNotification}
+                              checked={notification}
+                            />
+                          }
+                        />
+                      </FormGroup>
+                    </FormControl>
                     </ul>
                   </section>
                   <section className="Theme mt-5">

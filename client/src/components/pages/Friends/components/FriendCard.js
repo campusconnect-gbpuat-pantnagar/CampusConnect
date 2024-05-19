@@ -77,7 +77,6 @@ export const FriendCard = ({ friend, type }) => {
             <Button
               onClick={(e) => {
                 handleClickBtn(e, userContext.rejectFriendRequest)
-                sendNotificationToUser("Friend Request Update", `${authContext.user.name} has declined your friend request`, `${friend._id}_self`);
               }}
               style={clickStyleTheme}
             >
@@ -90,7 +89,6 @@ export const FriendCard = ({ friend, type }) => {
           <>
             <Button onClick={(e) => {
                 handleClickBtn(e, userContext.unFriend)
-                sendNotificationToUser("Friend List Update", `${authContext.user.name} has removed you from their friends list`, `${friend._id}_self`);
               }} 
               style={{ color: "red" }}
             >
@@ -103,7 +101,10 @@ export const FriendCard = ({ friend, type }) => {
         {type === "not-friend" && (
           <>
             <Button
-              onClick={(e) => handleClickBtn(e, userContext.sendFriendRequest)}
+              onClick={(e) => { 
+                handleClickBtn(e, userContext.sendFriendRequest)
+                sendNotificationToUser("Friend Request", `You have a new friend request from ${authContext.user.name}`, `${friend._id}_self`);
+              }}
               style={clickStyleTheme}
             >
               {loading ? <ButtonLoading /> : "Add friend"}

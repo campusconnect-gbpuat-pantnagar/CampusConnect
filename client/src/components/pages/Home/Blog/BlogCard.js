@@ -168,13 +168,14 @@ export const BlogCard = ({ blog }) => {
           }
           action={
             <>
+            {authContext.user._id === blog.user._id ? (
               <IconButton
                 aria-label="settings"
                 onClick={handleMoreOption}
                 style={styleTheme}
               >
                 <MoreHorizIcon />
-              </IconButton>
+              </IconButton> ) : null }
               <Menu
                 id="fade-menu"
                 anchorEl={moreOption}
@@ -202,13 +203,13 @@ export const BlogCard = ({ blog }) => {
                     Delete
                   </MenuItem>
                 ) : null}
-                <MenuItem onClick={handleClose} style={styleTheme}>
+                {/* <MenuItem onClick={handleClose} style={styleTheme}>
                   Share
-                </MenuItem>
+                </MenuItem> */}
 
-                <MenuItem onClick={handleClose} style={styleTheme}>
+                {/* <MenuItem onClick={handleClose} style={styleTheme}>
                   Report blog
-                </MenuItem>
+                </MenuItem> */}
               </Menu>
             </>
           }
@@ -274,12 +275,12 @@ export const BlogCard = ({ blog }) => {
                   {blog.comments.length}
                 </Typography>
               </span>
-              <IconButton onClick={handleShareBtn} style={styleTheme}>
+              {/* <IconButton onClick={handleShareBtn} style={styleTheme}>
                 <FontAwesomeIcon icon={faShare} />
-              </IconButton>
-              <span>
+              </IconButton> */}
+              {/* <span>
                 <Typography variant="overline">{shareCount}</Typography>
-              </span>
+              </span> */}
             </Grid>
             <Grid item>
               <IconButton onClick={handleBookmarkBtn} style={styleTheme}>
