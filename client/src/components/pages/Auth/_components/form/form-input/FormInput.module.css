@@ -60,3 +60,7 @@
   text-wrap: wrap;
   /* word-break: break-all; */
 }
+
+.CustomSelect {
+  width: 100%;
+}
