@@ -216,6 +216,14 @@ const Header = () => {
               >
                 About University
               </MenuItem>
+              <MenuItem
+                onClick={() => {
+                  navigate("/our-team");
+                }}
+                style={styleTheme}
+              >
+                Our Team
+              </MenuItem>
               {/* <MenuItem
                 onClick={() => {
                   navigate("/help-support")
@@ -229,7 +237,7 @@ const Header = () => {
                 }}
                 style={styleTheme}
               >
-                Settings & Privacy
+                Settings
               </MenuItem>
               <MenuItem
                 onClick={() => {
