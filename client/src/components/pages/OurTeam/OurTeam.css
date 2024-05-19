@@ -21,6 +21,14 @@
   transition: transform 0.3s ease;
 }
 
+.team {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  padding-top: 80px;
+  padding-left: 16.7%;
+}
+
 .member-photo:hover {
   transform: scale(1.05);
 }
@@ -35,11 +43,16 @@
 
 @media (max-width: 768px) {
   .our-group-container {
-    padding-top: 1250px; 
+    padding-top: 40px;
   }
 
-  .main-div {
-    height: 1950px;
+  .team {
+    padding-left: 16%; 
   }
 }
 
+@media (min-width: 992px) {
+  .team {
+    padding-left: 80px;
+  }
+}

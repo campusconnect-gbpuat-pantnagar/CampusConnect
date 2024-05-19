@@ -27,7 +27,7 @@ export const OurTeam = () => {
     : { color: "blue" }
     
   return (
-    <div className="home" style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', paddingLeft: '80px' }}>
+    <div className="team" style={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
       <HeaderMobile />
       <Header />
       <Container className="our-group-container mt-4">
