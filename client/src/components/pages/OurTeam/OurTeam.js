@@ -7,7 +7,7 @@ import { AuthContext } from '../../../context/authContext/authContext';
 
 const members = [
   { id: "56278", name: "Mayank Tripathi", photo: "/members/mt.png", domain: "Research, Development & Management" },
-  { id: "56553", name: "Anmol Gangwar", photo: "/members/ag.png", domain: "Research & Development"},
+  { id: "56553", name: "Anmol Gangwar", photo: "/members/ag.jpg", domain: "Research & Development"},
   { id: "56309", name: "Soni Danu", photo: "/members/sd.png", domain: "Chatbot & Documentation" },
   { id: "56305", name: "Sourav Chauhan", photo: "/members/sc.png", domain: "Testing" },
   { id: "57608", name: "Abhishek Verma", photo: "/members/av.png", domain: "Data Collection & Organization" }
