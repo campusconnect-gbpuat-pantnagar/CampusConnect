@@ -27,6 +27,7 @@ const FormSelect = ({
       <label htmlFor={label}>{label}</label>
       <div className={styles.FormInput}>
         <Select
+          required
           {...props}
           options={options}
           onChange={SelectOnChange}

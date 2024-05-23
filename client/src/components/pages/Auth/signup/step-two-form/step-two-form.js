@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import * as Yup from "yup";
 import { Form, Formik } from "formik";
-import { useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import VisibilityOff from "@material-ui/icons/VisibilityOff";
 import Visibility from "@material-ui/icons/Visibility";
 import ArrowRight from "@material-ui/icons/ArrowRight";
@@ -17,10 +17,19 @@ import {
   DegreeProgram_In_Department,
   DegreeProgram,
 } from "../../../../../utils/constants";
+import apiClient from "../../../../../helpers/apiClient";
+import axios from "axios";
+import { useDebounceValue } from "usehooks-ts";
 
-const StepTwoForm = ({ SteptwoSubmitHandler }) => {
+const StepTwoForm = ({
+  SteptwoSubmitHandler,
+  isLoading,
+  setCustomError,
+  customError,
+}) => {
   const [formData, setFormData] = useState({
-    email: "",
+    gbpuatId: "",
+    gbpuatEmail: "",
     firstName: "",
     lastName: "",
     collegeName: "",
@@ -28,27 +37,25 @@ const StepTwoForm = ({ SteptwoSubmitHandler }) => {
     degreeProgram: "",
     username: "",
     password: "",
+    designation: "",
+    batchYear: "",
   });
-  const [collegeOptions, setCollegeOptions] = useState(
-    Colleges_in_GBPUAT
-      ? Colleges_in_GBPUAT?.map((college) => ({
-          label: college.collegeName,
-          value: college.collegeId,
-        }))
-      : []
-  );
+  const location = useLocation();
+  const [collegeOptions, setCollegeOptions] = useState([]);
   const [departmentOptions, setDepartmentOptions] = useState([]);
   const [degreeProgramOptions, setDegreeProgramOptions] = useState([]);
   const [selectedCollege, setSelectedCollege] = useState("");
   const [selectedDepartment, setSelectedDepartment] = useState("");
   const [selectedDegreeProgram, setSelectedDegreeProgram] = useState("");
+  const [username, setUsername] = useDebounceValue("", 300);
+
   const navigate = useNavigate();
   const [typePassword, setTypePassword] = useState("password");
 
   const Icon = typePassword === "password" ? <Visibility /> : <VisibilityOff />;
 
   const validationSchema = Yup.object({
-    email: Yup.string()
+    gbpuatEmail: Yup.string()
       .email("Invalid email address")
       .required("Email is required")
       .matches(/@.*gbpuat.*\..+$/, "Email must be gbpuat university email."),
@@ -74,8 +81,13 @@ const StepTwoForm = ({ SteptwoSubmitHandler }) => {
       .max(100, "Degree program cannot exceed 100 characters"),
 
     username: Yup.string()
-      .required("Username is required")
-      .max(60, "Username cannot exceed 60 characters"),
+      .min(3, "Username must be at least 3 characters")
+      .max(60, "Username cannot exceed 60 characters")
+      .matches(
+        /^[a-zA-Z0-9_]+$/,
+        "Username can only contain alphanumeric characters and underscores"
+      )
+      .required("Username is required"),
 
     password: Yup.string()
       .required("Password is required")
@@ -94,61 +106,120 @@ const StepTwoForm = ({ SteptwoSubmitHandler }) => {
   const previousHandler = () => {
     navigate("/new/signup", { state: null });
   };
-  useEffect(() => {
-    const collegeDepartments =
-      selectedCollege &&
-      Department_in_Colleges.find(
-        (dep_in_college) => dep_in_college.collegeId === selectedCollege
-      )?.departments;
 
-    if (collegeDepartments) {
-      setDepartmentOptions(
-        collegeDepartments.map((department) => ({
-          label: department.departmentName,
-          value: department.departmentId,
-        }))
+  useEffect(() => {
+    // fetching colleges lists
+    async function fetchColleges() {
+      const res = await axios.get(
+        `https://gbpuat-data-service.onrender.com/api/v1/colleges`
       );
-    } else {
-      setDepartmentOptions([]);
+      if (res.data) {
+        const colleges = res.data;
+        console.table(colleges);
+        setCollegeOptions(
+          colleges?.map((college) => ({
+            label: college.name,
+            value: college.id,
+          }))
+        );
+      }
     }
-    setFormData((prevData) => ({
-      ...prevData,
-      departmentName: "",
-      degreeProgram: "",
-    }));
-    console.log(formData);
+    fetchColleges();
+  }, []);
+
+  useEffect(() => {
+    // fetching departments list under college by collegeId
+    async function fetchDepartmentsOfCollegeById() {
+      const res = await axios.get(
+        `https://gbpuat-data-service.onrender.com/api/v1/colleges/${selectedCollege}/departments`
+      );
+      if (res.data) {
+        const departments = res.data;
+        setDepartmentOptions(
+          departments?.map((department) => ({
+            label: department.name,
+            value: department.id,
+          }))
+        );
+      }
+    }
+    if (selectedCollege) {
+      fetchDepartmentsOfCollegeById();
+    }
   }, [selectedCollege]);
 
   useEffect(() => {
-    const degreePrograms =
-      selectedDepartment &&
-      DegreeProgram_In_Department.find(
-        (deg_in_department) =>
-          deg_in_department.departmentId === selectedDepartment
-      )?.degreeProgram;
-
-    if (degreePrograms) {
-      setDegreeProgramOptions(
-        degreePrograms.map((degreeProgram) => ({
-          label: DegreeProgram.map((degProgram) =>
-            degProgram.degreeProgramId === degreeProgram.degreeProgramId
-              ? degProgram.degreeProgramName
-              : ""
-          ),
-          value: degreeProgram.degreeProgramId,
-        }))
+    // fetching degreeProgram list that are offered by the department by departmentId
+    async function fetchDegreeProgramOfferedByDepartmentById() {
+      const res = await axios.get(
+        `https://gbpuat-data-service.onrender.com/api/v1/departments/${selectedDepartment}/degree-program`
       );
-    } else {
-      setDegreeProgramOptions([]);
+      if (res.data) {
+        const degreePrograms = res.data;
+        setDegreeProgramOptions(
+          degreePrograms?.map((department) => ({
+            label: department.name,
+            value: department.id,
+          }))
+        );
+      }
     }
-    return () => {
-      setFormData((prevData) => ({
-        ...prevData,
-        degreeProgram: "",
-      }));
-    };
+    if (selectedDepartment) {
+      fetchDegreeProgramOfferedByDepartmentById();
+    }
   }, [selectedDepartment]);
 
+  useEffect(() => {
+    async function fetchGbpuatUserDetails() {
+      if (location.state?.studentId) {
+        const res = await axios.get(
+          `https://gbpuat-data-service.onrender.com/api/v1/gbpuat-users/${location.state?.studentId}`
+        );
+        const data = res.data;
+        setFormData({
+          gbpuatId: data.gbpuatId,
+          gbpuatEmail: data.gbpuatEmail,
+          firstName: data.firstName,
+          lastName: data.lastName,
+          collegeName: data.academicDetails.college.id,
+          departmentName: data.academicDetails.department.id,
+          degreeProgram: data.academicDetails.degreeProgram.id,
+          designation: data.academicDetails.designation,
+          batchYear: data.academicDetails.batchYear,
+          username: "",
+          password: "",
+        });
+        setSelectedCollege(data.academicDetails.college.id);
+        setSelectedDepartment(data.academicDetails.department.id);
+      }
+    }
+    fetchGbpuatUserDetails();
+  }, [location, location.state?.studentId]);
+
+  useEffect(() => {
+    async function isUsernameAvailable() {
+      try {
+        const res = await axios.get(
+          `http://localhost:8080/api/v1/auth/check-username/${username}`
+        );
+        console.log(res);
+        if (res.status === 200) {
+          setCustomError(res.data.message);
+        }
+      } catch (e) {
+        console.log(e);
+      }
+    }
+    if (username.length) {
+      isUsernameAvailable();
+    }
+  }, [username]);
+
+  const ContinueButtonIcon = isLoading ? (
+    <span className={StyleSheet.spinner}></span>
+  ) : (
+    <ArrowRight />
+  );
   return (
     <Formik
       enableReinitialize
@@ -160,8 +231,10 @@ const StepTwoForm = ({ SteptwoSubmitHandler }) => {
       {(formik) => (
         <Form className={StyleSheet.FormikForm}>
           <FormInput
+            // customError={customError}
+            // setCustomError={setCustomError}
             label={"Email"}
-            name={"email"}
+            name={"gbpuatEmail"}
             placeholder={"565XX@gbpuat.ac.in"}
           />
           <div className={StepTwoFormStyles.NameContainer}>
@@ -204,11 +277,14 @@ const StepTwoForm = ({ SteptwoSubmitHandler }) => {
           /> */}
           {/* </div> */}
           <FormInput
+            customError={customError}
+            setCustomError={setCustomError}
             label={"Username"}
             FirstIconClassName={StepTwoFormStyles.usernameIcon}
             FirstIcon={<span>@</span>}
             name={"username"}
             placeholder={""}
+            handleFieldChange={setUsername}
           />
           <FormInput
             label={"password"}
@@ -227,7 +303,7 @@ const StepTwoForm = ({ SteptwoSubmitHandler }) => {
             <SubmitButton
               type={"submit"}
               btnText={"Continue"}
-              Icon={<ArrowRight />}
+              Icon={ContinueButtonIcon}
             />
           </div>
         </Form>

@@ -9,7 +9,12 @@ import SubmitButton from "../../_components/form/button/button";
 import FormInput from "../../_components/form/form-input/FormInput";
 
 import StyleSheet from "../../signin/signin.module.css";
-const StepOneForm = ({ StepOneSubmitHandler }) => {
+const StepOneForm = ({
+  StepOneSubmitHandler,
+  customError,
+  setCustomError,
+  isLoading,
+}) => {
   const [formData, setFormData] = useState({
     studentId: "",
   });
@@ -23,8 +28,12 @@ const StepOneForm = ({ StepOneSubmitHandler }) => {
         "Enter a valid student ID (e.g., 565XX or 565XX@gbpuat.ac.in)"
       ),
   });
-  const { state } = useLocation();
-
+  const location = useLocation();
+  const ContinueButtonIcon = isLoading ? (
+    <span className={StyleSheet.spinner}></span>
+  ) : (
+    <ArrowRight />
+  );
   return (
     <Formik
       enableReinitialize
@@ -36,6 +45,8 @@ const StepOneForm = ({ StepOneSubmitHandler }) => {
       {(formik) => (
         <Form className={StyleSheet.FormikForm}>
           <FormInput
+            setCustomError={setCustomError}
+            customError={customError}
             label={"student Id"}
             name={"studentId"}
             placeholder={"565XX or 565XX@gbpuat.ac.in"}
@@ -44,7 +55,7 @@ const StepOneForm = ({ StepOneSubmitHandler }) => {
           <SubmitButton
             type={"submit"}
             btnText={"Continue"}
-            Icon={<ArrowRight />}
+            Icon={ContinueButtonIcon}
           />
         </Form>
       )}

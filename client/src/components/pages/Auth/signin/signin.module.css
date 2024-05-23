@@ -12,7 +12,6 @@
 
 .wrapper {
   position: relative;
-
 }
 
 .image_1 {
@@ -100,6 +99,24 @@
   font-weight: 700;
   font-size: 1.3rem;
 }
+.spinner {
+  width: 20px;
+  height: 20px;
+  margin-left: 1rem;
+  border-radius: 50%;
+  border: 3px solid;
+  order: 0;
+  border-color: #dbdcef;
+  border-right-color: black;
+  animation: spinner-d3wgkg 1s infinite linear;
+}
+
+@keyframes spinner-d3wgkg {
+  to {
+    transform: rotate(1turn);
+  }
+}
+
 @media (max-width: 991px) {
   .inner {
     width: 400px;

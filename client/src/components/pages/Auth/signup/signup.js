@@ -11,21 +11,111 @@ import { useLocation, useNavigate } from "react-router-dom";
 import StepTwoForm from "./step-two-form/step-two-form";
 import StepOneForm from "./step-one-form/step-one-form";
 import SignUpStyles from "./signup.module.css";
+import { useDebounceValue } from "usehooks-ts";
+import axios from "axios";
 const SignUpPage = () => {
   const navigate = useNavigate();
-
   const { state } = useLocation();
-
-  const StepOneSubmitHandler = (data) => {
+  const [customError, setCustomError] = useState("");
+  const [isLoading, setIsLoading] = useState(false);
+  const StepOneSubmitHandler = async (data) => {
     console.log(data);
+    try {
+      setCustomError("");
+      setIsLoading(true);
+      const res = await axios.get(
+        `https://gbpuat-data-service.onrender.com/api/v1/gbpuat-users/${data?.studentId}`
+      );
+
+      if (res.status === 200 && res.data) {
+        // console.log("Success", res.data);
+        navigate("/new/signup", { state: { studentId: data.studentId } });
+        setIsLoading(false);
+      }
+    } catch (err) {
+      // alert("Invalid university Id.");
+      setIsLoading(false);
+      setCustomError("Invalid university Id.");
+    }
+
+    // if (!isUserExist) {
+    // }
     // TODO ✅ : Fetch the student data using student Id from gbpuat-email-checker service and validate
-    navigate("/new/signup", { state: { studentId: data.studentId } });
   };
 
-  const SteptwoSubmitHandler = (data) => {
+  async function fetchCollegeDetails(collegeId) {
+    const res = await axios.get(
+      `https://gbpuat-data-service.onrender.com/api/v1/colleges/${collegeId}`
+    );
+    if (res.status === 200) {
+      return res.data;
+    }
+  }
+  async function fetchDepartmentsDetails(departmentId) {
+    const res = await axios.get(
+      `https://gbpuat-data-service.onrender.com/api/v1/departments/${departmentId}`
+    );
+    if (res.status === 200) {
+      return res.data;
+    }
+  }
+  async function fetchDegreeProgramDetails(degreeProgramId) {
+    const res = await axios.get(
+      `https://gbpuat-data-service.onrender.com/api/v1/degree-programs/${degreeProgramId}`
+    );
+    if (res.status === 200) {
+      return res.data;
+    }
+  }
+  const SteptwoSubmitHandler = async (data) => {
     console.log(data);
+    try {
+      setIsLoading(true);
+      const collegeDetails = await fetchCollegeDetails(data.collegeName);
+      const departmentDetails = await fetchDepartmentsDetails(
+        data.departmentName
+      );
+      const degreeProgramDetails = await fetchDegreeProgramDetails(
+        data.degreeProgram
+      );
+      const userData = {
+        gbpuatId: data.gbpuatId,
+        gbpuatEmail: data.gbpuatEmail,
+        username: data.username,
+        password: data.password,
+        firstName: data.firstName,
+        lastName: data.lastName,
+        academicDetails: {
+          college: {
+            name: collegeDetails.name,
+            collegeId: collegeDetails.id,
+          },
+          department: {
+            name: departmentDetails.name,
+            departmentId: departmentDetails.id,
+          },
+          degreeProgram: {
+            name: degreeProgramDetails.name,
+            degreeProgramId: degreeProgramDetails.id,
+          },
+          batchYear: data.batchYear,
+          designation: data.designation,
+        },
+      };
+      console.log(userData);
+      const response = await axios.post(
+        `http://localhost:8080/api/v1/auth/signup`,
+        userData
+      );
+      console.log(response);
+
+      setCustomError("");
+      setIsLoading(false);
+    } catch (err) {
+      alert(`Error: ${err.response.data.message}`);
+      setIsLoading(false);
+    }
   };
-  console.log(state);
   // TODO ✅:  redirectToSignUp
   const redirectToSignIn = () => {
     navigate("/new/signin");
@@ -49,9 +139,19 @@ const SignUpPage = () => {
           </div>
 
           {state?.studentId ? (
-            <StepTwoForm SteptwoSubmitHandler={SteptwoSubmitHandler} />
+            <StepTwoForm
+              isLoading={isLoading}
+              customError={customError}
+              setCustomError={setCustomError}
+              SteptwoSubmitHandler={SteptwoSubmitHandler}
+            />
           ) : (
-            <StepOneForm StepOneSubmitHandler={StepOneSubmitHandler} />
+            <StepOneForm
+              isLoading={isLoading}
+              StepOneSubmitHandler={StepOneSubmitHandler}
+              customError={customError}
+              setCustomError={setCustomError}
+            />
           )}
 
           <div className={StyleSheet.DontHaveAccount}>

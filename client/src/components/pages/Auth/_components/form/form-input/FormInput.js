@@ -10,9 +10,13 @@ const FormInput = ({
   FirstIcon,
   FirstIconClassName,
   placeholder,
+  customError,
+  setCustomError,
+  handleFieldChange,
   ...props
 }) => {
   const [isInputFocused, setIsInputFocused] = useState(false);
+
   const [field, meta, helpers] = useField({
     name: name,
   });
@@ -29,7 +33,17 @@ const FormInput = ({
     setIsInputFocused(false);
     field.onBlur(event);
   };
-
+  const handleInputChange = (e) => {
+    field.onChange(e);
+    if (field.name === "username") {
+      handleFieldChange(e.target.value);
+    }
+    if (field.name === "studentId" || field.name === "username") {
+      setCustomError("");
+    }
+  };
+  const isError =
+    meta.touched && meta.error ? true : customError ? false : true;
   return (
     <div className={styles.FormInputContainer}>
       <label htmlFor={label}>{label}</label>
@@ -46,6 +60,7 @@ const FormInput = ({
           {...field}
           {...props}
           placeholder={placeholder}
+          onChange={handleInputChange}
           onBlur={handleBlur}
           style={{
             ...inputStyle,
@@ -63,6 +78,17 @@ const FormInput = ({
         )}
       </div>
       {meta.touched && meta.error && <p>{`* ${meta.error}`}</p>}
+      {!isError && (
+        <p
+          style={
+            field.name === "username"
+              ? { color: "#356A86ff", fontWeight: 600, fontSize: ".9rem" }
+              : {}
+          }
+        >
+          {customError ? `${customError}` : `* ${meta.error}`}
+        </p>
+      )}
     </div>
   );
 };
