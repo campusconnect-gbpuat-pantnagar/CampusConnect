@@ -102,12 +102,28 @@ const SignUpPage = () => {
           designation: data.designation,
         },
       };
-      console.log(userData);
+      // console.log(userData);
       const response = await axios.post(
         `http://localhost:8080/api/v1/auth/signup`,
         userData
       );
-      console.log(response);
+
+      if (response.data.data) {
+        const { user } = response.data.data;
+        console.log(user);
+        navigate("/new/signup", { state: null });
+        navigate("/new/verify-email", {
+          state: {
+            gbpuatEmail: user.gbpuatEmail,
+            gbpuatId: user.gbpuatId,
+            isEmailVerified: user.isEmailVerified,
+          },
+        });
+        alert(
+          `Email Sent successfully to your mail ${user.gbpuatEmail}`
+        );
+        setIsLoading(false);
+      }
 
       setCustomError("");
       setIsLoading(false);

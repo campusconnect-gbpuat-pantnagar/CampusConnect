@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import StyleSheet from "../signin/signin.module.css";
 import VerifyStyles from "./verifyEmail.module.css";
 import SubmitButton from "../_components/form/button/button.js";
@@ -9,15 +9,16 @@ import * as Yup from "yup";
 import { Form, Formik } from "formik";
 
 import FormOtpInput from "../_components/form/form-otp-input/form-otp-input.js";
+import axios from "axios";
 const VerifyEmailPage = () => {
   const [formData, setFormData] = useState({
     otp: "",
-    email: "56553@gbpuat.ac.in",
+    gbpuatEmail: "",
+    isEmailVerified: true,
   });
-
+  const [isLoading, setIsLoading] = useState(false);
   const navigate = useNavigate();
   const location = useLocation();
-  console.log(location);
   const validationSchema = Yup.object({
     otp: Yup.string()
       .required("One Time Password is required")
@@ -31,7 +32,47 @@ const VerifyEmailPage = () => {
     alert(`otp: ${data.otp}, email: ${data.email}`);
   };
 
-  const resendOtpHandler = () => {};
+  const resendOtpHandler = () => {
+    sendVerificationEmail();
+  };
+  async function sendVerificationEmail() {
+    try {
+      setIsLoading(true);
+      const response = await axios.post(
+        `http://localhost:8080/api/v1/auth/send-verification-email`,
+        { gbpuatEmail: location.state.gbpuatEmail }
+      );
+      setIsLoading(true);
+      alert(`${response.data.message}`);
+    } catch (err) {
+      alert(`Error: ${err.response.data.message}`);
+      setIsLoading(false);
+    }
+  }
+  useEffect(() => {
+    console.log(location.state);
+    if (!location.state) {
+      console.log(`!location.state`);
+      console.log(`!location.state`);
+      navigate("/new/signin");
+    }
+    if (!location.state?.gbpuatEmail || location.state?.isEmailVerified) {
+      console.log(`!location.state.gbpuatEmail`);
+      navigate("/new/signin");
+    }
+
+    if (location.state && location.state?.gbpuatEmail) {
+      console.log(location.state);
+      setFormData({
+        gbpuatEmail: location.state.gbpuatEmail,
+        isEmailVerified: location.state.isEmailVerified,
+        otp: "",
+      });
+    }
+  }, [location]);
+  const ContinueButtonIcon = isLoading ?? (
+    <span className={StyleSheet.spinner}></span>
+  );
   return (
     <div className={StyleSheet.login}>
       <div className={StyleSheet.wrapper}>
@@ -55,7 +96,7 @@ const VerifyEmailPage = () => {
             <span>
               <AccountCircleIcon />
             </span>
-            <p>{formData.email}</p>
+            <p>{formData.gbpuatEmail}</p>
           </div>
           <Formik
             enableReinitialize
@@ -78,7 +119,11 @@ const VerifyEmailPage = () => {
                   <p>Didn't received the Otp?</p>
                   <span onClick={resendOtpHandler}>Resend Otp</span>
                 </div>
-                <SubmitButton type={"submit"} btnText={"Submit"} />
+                <SubmitButton
+                  type={"submit"}
+                  btnText={"Submit"}
+                  Icon={ContinueButtonIcon}
+                />
               </Form>
             )}
           </Formik>

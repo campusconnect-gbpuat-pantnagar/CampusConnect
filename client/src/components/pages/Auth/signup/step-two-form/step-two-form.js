@@ -280,6 +280,7 @@ const StepTwoForm = ({
             customError={customError}
             setCustomError={setCustomError}
             label={"Username"}
+            pathname="signup"
             FirstIconClassName={StepTwoFormStyles.usernameIcon}
             FirstIcon={<span>@</span>}
             name={"username"}

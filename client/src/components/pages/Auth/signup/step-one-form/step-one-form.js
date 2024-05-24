@@ -45,6 +45,7 @@ const StepOneForm = ({
       {(formik) => (
         <Form className={StyleSheet.FormikForm}>
           <FormInput
+            pathname="signup"
             setCustomError={setCustomError}
             customError={customError}
             label={"student Id"}

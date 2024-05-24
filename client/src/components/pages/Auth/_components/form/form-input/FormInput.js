@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { useField } from "formik";
 
 import styles from "./FormInput.module.css";
+import { useLocation } from "react-router-dom";
 const FormInput = ({
   name,
   label,
@@ -13,6 +14,7 @@ const FormInput = ({
   customError,
   setCustomError,
   handleFieldChange,
+  pathname,
   ...props
 }) => {
   const [isInputFocused, setIsInputFocused] = useState(false);
@@ -33,12 +35,16 @@ const FormInput = ({
     setIsInputFocused(false);
     field.onBlur(event);
   };
+ 
   const handleInputChange = (e) => {
     field.onChange(e);
-    if (field.name === "username") {
+    if (field.name === "username" && pathname.includes("signup")) {
       handleFieldChange(e.target.value);
     }
-    if (field.name === "studentId" || field.name === "username") {
+    if (
+      field.name === "studentId" ||
+      (field.name === "username" && pathname.includes("signup"))
+    ) {
       setCustomError("");
     }
   };
