@@ -52,9 +52,22 @@ const SignInPage = () => {
       if (response.data.data) {
         const { user } = response.data.data;
         console.log(user);
-        // ✅ TODO : Implementation for blocked user
+
+        // ✅ TODO : Implementation for  temporary blocked user  -> your account will be unblocked shortly.
+        if (user.isTemporaryBlocked) {
+          alert(`${response.data.message}`);
+          return;
+        }
+        // ✅ TODO : Implementation for  permanent blocked user  -> Your Account is Blocked contact admin.
+        if (user.isPermanentBlocked) {
+          alert(
+            `${response.data.message} You will be redirected to the admin contact page.`
+          );
+          return;
+        }
+
         // ✅ TODO : Handling maximum login attempts
-        // ✅ TODO : Handling for user which has deleted his account
+        // ✅ TODO : Handling for user which has deleted his account ->  move user to reopen-account page for consent -> if User
         // ✅ TODO Handling if email is not verified
 
         if (!user.isEmailVerified) {
@@ -83,6 +96,8 @@ const SignInPage = () => {
       setIsLoading(false);
     } catch (err) {
       alert(`Error: ${err.response.data.message}`);
+      setIsLoading(false);
+    } finally {
       setIsLoading(false);
     }
   }

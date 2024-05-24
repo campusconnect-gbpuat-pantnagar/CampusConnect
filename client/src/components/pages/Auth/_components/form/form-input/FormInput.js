@@ -15,6 +15,7 @@ const FormInput = ({
   setCustomError,
   handleFieldChange,
   pathname,
+  customInputStyle,
   ...props
 }) => {
   const [isInputFocused, setIsInputFocused] = useState(false);
@@ -35,7 +36,7 @@ const FormInput = ({
     setIsInputFocused(false);
     field.onBlur(event);
   };
- 
+
   const handleInputChange = (e) => {
     field.onChange(e);
     if (field.name === "username" && pathname.includes("signup")) {
@@ -72,6 +73,7 @@ const FormInput = ({
             ...inputStyle,
             ...InputStyleWithSecondIcon,
             ...InputStyleWithFirstIcon,
+            ...customInputStyle,
           }}
         />
         {SecondIcon && (
@@ -88,7 +90,7 @@ const FormInput = ({
         <p
           style={
             field.name === "username"
-              ? { color: "#356A86ff", fontWeight: 600, fontSize: ".9rem" }
+              ? { color: "#FF0000", fontWeight: 600, fontSize: ".9rem" }
               : {}
           }
         >

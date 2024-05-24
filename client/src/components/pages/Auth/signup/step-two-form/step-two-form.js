@@ -26,6 +26,7 @@ const StepTwoForm = ({
   isLoading,
   setCustomError,
   customError,
+  setIsUsernameAvailable,
 }) => {
   const [formData, setFormData] = useState({
     gbpuatId: "",
@@ -202,8 +203,9 @@ const StepTwoForm = ({
         const res = await axios.get(
           `http://localhost:8080/api/v1/auth/check-username/${username}`
         );
-        console.log(res);
+        // console.log(res.data.data.isUsernameAvailable);
         if (res.status === 200) {
+          setIsUsernameAvailable(res.data.data.isUsernameAvailable);
           setCustomError(res.data.message);
         }
       } catch (e) {
@@ -239,11 +241,17 @@ const StepTwoForm = ({
           />
           <div className={StepTwoFormStyles.NameContainer}>
             <FormInput
+              customInputStyle={{ textTransform: "capitalize" }}
               label={"First Name"}
               name={"firstName"}
               placeholder={""}
             />
-            <FormInput label={"Last Name"} name={"lastName"} placeholder={""} />
+            <FormInput
+              customInputStyle={{ textTransform: "capitalize" }}
+              label={"Last Name"}
+              name={"lastName"}
+              placeholder={""}
+            />
           </div>
           {/* <FormInput label={"College"} name={"collegeName"} placeholder={""} /> */}
           <FormSelect

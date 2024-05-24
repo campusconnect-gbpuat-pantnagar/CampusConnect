@@ -18,6 +18,7 @@ const SignUpPage = () => {
   const { state } = useLocation();
   const [customError, setCustomError] = useState("");
   const [isLoading, setIsLoading] = useState(false);
+  const [isUsernameAvailable, setIsUsernameAvailable] = useState(true);
   const StepOneSubmitHandler = async (data) => {
     console.log(data);
     try {
@@ -68,6 +69,9 @@ const SignUpPage = () => {
     }
   }
   const SteptwoSubmitHandler = async (data) => {
+    if (!isUsernameAvailable) {
+      return;
+    }
     console.log(data);
     try {
       setIsLoading(true);
@@ -119,9 +123,7 @@ const SignUpPage = () => {
             isEmailVerified: user.isEmailVerified,
           },
         });
-        alert(
-          `Email Sent successfully to your mail ${user.gbpuatEmail}`
-        );
+        alert(`Email Sent successfully to your mail ${user.gbpuatEmail}`);
         setIsLoading(false);
       }
 
@@ -156,6 +158,7 @@ const SignUpPage = () => {
 
           {state?.studentId ? (
             <StepTwoForm
+              setIsUsernameAvailable={setIsUsernameAvailable}
               isLoading={isLoading}
               customError={customError}
               setCustomError={setCustomError}

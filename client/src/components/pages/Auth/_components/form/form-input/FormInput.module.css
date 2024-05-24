@@ -29,6 +29,7 @@
   line-height: 1.25;
   border-radius: 0.375rem;
   padding: 0.4rem 2.5rem 0.4rem 1rem;
+  text-transform: lowercase;
   border: 1px solid rgba(0, 0, 0, 0.16);
 }
 
@@ -63,4 +64,7 @@
 
 .CustomSelect {
   width: 100%;
+  text-transform: capitalize;
+  font-size: 0.9rem;
+  font-weight: 500;
 }
