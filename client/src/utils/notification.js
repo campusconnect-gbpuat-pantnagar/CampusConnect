@@ -53,6 +53,22 @@ export const sendNotificationToUser = async (title, body, topic) => {
   }
 };
 
+export const sendNotificationToUserWithImage = async (title, body, image, topic) => {
+  try {
+    const notificationData = {
+      notificationTitle: title,
+      notificationBody: body,
+      notificationImage: image,
+      registrationTopic: topic,
+    };
+
+    const response = await axios.post(`${API}/send-notification-with-image`, notificationData);
+    console.log('Notification sent successfully:', response.data);
+  } catch (error) {
+    console.error('Error sending notification:', error.response ? error.response.data : error.message);
+  }
+};
+
 export const subscribeUserToTopic = async (token, topic) => {
   try {
     const data = {

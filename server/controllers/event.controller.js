@@ -47,18 +47,29 @@ const storage = multer.diskStorage({
 	},
 });
 const fileFilter = (req, file, cb) => {
-	if (file.mimetype == "image/jpeg" || file.mimetype == "image/png") {
-		cb(null, true);
+	if (
+	  file.mimetype == "image/jpeg" ||
+	  file.mimetype == "image/png" ||
+	  file.mimetype == "image/gif" ||
+	  file.mimetype == "image/svg+xml" ||
+	  file.mimetype == "video/mp4"
+	) {
+	  cb(null, true)
 	} else {
-		cb(null, false);
+	  cb(null, false)
 	}
-};
+}
 exports.upload = multer({ storage: storage, fileFilter: fileFilter });
 
 // Create an Event
 exports.createEvent = (req, res) => {
 	const { title, description, date, venue } = req.body;
-	const newEvent = Event({ title, description, date, venue });
+	const files = req.files
+	const picture = []
+	for (let i = 0; i < files.length; i++) {
+		picture[i] = files[i].path
+	}
+	const newEvent = Event({ title, description, date, venue, picture });
 	newEvent.save((err, event) => {
 		if (err) {
 			res.status(400).json({
@@ -91,8 +102,32 @@ exports.getEvent = (req, res) => {
 
 // update event
 exports.updateEvent = (req, res) => {
+
+	Event.findById({ _id: req.event._id }).exec((err, event) => {
+		for (let picture of event.picture) {
+		  let path = picture
+	
+		  fs.readdir(path, (err, files) => {
+			if (path) {
+			  fs.unlink(path, (err) => {
+				if (err) {
+				  console.error(err)
+				  return
+				}
+			  })
+			}
+		  })
+		}
+	})
+
 	const { title, description, date, venue } = req.body;
-	const updateObj = { title, description, date, venue };
+	const files = req.files
+	const picture = []
+	for (let i = 0; i < files.length; i++) {
+		picture[i] = files[i].path
+	}
+
+	const updateObj = { title, description, date, venue, picture };
 
 	Event.findByIdAndUpdate(
 		{ _id: req.event._id },

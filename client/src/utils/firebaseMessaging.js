@@ -4,10 +4,10 @@ import { onMessage } from "firebase/messaging";
 const setFirebaseMessaging = () => {
     onMessage(messaging, (payload) => {
       console.log("Message received. ", payload);
-      const notificationTitle = payload.notification.title;
+      const notificationTitle = payload.data.title;
       const notificationOptions = {
-        body: payload.notification.body,
-        icon: payload.notification.image,
+        body: payload.data.body,
+        icon: payload.data.image,
       };
 
       if (Notification.permission === "granted") {

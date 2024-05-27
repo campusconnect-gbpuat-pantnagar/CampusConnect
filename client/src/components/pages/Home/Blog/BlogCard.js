@@ -13,6 +13,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   Avatar,
   Card,
+  Button,
   CardActions,
   CardContent,
   CardHeader,
@@ -139,7 +140,9 @@ export const BlogCard = ({ blog }) => {
       : { background: "white", color: "black" };
 
   const clickStyleTheme =
-    authContext.theme === "dark" ? { color: "#03DAC6" } : { color: "blue" };
+    authContext.theme === "dark"
+      ? { color: "#03DAC6", borderColor: "#03DAC6" }
+      : { color: "blue", borderColor: "blue" }
 
   return (
     <>
@@ -237,6 +240,21 @@ export const BlogCard = ({ blog }) => {
           <Typography variant="subtitle2" component="p">
             {blog.content}
           </Typography>
+          {blog.link && (
+          <CardActions className="pt-0 px-3 mt-2">
+            <Button
+              size="small"
+              variant="outlined"
+              onClick={() => {
+                window.open(`${blog.link}`)
+              }}
+              style={{ ...clickStyleTheme, right: '15px' }}
+              className="mt-2"
+            >
+              Read More
+            </Button>
+          </CardActions>
+        )}
         </CardContent>
         <div className="centered-image-container">
           {blog.picture && (

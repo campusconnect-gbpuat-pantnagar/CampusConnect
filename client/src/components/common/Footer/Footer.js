@@ -1,5 +1,5 @@
 import React from "react"
 
 export const Footer = () => {
-  return <div>Copyright © 2024</div>
+  return <div>Copyright © 2023</div>
 }

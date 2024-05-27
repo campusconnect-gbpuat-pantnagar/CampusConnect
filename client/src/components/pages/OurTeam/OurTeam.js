@@ -21,19 +21,24 @@ export const OurTeam = () => {
       ? { background: "#151515", color: "white" }
       : { background: "white", color: "black" };
 
+  const BackgroundStyleTheme =
+    authContext.theme === "dark"
+      ? { backgroundColor: "black" }
+      : { backgroundColor: "whitesmoke" };
+
   const clickStyleTheme =
   authContext.theme === "dark"
     ? { color: "#03DAC6" }
     : { color: "blue" }
     
   return (
-    <div className="team" style={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
+    <div className="home">
       <HeaderMobile />
       <Header />
-      <Container className="our-group-container mt-4">
+      <Container className="our-group-container mt-4" style={{ ...BackgroundStyleTheme }}>
         <Row className="justify-content-center">
           {members.slice(0, 3).map((member, index) => (
-            <Col key={index} xs={12} sm={6} lg={4} className="text-center mb-3">
+            <div key={index} className="text-center">
               <Card 
                 style={{
                   ...styleTheme,
@@ -41,7 +46,7 @@ export const OurTeam = () => {
                   height: '320px', 
                   borderRadius: '20px', 
                   boxShadow: '0 4px 8px rgba(0, 0, 0, 0.1)', 
-                  marginBottom: '20px', 
+                  margin: '10px 20px 20px 20px', 
                   display: 'flex', 
                   flexDirection: 'column', 
                   justifyContent: 'center', 
@@ -86,12 +91,12 @@ export const OurTeam = () => {
                   </Card.Text>
                 </Card.Body>
               </Card>
-            </Col>
+            </div>
           ))}
         </Row>
         <Row className="justify-content-center">
           {members.slice(3, 5).map((member, index) => (
-            <Col key={index} xs={12} sm={6} lg={4} className="text-center mb-3 mt-2">
+            <div key={index} className="text-center">
               <Card 
                 style={{
                   ...styleTheme,
@@ -99,7 +104,7 @@ export const OurTeam = () => {
                   height: '320px', 
                   borderRadius: '20px', 
                   boxShadow: '0 4px 8px rgba(0, 0, 0, 0.1)', 
-                  marginBottom: '20px', 
+                  margin: '20px', 
                   display: 'flex', 
                   flexDirection: 'column', 
                   justifyContent: 'center', 
@@ -144,7 +149,7 @@ export const OurTeam = () => {
                   </Card.Text>
                 </Card.Body>
               </Card>
-            </Col>
+            </div>
           ))}
         </Row>
       </Container>

@@ -189,11 +189,11 @@ const HeaderMobile = () => {
               </MenuItem>
               <MenuItem
                 onClick={() => {
-                  navigate("/friends");
+                  navigate("/connections");
                 }}
                 style={styleTheme}
               >
-                Friends
+                Connections
               </MenuItem>
               {/* <MenuItem
                 onClick={() => {

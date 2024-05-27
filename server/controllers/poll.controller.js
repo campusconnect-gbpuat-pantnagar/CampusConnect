@@ -37,8 +37,10 @@ exports.voteOnPoll = (req, res) => {
   Poll.findOneAndUpdate(
     { "_id": pollId, "options._id": optionId },
     { 
-      $addToSet: { "options.$.votes": userId },
-      $inc: { "totalVotes": 1 }
+      $addToSet: { 
+        "options.$.votes": userId, 
+        "totalVotes": userId 
+      }
     },  
     { new: true }
   ).exec((err, poll) => {

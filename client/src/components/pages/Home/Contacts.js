@@ -16,11 +16,11 @@ import { UserContext } from "../../../context/userContext/UserContext"
 import { AuthContext } from "../../../context/authContext/authContext"
 import { useNavigate } from "react-router-dom"
 // import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
-// import { faUserFriends } from "@fortawesome/free-solid-svg-icons"
+// import { faUserConnections } from "@fortawesome/free-solid-svg-icons"
 import { Skeleton } from "@material-ui/lab"
 import { API } from "../../../utils/proxy"
 
-const ListFriendLoading = () => {
+const ListConnectionLoading = () => {
   return (
     <List variant="outlined">
       <ListItem>
@@ -67,7 +67,7 @@ export const Contacts = () => {
   // if (userContext.loading) {
   //   return (
   // <Grid container>
-  //   <ListFriendLoading />
+  //   <ListConnectionLoading />
   // </Grid>
   //   )
   // }
@@ -80,14 +80,14 @@ export const Contacts = () => {
 
       {userContext.loading ? (
         <Grid container style={styleTheme}>
-          <ListFriendLoading />
+          <ListConnectionLoading />
         </Grid>
       ) : (
         <Card variant="elevation" elevation={3} style={styleTheme}>
           <CardContent>
             <Grid container direction="row" justifyContent="space-between">
               <Grid item>
-                <Typography variant="h6">Friends</Typography>
+                <Typography variant="h6">Connections</Typography>
               </Grid>
               <Grid>
                 <IconButton size="small" style={styleTheme}>
@@ -137,7 +137,7 @@ export const Contacts = () => {
 //     alignItems="center"
 //     className="my-3"
 //   >
-//     <FontAwesomeIcon color="grey" icon={faUserFriends} />
+//     <FontAwesomeIcon color="grey" icon={faUserConnections} />
 //     <Typography variant="body2" color="textSecondary">
 //       Your friend list is empty!
 //     </Typography>

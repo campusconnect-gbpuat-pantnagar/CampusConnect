@@ -25,10 +25,12 @@ const pollSchema = new mongoose.Schema({
     type: Date,
     default: Date.now
   },
-  totalVotes: {
-    type: Number,
-    default: 0,
-  }
+  totalVotes: [
+    {
+      type: mongoose.Schema.ObjectId,
+      ref: "User",
+    }
+  ]
 });
 
 module.exports = mongoose.model("Poll", pollSchema);

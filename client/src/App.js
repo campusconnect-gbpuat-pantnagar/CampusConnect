@@ -45,7 +45,7 @@ export const App = () => {
                                   <NoticeState>
                                     <Routing />
                                     <ToastContainer 
-                                      position="top-center"
+                                      position="top-right"
                                     />
                                   </NoticeState>
                                 </UpdateState>

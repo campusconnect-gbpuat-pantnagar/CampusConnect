@@ -90,7 +90,7 @@ export const PostModal = ({
                   placeholder="Write a caption..."
                   value={content}
                   onChange={(e) => setContent(e.target.value)}
-                  className={classes.textField}
+                  className={`mb-3 ${classes.textField}`}
                 />
               </Grid>
               <Grid item>

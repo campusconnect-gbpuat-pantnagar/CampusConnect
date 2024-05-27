@@ -8,6 +8,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
 import axios from "axios"
 import { API } from "../../../utils/proxy"
 import { AuthContext } from "../../../context/authContext/authContext"
+import { toast } from 'react-toastify';
 
 const useStyles1 = makeStyles((theme) => ({
   root: {
@@ -93,11 +94,13 @@ export const FeedbackModal = ({ show, onhide }) => {
         setLoading(false)
         setError("")
         setColor("green")
+        toast.success("Thanks for your feedback!", { theme: `${authContext.theme === "dark" ? "dark" : "light"}` });
         // console.log(response)
       }
     } catch (error) {
       setColor("tomato");
       setError(error.response?.data?.errorMsg || "An error occurred");
+      toast.error("An error occurred", { theme: `${authContext.theme === "dark" ? "dark" : "light"}` });
     } finally {
       setLoading(false);
     }
@@ -167,7 +170,7 @@ export const FeedbackModal = ({ show, onhide }) => {
 
   return (
     <div className="modal-feedback">
-      {showResponseMsg()}
+      {/* {showResponseMsg()} */}
       <div className="modal-feedback-wrapper">
         <Modal
           show={show}

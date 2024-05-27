@@ -26,6 +26,10 @@ const blogSchema = new mongoose.Schema(
 			type: String,
 			default: null,
 		},
+		link: {
+			type: String,
+			default: null,
+		},
 		upvotes: [
 			{
 				type: mongoose.Schema.ObjectId,

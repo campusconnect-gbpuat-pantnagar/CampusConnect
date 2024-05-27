@@ -4,6 +4,7 @@
   flex-direction: column;
   padding-top: 80px;
   height: 100vh;
+  overflow-y: auto;
 }
 
 #demo {
@@ -113,6 +114,10 @@ iframe-container {
   }
 
   .home-right-bar {
+    display: none;
+  }
+
+  .poll-arrow {
     display: none;
   }
 

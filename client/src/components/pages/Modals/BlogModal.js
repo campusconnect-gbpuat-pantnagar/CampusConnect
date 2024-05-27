@@ -18,6 +18,7 @@ export const BlogModal = ({
   const [preview, setPreview] = useState(blog === undefined ? "" : blog.picture)
   const [content, setContent] = useState(blog === undefined ? "" : blog.content)
   const [title, setTitle] = useState(blog === undefined ? "" : blog.title)
+  const [link, setLink] = useState(blog === undefined ? "" : blog.link)
 
   console.log(preview)
   const handleForm = async (e) => {
@@ -27,6 +28,7 @@ export const BlogModal = ({
     formData.append("title", title)
     formData.append("content", content)
     formData.append("picture", uploadFile)
+    formData.append("link", link)
     blog
       ? blogFunction(formData, authContext.user._id, blog._id)
       : blogFunction(formData, authContext.user._id)
@@ -99,7 +101,16 @@ export const BlogModal = ({
                   placeholder="Write a caption..."
                   value={content}
                   onChange={(e) => setContent(e.target.value)}
-                  className={classes.textField}
+                  className={`mb-3 ${classes.textField}`}
+                />
+                <TextField
+                  fullWidth
+                  size="small"
+                  variant="outlined"
+                  placeholder="Link for further reading (Optional)"
+                  value={link}
+                  onChange={(e) => setLink(e.target.value)}
+                  className={`mb-3 ${classes.textField}`}
                 />
               </Grid>
               <Grid item>

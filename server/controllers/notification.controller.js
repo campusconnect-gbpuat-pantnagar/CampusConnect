@@ -3,9 +3,31 @@ const messaging = require('../firebase/firebase-admin');
 const sendNotification = (req, res) => {
   const { notificationTitle, notificationBody, registrationTopic } = req.body;
   const message = {
-    notification: {
+    data: {
       title: notificationTitle,
       image: "https://campusconnect-ten.vercel.app/cc_notification_logo.png",
+      body: notificationBody,
+    },
+    topic: registrationTopic,
+  };
+
+  messaging.send(message)
+    .then((response) => {
+      console.log('Notification sent successfully:', response);
+      res.status(200).send('Notification sent successfully');
+    })
+    .catch((error) => {
+      console.error('Error sending notification:', error);
+      res.status(500).send('Error sending notification');
+    });
+};
+
+const sendNotificationWithImage = (req, res) => {
+  const { notificationTitle, notificationBody, notificationImage, registrationTopic } = req.body;
+  const message = {
+    data: {
+      title: notificationTitle,
+      image: notificationImage,
       body: notificationBody,
     },
     topic: registrationTopic,
@@ -50,4 +72,4 @@ const unsubscribeFromTopic = (req, res) => {
   });
 };
 
-module.exports = { sendNotification, subscribeToTopic, unsubscribeFromTopic };
+module.exports = { sendNotification, sendNotificationWithImage, subscribeToTopic, unsubscribeFromTopic };

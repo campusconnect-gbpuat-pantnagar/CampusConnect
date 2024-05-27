@@ -20,6 +20,7 @@ export const AdsModal = ({
   const [title, setTitle] = useState(ads === undefined ? "" : ads.title)
   const [price, setPrice] = useState(ads === undefined ? "" : ads.price)
   const [contact, setContact] = useState(ads === undefined ? "" : ads.contact)
+  //
 
   console.log(preview)
   const handleForm = async (e) => {

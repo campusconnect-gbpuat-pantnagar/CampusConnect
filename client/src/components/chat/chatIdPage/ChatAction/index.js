@@ -18,7 +18,9 @@ import { v4 as uuid } from "uuid";
 import { AuthContext } from "../../../../context/authContext/authContext";
 import { ModalContext } from "../../../../context/modalContext";
 import { ModalType } from "../../../../context/modalContext/modalTypes";
-import { sendNotificationToUser } from "../../../../utils/notification";
+import { sendNotificationToUserWithImage } from "../../../../utils/notification";
+import { API } from "../../../../utils/proxy";
+
 export const ChatAction = ({ userData }) => {
   const textAreaRef = useRef();
   const { modalState, setModalState, onClose } = useContext(ModalContext);
@@ -42,6 +44,27 @@ export const ChatAction = ({ userData }) => {
     e.preventDefault();
     setInputVal(e.target.value);
   };
+
+  const formatNotificationMessage = (sendMessage) => {
+    const maxLength = 50;
+    if (sendMessage.length > maxLength) {
+        let trimmedMessage = sendMessage.slice(0, maxLength);
+        trimmedMessage = trimmedMessage.trimEnd();
+        return trimmedMessage + "...";
+    } else {
+        return sendMessage;
+    }
+  }
+
+  const getUserAvatar = async () => {
+    const avatarUrl = `${API}/pic/user/${authContext?.user?._id}`;
+    const response = await fetch(avatarUrl);
+    if (response.ok) {
+      return avatarUrl;
+    } else {
+      return "https://campusconnect-ten.vercel.app/profile.png";
+    }
+  }
 
   useEffect(() => {
     textAreaRef.current.style.height = "auto";
@@ -112,8 +135,8 @@ export const ChatAction = ({ userData }) => {
         },
         [chatId + ".date"]: serverTimestamp(),
       });
-      sendNotificationToUser("New Message", `You have a new message from ${userData?.name}`, `${userData?.appUserId}_self`);
-
+      let avatarImage = getUserAvatar();
+      sendNotificationToUserWithImage(`${authContext?.user?.name}`, formatNotificationMessage(sendMessage), avatarImage, `${userData?.appUserId}_self`);
     } catch (error) {
       console.log(error);
     } finally {

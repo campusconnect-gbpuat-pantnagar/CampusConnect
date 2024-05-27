@@ -65,14 +65,14 @@ export const HomeSideBar = () => {
           <ListItem
             button
             onClick={() => {
-              navigate("/friends")
+              navigate("/connections")
             }}
           >
             <ListItemIcon style={styleTheme}>
               <PeopleAltRoundedIcon />
             </ListItemIcon>
             <ListItemText
-              primary={<Typography variant="button">Friends</Typography>}
+              primary={<Typography variant="button">Connections</Typography>}
             />
           </ListItem>
           {/* <ListItem button>

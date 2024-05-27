@@ -293,7 +293,7 @@ export const Profile = () => {
                                   }
                                   style={{ color: "red", borderColor: "red" }}
                                 >
-                                  Remove friend
+                                  Remove Connection
                                 </Button>
                               </>
                             ) : (
@@ -309,7 +309,7 @@ export const Profile = () => {
                                   }
                                   style={clickStyleTheme}
                                 >
-                                  Add friend
+                                  Add Connection
                                 </Button>
                               </>
                             )

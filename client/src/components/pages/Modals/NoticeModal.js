@@ -3,6 +3,7 @@ import { makeStyles } from "@material-ui/core/styles"
 import React, { useContext, useState } from "react"
 import { AuthContext } from "../../../context/authContext/authContext"
 import { Modal } from "react-bootstrap"
+import { sendNotificationToUser } from "../../../utils/notification"
 
 export const NoticeModal = ({
     show,
@@ -31,6 +32,7 @@ export const NoticeModal = ({
         notice
             ? noticeFunction({ description, title, link }, authContext.user._id, notice._id)
             : noticeFunction({ description, title, link }, authContext.user._id)
+        sendNotificationToUser("New Notice", title, "campus");
         handleModal()
     }
     const styleTheme =

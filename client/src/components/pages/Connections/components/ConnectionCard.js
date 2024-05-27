@@ -17,7 +17,7 @@ import { API } from "../../../../utils/proxy"
 import { useNavigate } from "react-router-dom"
 import { sendNotificationToUser } from "../../../../utils/notification"
 
-export const FriendCard = ({ friend, type }) => {
+export const ConnectionCard = ({ friend, type }) => {
   const navigate = useNavigate();
   const userContext = useContext(UserContext)
   const authContext = useContext(AuthContext)
@@ -67,7 +67,7 @@ export const FriendCard = ({ friend, type }) => {
             <Button
               onClick={(e) => {
                 handleClickBtn(e, userContext.acceptFriendRequest)
-                sendNotificationToUser("New Friend", `${authContext.user.name} has accepted your friend request!`, `${friend._id}_self`);
+                sendNotificationToUser("New Connection", `${authContext.user.name} has accepted your connection request!`, `${friend._id}_self`);
               }}
               style={clickStyleTheme}
             >
@@ -92,7 +92,7 @@ export const FriendCard = ({ friend, type }) => {
               }} 
               style={{ color: "red" }}
             >
-              {loading ? <ButtonLoading /> : "Remove friend"}
+              {loading ? <ButtonLoading /> : "Remove Connection"}
               {/* Unfriend */}
             </Button>
           </>
@@ -103,12 +103,12 @@ export const FriendCard = ({ friend, type }) => {
             <Button
               onClick={(e) => { 
                 handleClickBtn(e, userContext.sendFriendRequest)
-                sendNotificationToUser("Friend Request", `You have a new friend request from ${authContext.user.name}`, `${friend._id}_self`);
+                sendNotificationToUser("Connection Request", `You have a new connection request from ${authContext.user.name}`, `${friend._id}_self`);
               }}
               style={clickStyleTheme}
             >
-              {loading ? <ButtonLoading /> : "Add friend"}
-              {/* Add friend */}
+              {loading ? <ButtonLoading /> : "Add Connection"}
+              {/* Add Connection */}
             </Button>
           </>
         )}

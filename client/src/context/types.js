@@ -76,6 +76,7 @@ export const POLL_ERROR = "poll_error"
 export const POLL_CREATE = "poll_create"
 export const POLL_VOTE = "poll_vote"
 export const POLL_SUCCESS = "poll_success"
+export const POLL_DELETE = "poll_delete"
 
 //Ads
 export const ADS_LOADING = "ads_loading"
