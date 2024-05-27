@@ -12,16 +12,18 @@ import React, { useContext } from "react"
 import { AuthContext } from "../../../context/authContext/authContext"
 import PeopleAltRoundedIcon from "@material-ui/icons/PeopleAltRounded"
 import SupervisedUserCircleRoundedIcon from "@material-ui/icons/SupervisedUserCircleRounded"
+import { faBookReader, faHandsHelping } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
 import { faStickyNote } from "@fortawesome/free-solid-svg-icons"
 import BookmarksRoundedIcon from "@material-ui/icons/BookmarksRounded"
 import EventNoteRoundedIcon from "@material-ui/icons/EventNoteRounded"
 import LiveTvIcon from "@material-ui/icons/LiveTv"
-import { useNavigate } from "react-router-dom"
+import { useNavigate, useLocation } from "react-router-dom"
 import { API } from "../../../utils/proxy"
 
 export const HomeSideBar = () => {
   const navigate = useNavigate()
+  const location = useLocation()
   const authContext = useContext(AuthContext)
   const styleTheme =
     authContext.theme === "dark"
@@ -31,6 +33,14 @@ export const HomeSideBar = () => {
   const iconStyle = {
     fontSize: '1.4em',
     marginLeft: '4px',
+  };
+
+  const currentTab = (location, path) => {
+    if (location.pathname === path) {
+      return { color: "#03DAC6", fontSize: "28px" };
+    } else {
+      return { color: "grey", fontSize: "24px" };
+    }
   };
 
   return (
@@ -65,14 +75,17 @@ export const HomeSideBar = () => {
           <ListItem
             button
             onClick={() => {
-              navigate("/connections")
+              navigate("/blogs")
             }}
           >
             <ListItemIcon style={styleTheme}>
-              <PeopleAltRoundedIcon />
+              <FontAwesomeIcon
+                icon={faBookReader}
+                style={currentTab(location, "/blogs")}
+              />
             </ListItemIcon>
             <ListItemText
-              primary={<Typography variant="button">Connections</Typography>}
+              primary={<Typography variant="button">Blogs</Typography>}
             />
           </ListItem>
           {/* <ListItem button>
@@ -90,7 +103,7 @@ export const HomeSideBar = () => {
             }}
           >
             <ListItemIcon style={styleTheme}>
-              <EventNoteRoundedIcon />
+              <EventNoteRoundedIcon style={currentTab(location, "/events")} />
             </ListItemIcon>
             <ListItemText
               primary={<Typography variant="button">Events</Typography>}
@@ -103,7 +116,7 @@ export const HomeSideBar = () => {
             }}
           >
             <ListItemIcon style={styleTheme}>
-              <LiveTvIcon />
+              <LiveTvIcon style={currentTab(location, "/live-streams")} />
             </ListItemIcon>
             <ListItemText
               primary={<Typography variant="button">Live Streams</Typography>}
@@ -112,24 +125,27 @@ export const HomeSideBar = () => {
           <ListItem
             button
             onClick={() => {
-              navigate("/notices")
+              navigate("/ads")
             }}
           >
             <ListItemIcon style={styleTheme}>
-              <FontAwesomeIcon icon={faStickyNote} style={iconStyle} />
+              <FontAwesomeIcon
+                icon={faHandsHelping}
+                style={currentTab(location, "/ads")}
+              />
             </ListItemIcon>
             <ListItemText
-              primary={<Typography variant="button">Notices</Typography>}
+              primary={<Typography variant="button">Ads</Typography>}
             />
           </ListItem>
           <ListItem
             button
             onClick={() => {
-              navigate(`/bookmarks`)
+              navigate("/bookmarks")
             }}
           >
             <ListItemIcon style={styleTheme}>
-              <BookmarksRoundedIcon />
+              <BookmarksRoundedIcon style={currentTab(location, "/bookmarks")} />
             </ListItemIcon>
             <ListItemText
               primary={<Typography variant="button">Bookmarks</Typography>}

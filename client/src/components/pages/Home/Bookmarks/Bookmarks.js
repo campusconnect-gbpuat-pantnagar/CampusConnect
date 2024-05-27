@@ -61,7 +61,7 @@ export const Bookmarks = () => {
           <Grid item md={3}>
             <HomeSideBar />
             <div id="demo">
-              <DemoAd />
+              {/* <DemoAd /> */}
             </div>
           </Grid>
           <Grid item md={9}>

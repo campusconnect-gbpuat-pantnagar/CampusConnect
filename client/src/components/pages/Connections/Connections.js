@@ -32,7 +32,7 @@ export const Connections = () => {
           <Grid item xs={10} md={3}>
             <HomeSideBar />
             <div id="demo">
-              <DemoAd />
+              {/* <DemoAd /> */}
             </div>
           </Grid>
           <Grid item xs={10} md={6}>

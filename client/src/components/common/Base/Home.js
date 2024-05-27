@@ -69,14 +69,14 @@ export const Home = ({ children }) => {
           <Grid item md={3}>
             <HomeSideBar />
             <div id="demo">
-              <DemoAd />
+              {/* <DemoAd /> */}
             </div>
           </Grid>
           <Grid item md={6}>
             <div id="home-center-wrapper">
               <InputBox />
               <PollCard />
-              <DemoAdMobile />
+              {/* <DemoAdMobile /> */}
               <UpdateCard />
               {children}
             </div>
