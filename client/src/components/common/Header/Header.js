@@ -259,6 +259,13 @@ const Header = () => {
                           console.error("Unsubscription error (common): ", error);
                         });
                       }
+                      if(authContext.user.role !== 2){
+                        unsubscribeUserFromTopic(token, "marketing").then(() => {
+                          console.log("Unsubscribed (marketing)");
+                        }).catch((error) => {
+                          console.error("Unsubscription error (marketing): ", error);
+                        });
+                      }
                       let self_topic = `${authContext.user._id}_self`;
                       unsubscribeUserFromTopic(token, self_topic).then(() => {
                         console.log("Unsubscribed (self)");

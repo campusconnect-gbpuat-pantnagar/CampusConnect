@@ -34,6 +34,13 @@ export const Home = ({ children }) => {
           console.error("Subscription error (common): ", error);
         });
       }
+      if(authContext.user.role !== 2){
+        subscribeUserToTopic(token, "marketing").then(() => {
+          console.log("Subscribed to marketing topic");
+        }).catch((error) => {
+          console.error("Subscription error (marketing): ", error);
+        });
+      }
       let self_topic = `${authContext.user._id}_self`;
       subscribeUserToTopic(token, self_topic).then(() => {
         console.log("Subscribed to self topic");

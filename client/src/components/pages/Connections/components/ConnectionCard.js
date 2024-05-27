@@ -15,7 +15,7 @@ import { AuthContext } from "../../../../context/authContext/authContext"
 import { ButtonLoading } from "../../../Loading_Backdrop/ButtonLoading"
 import { API } from "../../../../utils/proxy"
 import { useNavigate } from "react-router-dom"
-import { sendNotificationToUser } from "../../../../utils/notification"
+import { sendNotificationToUserWithImage } from "../../../../utils/notification"
 
 export const ConnectionCard = ({ friend, type }) => {
   const navigate = useNavigate();
@@ -67,7 +67,7 @@ export const ConnectionCard = ({ friend, type }) => {
             <Button
               onClick={(e) => {
                 handleClickBtn(e, userContext.acceptFriendRequest)
-                sendNotificationToUser("New Connection", `${authContext.user.name} has accepted your connection request!`, `${friend._id}_self`);
+                sendNotificationToUserWithImage("New Connection", `${authContext.user.name} has accepted your connection request!`, authContext?.user?._id, `${friend._id}_self`);
               }}
               style={clickStyleTheme}
             >
@@ -103,7 +103,7 @@ export const ConnectionCard = ({ friend, type }) => {
             <Button
               onClick={(e) => { 
                 handleClickBtn(e, userContext.sendFriendRequest)
-                sendNotificationToUser("Connection Request", `You have a new connection request from ${authContext.user.name}`, `${friend._id}_self`);
+                sendNotificationToUserWithImage("Connection Request", `You have a new connection request from ${authContext.user.name}`, authContext?.user?._id, `${friend._id}_self`);
               }}
               style={clickStyleTheme}
             >
