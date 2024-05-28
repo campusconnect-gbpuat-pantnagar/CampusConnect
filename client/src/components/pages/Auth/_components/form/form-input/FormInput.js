@@ -51,6 +51,7 @@ const FormInput = ({
   };
   const isError =
     meta.touched && meta.error ? true : customError ? false : true;
+
   return (
     <div className={styles.FormInputContainer}>
       <label htmlFor={label}>{label}</label>
@@ -85,13 +86,17 @@ const FormInput = ({
           </div>
         )}
       </div>
-      {meta.touched && meta.error && <p>{`* ${meta.error}`}</p>}
+      {meta.touched && meta.error && (
+        <p style={{ color: "red" }}>{`* ${meta.error}`}</p>
+      )}
       {!isError && (
         <p
           style={
-            field.name === "username"
-              ? { color: "#FF0000", fontWeight: 600, fontSize: ".9rem" }
-              : {}
+            field.name === "username" &&
+            customError &&
+            customError?.includes("not")
+              ? { color: "red", fontWeight: 600, fontSize: ".9rem" }
+              : { color: "#32CD32", fontWeight: 600, fontSize: ".9rem" }
           }
         >
           {customError ? `${customError}` : `* ${meta.error}`}

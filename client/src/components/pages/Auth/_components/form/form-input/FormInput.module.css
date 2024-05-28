@@ -53,7 +53,7 @@
 }
 .FormInputContainer > p {
   margin: 0px;
-  color: red;
+  /* color: red; */
   font-weight: 500;
   font-size: 0.8rem;
   text-transform: lowercase;
