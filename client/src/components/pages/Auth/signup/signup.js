@@ -17,6 +17,8 @@ import {
   CAMPUSCONNECT_AUTH_BACKEND_API,
   GBPUAT_DATA_API,
 } from "../../../../utils/proxy";
+import ServiceConfig from "../../../../helpers/service-endpoint";
+import HttpRequest from "../../../../helpers/public-client";
 const SignUpPage = () => {
   const navigate = useNavigate();
   const { state } = useLocation();
@@ -111,11 +113,19 @@ const SignUpPage = () => {
         },
       };
       // console.log(userData);
-      const response = await axios.post(
-        `${CAMPUSCONNECT_AUTH_BACKEND_API}/api/v1/auth/signup`,
-        userData
-      );
+      // const response = await axios.post(
+      //   `${CAMPUSCONNECT_AUTH_BACKEND_API}/api/v1/auth/signup`,
+      //   userData
+      // );
+      const requestConfig = {
+        url: ServiceConfig.signupEndpoint,
+        data: userData,
+        method: "POST",
+        showActual: true,
+      };
 
+      const response = await HttpRequest(requestConfig);
+      console.log(response);
       if (response.data.data) {
         const { user } = response.data.data;
         console.log(user);

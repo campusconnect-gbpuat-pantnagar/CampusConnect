@@ -17,7 +17,7 @@ import {
   DegreeProgram_In_Department,
   DegreeProgram,
 } from "../../../../../utils/constants";
-import apiClient from "../../../../../helpers/apiClient";
+import apiClient from "../../../../../helpers/public-client";
 import axios from "axios";
 import { useDebounceValue } from "usehooks-ts";
 import {

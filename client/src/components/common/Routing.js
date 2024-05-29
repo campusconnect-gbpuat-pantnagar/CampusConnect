@@ -32,6 +32,7 @@ import SignInPage from "../pages/Auth/signin/signin";
 import VerifyEmailPage from "../pages/Auth/verify-email/verifyEmail";
 import SignUpPage from "../pages/Auth/signup/signup";
 import AccountRecoveryConsentPage from "../pages/Auth/account-recovery-consent/account-recovery-consent";
+import TestingHomePage from "../pages/Auth/testing-home-page";
 
 export const Routing = () => {
   const authContext = useContext(AuthContext);
@@ -177,80 +178,79 @@ export const Routing = () => {
         : null}
       {authContext.loading && <Loading />}
       <ThemeProvider theme={theme}>
-        <BrowserRouter>
-          <Routes>
-            {/* <Route
+        <Routes>
+          {/* <Route
               path="/signup"
               element={<SimpleRoute component={Signup} />}
             /> */}
-            {/* <Route path="/signin" element={<SimpleRoute component={Login} />} /> */}
+          {/* <Route path="/signin" element={<SimpleRoute component={Login} />} /> */}
 
-            {/* <Route path="/" element={<PrivateRoute component={Post} />} /> */}
-            {/* <Route path="/chats" element={<PrivateRoute component={Chat} />} /> */}
-            {/* <Route path="/posts" element={<PrivateRoute component={Post} />} /> */}
-            {/* <Route
+          {/* <Route path="/" element={<PrivateRoute component={Post} />} /> */}
+          {/* <Route path="/chats" element={<PrivateRoute component={Chat} />} /> */}
+          {/* <Route path="/posts" element={<PrivateRoute component={Post} />} /> */}
+          {/* <Route
               path="/bookmarks"
               element={<PrivateRoute component={Bookmarks} />}
             /> */}
-            {/* <Route
+          {/* <Route
               path="/jobs-and-placements"
               element={<PrivateRoute component={Jobs} />}
             /> */}
-            {/* <Route path="/ads" element={<PrivateRoute component={Ads} />} /> */}
-            {/* <Route path="/blogs" element={<PrivateRoute component={Blog} />} /> */}
-            {/* <Route
+          {/* <Route path="/ads" element={<PrivateRoute component={Ads} />} /> */}
+          {/* <Route path="/blogs" element={<PrivateRoute component={Blog} />} /> */}
+          {/* <Route
               path="/profile/:userId"
               element={<PrivateRoute component={Profile} />}
             /> */}
-            {/* <Route
+          {/* <Route
               path="/friends"
               element={<PrivateRoute component={Friends} />}
             /> */}
-            {/* <Route
+          {/* <Route
               path="/events"
               element={<PrivateRoute component={Events} />}
             /> */}
-            {/* <Route
+          {/* <Route
               path="/live-streams"
               element={<PrivateRoute component={Streams} />}
             /> */}
-            {/* <Route
+          {/* <Route
               path="/notices"
               element={<PrivateRoute component={Notice} />}
             /> */}
-            {/* <Route
+          {/* <Route
               path="/about-university"
               element={<PrivateRoute component={AboutUniversity} />}
             /> */}
-            {/* <Route
+          {/* <Route
               path="/settings-privacy"
               element={<PrivateRoute component={SettingsPrivacy} />}
             /> */}
-            {/* <Route
+          {/* <Route
               path="/feedback"
               element={<PrivateRoute component={Feedback} />}
             /> */}
-            {/* <Route
+          {/* <Route
               path="/help-support"
               element={<PrivateRoute component={HelpSupport} />}
             /> */}
-            {/* ✅ Added a library route for embedding the library page in the campus connect */}
-            {/* <Route
+          {/* ✅ Added a library route for embedding the library page in the campus connect */}
+          {/* <Route
               path="/library"
               element={<PrivateRoute component={LibraryPage} />}
             /> */}
-            {/* TODO ✅ : Implements a route for login with new auth flow   */}
-            <Route path="/new/signin" element={<SignInPage />} />
-            {/* TODO ✅ : Implements a route for login with new auth flow   */}
-            <Route path="/new/signup" element={<SignUpPage />} />
-            {/* TODO ✅ : Implements a route for verify-email with new auth flow   */}
-            <Route path="/new/verify-email" element={<VerifyEmailPage />} />
-            <Route
-              path="/new/account-recovery-consent"
-              element={<AccountRecoveryConsentPage />}
-            />
-          </Routes>
-        </BrowserRouter>
+          {/* TODO ✅ : Implements a route for login with new auth flow   */}
+          <Route path="/new/signin" element={<SignInPage />} />
+          {/* TODO ✅ : Implements a route for login with new auth flow   */}
+          <Route path="/new/signup" element={<SignUpPage />} />
+          {/* TODO ✅ : Implements a route for verify-email with new auth flow   */}
+          <Route path="/new/verify-email" element={<VerifyEmailPage />} />
+          <Route
+            path="/new/account-recovery-consent"
+            element={<AccountRecoveryConsentPage />}
+          />
+          <Route path="/" element={<TestingHomePage />} />
+        </Routes>
       </ThemeProvider>
     </div>
   );

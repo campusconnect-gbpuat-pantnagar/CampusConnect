@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import StyleSheet from "../signin/signin.module.css";
 import FormInput from "../_components/form/form-input/FormInput";
 import * as Yup from "yup";
@@ -11,11 +11,15 @@ import { useLocation, useNavigate } from "react-router-dom";
 import axios from "axios";
 import styles from "./account-recovery-consent.module.css";
 import { CAMPUSCONNECT_AUTH_BACKEND_API } from "../../../../utils/proxy";
+import { NewAuthContext } from "../../../../context/newAuthContext";
 const AccountRecoveryConsentPage = () => {
   const [formData, setFormData] = useState({
     username: "",
     password: "",
+    isDeleted: false,
+    gbpuatEmail: "",
   });
+  const { user, setUser, setTokens } = useContext(NewAuthContext);
   const [typePassword, setTypePassword] = useState("password");
   const [isLoading, setIsLoading] = useState(false);
   const navigate = useNavigate();
@@ -30,7 +34,7 @@ const AccountRecoveryConsentPage = () => {
       );
 
       if (response.data.data) {
-        const { user } = response.data.data;
+        const { user, tokens } = response.data.data;
         console.log(user);
 
         //  handling the  case when user  account is deleted
@@ -69,28 +73,77 @@ const AccountRecoveryConsentPage = () => {
           return;
         }
         // save user to auth context and token to local storage
-
+        setUser({
+          id: user?.id,
+          firstName: user?.firstName,
+          lastName: user?.lastName ? user?.lastName : "",
+          username: user?.username,
+          gbpuatId: user?.gbpuatId,
+          gbpuatEmail: user?.gbpuatEmail,
+          isEmailVerified: user?.isEmailVerified,
+          isTemporaryBlocked: user?.isTemporaryBlocked,
+          isPermanentBlocked: user?.isPermanentBlocked,
+          isDeleted: user?.isDeleted,
+          profilePicture: user?.profilePicture ? user?.profilePicture : "",
+          bio: user?.bio ? user?.bio : "",
+          showOnBoardingTour: user?.showOnBoardingTour,
+          showOnBoarding: user.showOnBoarding,
+          role: user?.role,
+          lastActive: user?.lastActive,
+          receivedConnections: user?.receivedConnections,
+          sentConnections: user?.sentConnections,
+          connectionLists: user?.connectionLists,
+          academicDetails: {
+            college: {
+              name: user?.academicDetails?.college?.name,
+              collegeId: user?.academicDetails?.college?.collegeId,
+            },
+            department: {
+              name: user?.academicDetails?.department?.name,
+              departmentId: user?.academicDetails?.department?.departmentId,
+            },
+            degreeProgram: {
+              name: user?.academicDetails?.degreeProgram?.name,
+              degreeProgramId:
+                user?.academicDetails?.degreeProgram?.degreeProgramId,
+            },
+            batchYear: user?.academicDetails?.batchYear,
+            designation: user?.academicDetails?.designation,
+          },
+        });
+        setTokens({
+          access_token: tokens?.access_token,
+          access_token_expires_at: tokens?.access_token_expires_at,
+        });
         setIsLoading(false);
+        // saves the tokens and user in local storage..
+        navigate("/");
       }
 
       setIsLoading(false);
     } catch (err) {
       alert(`Error: ${err.response.data.message}`);
       setIsLoading(false);
-    } finally {
-      setIsLoading(false);
     }
   }
 
-  const handleKeepAccount = async (data) => {
+  const handleKeepAccount = async () => {
+    // console.log(formData);
     await keepAccount({
-      username: data.username,
-      password: data.password,
+      username: formData.username,
+      password: formData.password,
     });
   };
   // TODO ✅:  redirectToSignUp
   const redirectToSignUp = () => {
     console.log("Redirecting to sign in");
+    setFormData({
+      username: "",
+      password: "",
+      gbpuatEmail: "",
+      isDeleted: "",
+    });
+    navigate("/new/account-recovery-consent", { state: null });
     navigate("/new/signin");
   };
   const ContinueButtonIcon = isLoading ? (
@@ -113,6 +166,7 @@ const AccountRecoveryConsentPage = () => {
         username: location.state.username,
         password: location.state.password,
         gbpuatEmail: location.state.gbpuatEmail,
+        isDeleted: location.state.isDeleted,
       });
     }
   }, [location]);

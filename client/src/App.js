@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useEffect } from "react";
 import "./App.css";
 import { Routing } from "./components/common/Routing";
 import { AdsState } from "./context/adsContext/AdsState";
@@ -11,13 +11,14 @@ import { PollState } from "./context/pollContext/PollState";
 import { PostState } from "./context/postContext/PostState";
 import { UserState } from "./context/userContext/UserState";
 import { JobState } from "./context/jobContext/JobState";
-import { StreamState } from './context/streamContext/StreamState';
+import { StreamState } from "./context/streamContext/StreamState";
 import { ServiceWorkerProvider } from "./context/ServiceWorkerContext";
 import { FirebaseContextProvider } from "./context/firebaseContext";
 import { ChatContextProvider } from "./context/chatContext/chatContext";
 import ModalProvider from "./components/Providers/modal-provider";
 import { ModalContextProvider } from "./context/modalContext";
 import setFirebaseMessaging from "./utils/firebaseMessaging";
+import { NewAuthContextProvider } from "./context/newAuthContext";
 
 export const App = () => {
   useEffect(() => {
@@ -26,11 +27,12 @@ export const App = () => {
 
   return (
     <ServiceWorkerProvider>
-      <FirebaseContextProvider>
-        <ChatContextProvider>
-          <AuthState>
-            <ModalContextProvider>
-              <ModalProvider />
+      <NewAuthContextProvider>
+        <FirebaseContextProvider>
+          <ChatContextProvider>
+            <AuthState>
+              <ModalContextProvider>
+                <ModalProvider />
                 <UserState>
                   <PollState>
                     <PostState>
@@ -52,10 +54,11 @@ export const App = () => {
                     </PostState>
                   </PollState>
                 </UserState>
-            </ModalContextProvider>
-          </AuthState>
-        </ChatContextProvider>
-      </FirebaseContextProvider>
+              </ModalContextProvider>
+            </AuthState>
+          </ChatContextProvider>
+        </FirebaseContextProvider>
+      </NewAuthContextProvider>
     </ServiceWorkerProvider>
   );
 };

@@ -33,7 +33,7 @@
   width: 100%;
   min-width: 450px;
   /* Min height can be creat a problem i large devices */
-  min-height: 60vh;
+  min-height: 50vh;
   position: relative;
   z-index: 9;
   background: #fff;

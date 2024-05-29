@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useContext, useState } from "react";
 import StyleSheet from "./signin.module.css";
 import FormInput from "../_components/form/form-input/FormInput";
 import * as Yup from "yup";
@@ -10,11 +10,17 @@ import SubmitButton from "../_components/form/button/button";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import { CAMPUSCONNECT_AUTH_BACKEND_API } from "../../../../utils/proxy";
+import { NewAuthContext } from "../../../../context/newAuthContext";
+import { useLocalStorage } from "usehooks-ts";
+import ServiceConfig from "../../../../helpers/service-endpoint";
+import HttpRequest from "../../../../helpers/public-client";
 const SignInPage = () => {
   const [formData, setFormData] = useState({
     username: "",
     password: "",
   });
+  const [value, setValue, removeValue] = useLocalStorage("_currentuser", {});
+  const { user, setUser, setTokens } = useContext(NewAuthContext);
   const [typePassword, setTypePassword] = useState("password");
   const [isLoading, setIsLoading] = useState(false);
   const navigate = useNavigate();
@@ -45,10 +51,19 @@ const SignInPage = () => {
   async function signin(formData) {
     try {
       setIsLoading(true);
-      const response = await axios.post(
-        `${CAMPUSCONNECT_AUTH_BACKEND_API}/api/v1/auth/signin`,
-        formData
-      );
+      const requestConfig = {
+        url: ServiceConfig.signinEndPoint,
+        data: formData,
+        method: "POST",
+        showActual: true,
+      };
+
+      const response = await HttpRequest(requestConfig);
+      // const response = await axios.post(
+      //   `${CAMPUSCONNECT_AUTH_BACKEND_API}/api/v1/auth/signin`,
+      //   formData
+      // );
+      console.log(response);
 
       if (response.data.data) {
         const { user, tokens } = response.data.data;
@@ -92,15 +107,56 @@ const SignInPage = () => {
 
         console.log(user, tokens);
         // save user to auth context and token to local storage
-
+        setUser({
+          id: user?.id,
+          firstName: user?.firstName,
+          lastName: user?.lastName ? user?.lastName : "",
+          username: user?.username,
+          gbpuatId: user?.gbpuatId,
+          gbpuatEmail: user?.gbpuatEmail,
+          isEmailVerified: user?.isEmailVerified,
+          isTemporaryBlocked: user?.isTemporaryBlocked,
+          isPermanentBlocked: user?.isPermanentBlocked,
+          isDeleted: user?.isDeleted,
+          profilePicture: user?.profilePicture ? user?.profilePicture : "",
+          bio: user?.bio ? user?.bio : "",
+          showOnBoardingTour: user?.showOnBoardingTour,
+          showOnBoarding: user.showOnBoarding,
+          role: user?.role,
+          lastActive: user?.lastActive,
+          receivedConnections: user?.receivedConnections,
+          sentConnections: user?.sentConnections,
+          connectionLists: user?.connectionLists,
+          academicDetails: {
+            college: {
+              name: user?.academicDetails?.college?.name,
+              collegeId: user?.academicDetails?.college?.collegeId,
+            },
+            department: {
+              name: user?.academicDetails?.department?.name,
+              departmentId: user?.academicDetails?.department?.departmentId,
+            },
+            degreeProgram: {
+              name: user?.academicDetails?.degreeProgram?.name,
+              degreeProgramId:
+                user?.academicDetails?.degreeProgram?.degreeProgramId,
+            },
+            batchYear: user?.academicDetails?.batchYear,
+            designation: user?.academicDetails?.designation,
+          },
+        });
+        setTokens({
+          access_token: tokens?.access_token,
+          access_token_expires_at: tokens?.access_token_expires_at,
+        });
         setIsLoading(false);
+        // navigate to home page
+        navigate("/");
       }
 
       setIsLoading(false);
     } catch (err) {
       alert(`Error: ${err.response.data.message}`);
-      setIsLoading(false);
-    } finally {
       setIsLoading(false);
     }
   }
