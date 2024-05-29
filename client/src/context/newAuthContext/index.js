@@ -8,6 +8,7 @@ export const NewAuthContext = createContext();
 
 export const NewAuthContextProvider = ({ children }) => {
   const location = useLocation();
+
   const [user, setUser, removeUser] = useLocalStorage("_user", {
     id: "",
     firstName: "",
@@ -59,7 +60,6 @@ export const NewAuthContextProvider = ({ children }) => {
       "new/verify-email",
       "new/account-recovery-consent",
     ];
-
     const isAuthPage = authPages.some(
       (page) => location.pathname === `/${page}`
     );
@@ -132,7 +132,45 @@ export const NewAuthContextProvider = ({ children }) => {
     }
   }, [location.pathname, setUser]);
 
-  console.log(`debugging from newAuthcontext`, user, tokens);
+  useEffect(() => {
+    const authPages = [
+      "new/signin",
+      "new/signup",
+      "new/verify-email",
+      "new/account-recovery-consent",
+    ];
+    const isAuthPage = authPages.some(
+      (page) => location.pathname === `/${page}`
+    );
+    if (!isAuthPage) {
+      const controller = new AbortController();
+      const updateCurrentUserPresence = async () => {
+        const requestOptions = {
+          url: ServiceConfig.updateCurrentUserPresence,
+          method: "GET",
+          signal: controller.signal,
+          showActual: true,
+          withCredentials: true,
+        };
+        try {
+          const response = await HttpRequestPrivate(requestOptions);
+        } catch (err) {
+          console.error(err);
+        }
+      };
+
+      const interval = setInterval(() => {
+        updateCurrentUserPresence();
+      }, 10000);
+
+      return () => {
+        controller.abort();
+        clearInterval(interval);
+      };
+    }
+  }, [location.pathname]);
+
+  //   console.log(`debugging from newAuthcontext`, user, tokens);
   return (
     <NewAuthContext.Provider value={{ setUser, user, tokens, setTokens }}>
       {children}

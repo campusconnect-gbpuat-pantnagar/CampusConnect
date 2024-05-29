@@ -9,6 +9,7 @@ const ServiceConfig = {
   getCurrentUser: `${CAMPUSCONNECT_AUTH_BACKEND_API}/api/v1/users/me`,
   logoutEndPoint: `${CAMPUSCONNECT_AUTH_BACKEND_API}/api/v1/auth/logout`,
   checkUsernameEndpoint: `${CAMPUSCONNECT_AUTH_BACKEND_API}/api/v1/auth/check-username`,
+  updateCurrentUserPresence: `${CAMPUSCONNECT_AUTH_BACKEND_API}/api/v1/users/presence`,
 };
 
 export default ServiceConfig;

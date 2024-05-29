@@ -17,7 +17,6 @@ const HttpRequestPrivate = async ({
 }) => {
   const tokens = JSON.parse(localStorage.getItem("_tokens"));
   const accessToken = tokens?.access_token;
-  console.log(accessToken);
   let isRefreshing = false;
   const failedRequestQueue = [];
 
