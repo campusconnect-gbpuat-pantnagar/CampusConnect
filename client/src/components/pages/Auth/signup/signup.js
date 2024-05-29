@@ -13,6 +13,10 @@ import StepOneForm from "./step-one-form/step-one-form";
 import SignUpStyles from "./signup.module.css";
 import { useDebounceValue } from "usehooks-ts";
 import axios from "axios";
+import {
+  CAMPUSCONNECT_AUTH_BACKEND_API,
+  GBPUAT_DATA_API,
+} from "../../../../utils/proxy";
 const SignUpPage = () => {
   const navigate = useNavigate();
   const { state } = useLocation();
@@ -25,7 +29,7 @@ const SignUpPage = () => {
       setCustomError("");
       setIsLoading(true);
       const res = await axios.get(
-        `https://gbpuat-data-service.onrender.com/api/v1/gbpuat-users/${data?.studentId}`
+        `${GBPUAT_DATA_API}/api/v1/gbpuat-users/${data?.studentId}`
       );
 
       if (res.status === 200 && res.data) {
@@ -46,7 +50,7 @@ const SignUpPage = () => {
 
   async function fetchCollegeDetails(collegeId) {
     const res = await axios.get(
-      `https://gbpuat-data-service.onrender.com/api/v1/colleges/${collegeId}`
+      `${GBPUAT_DATA_API}/api/v1/colleges/${collegeId}`
     );
     if (res.status === 200) {
       return res.data;
@@ -54,7 +58,7 @@ const SignUpPage = () => {
   }
   async function fetchDepartmentsDetails(departmentId) {
     const res = await axios.get(
-      `https://gbpuat-data-service.onrender.com/api/v1/departments/${departmentId}`
+      `${GBPUAT_DATA_API}/api/v1/departments/${departmentId}`
     );
     if (res.status === 200) {
       return res.data;
@@ -62,7 +66,7 @@ const SignUpPage = () => {
   }
   async function fetchDegreeProgramDetails(degreeProgramId) {
     const res = await axios.get(
-      `https://gbpuat-data-service.onrender.com/api/v1/degree-programs/${degreeProgramId}`
+      `${GBPUAT_DATA_API}/api/v1/degree-programs/${degreeProgramId}`
     );
     if (res.status === 200) {
       return res.data;
@@ -108,7 +112,7 @@ const SignUpPage = () => {
       };
       // console.log(userData);
       const response = await axios.post(
-        `http://localhost:8080/api/v1/auth/signup`,
+        `${CAMPUSCONNECT_AUTH_BACKEND_API}/api/v1/auth/signup`,
         userData
       );
 

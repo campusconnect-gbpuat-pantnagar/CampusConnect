@@ -89,7 +89,7 @@ const FormInput = ({
       {meta.touched && meta.error && (
         <p style={{ color: "red" }}>{`* ${meta.error}`}</p>
       )}
-      {!isError && (
+      {!isError && field.name === "username" ? (
         <p
           style={
             field.name === "username" &&
@@ -101,6 +101,12 @@ const FormInput = ({
         >
           {customError ? `${customError}` : `* ${meta.error}`}
         </p>
+      ) : (
+        !isError && (
+          <p style={{ color: "red", fontWeight: 600, fontSize: ".9rem" }}>
+            {customError ? `${customError}` : `* ${meta.error}`}
+          </p>
+        )
       )}
     </div>
   );

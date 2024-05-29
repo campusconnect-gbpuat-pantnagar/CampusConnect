@@ -1,5 +1,5 @@
-import React, { useState } from "react";
-import StyleSheet from "./signin.module.css";
+import React, { useEffect, useState } from "react";
+import StyleSheet from "../signin/signin.module.css";
 import FormInput from "../_components/form/form-input/FormInput";
 import * as Yup from "yup";
 import { Form, Formik } from "formik";
@@ -7,10 +7,11 @@ import VisibilityOff from "@material-ui/icons/VisibilityOff";
 import Visibility from "@material-ui/icons/Visibility";
 import ArrowRight from "@material-ui/icons/ArrowRight";
 import SubmitButton from "../_components/form/button/button";
-import { useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import axios from "axios";
+import styles from "./account-recovery-consent.module.css";
 import { CAMPUSCONNECT_AUTH_BACKEND_API } from "../../../../utils/proxy";
-const SignInPage = () => {
+const AccountRecoveryConsentPage = () => {
   const [formData, setFormData] = useState({
     username: "",
     password: "",
@@ -18,46 +19,24 @@ const SignInPage = () => {
   const [typePassword, setTypePassword] = useState("password");
   const [isLoading, setIsLoading] = useState(false);
   const navigate = useNavigate();
-  const validationSchema = Yup.object({
-    username: Yup.string()
-      .matches(
-        /^[a-zA-Z0-9_]+$/,
-        "Username can only contain alphanumeric characters and underscores"
-      )
-      .required("Username is required")
-      .max(60, "Username cannot exceed 60 characters"),
+  const location = useLocation();
 
-    password: Yup.string()
-      .required("Password is required")
-      .max(60, "Password cannot exceed 60 characters")
-      .matches(
-        /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$#!%*?&]{8,}$/,
-        "Password must contain at least 1 lowercase letter, 1 uppercase letter, 1 number, and 1 special character {@$#!%*?&}"
-      ),
-  });
-
-  const Icon = typePassword === "password" ? <Visibility /> : <VisibilityOff />;
-
-  const IconClickHandler = () => {
-    setTypePassword(typePassword === "text" ? "password" : "text");
-  };
-
-  async function signin(formData) {
+  async function keepAccount(formData) {
     try {
       setIsLoading(true);
       const response = await axios.post(
-        `${CAMPUSCONNECT_AUTH_BACKEND_API}/api/v1/auth/signin`,
+        `${CAMPUSCONNECT_AUTH_BACKEND_API}/api/v1/auth/keep-account`,
         formData
       );
 
       if (response.data.data) {
-        const { user, tokens } = response.data.data;
+        const { user } = response.data.data;
+        console.log(user);
 
         //  handling the  case when user  account is deleted
         if (user.isDeleted) {
           navigate("/new/account-recovery-consent", {
             state: {
-              isDeleted: user.isDeleted,
               gbpuatEmail: user.gbpuatEmail,
               username: formData.username,
               password: formData.password,
@@ -89,8 +68,6 @@ const SignInPage = () => {
           });
           return;
         }
-
-        console.log(user, tokens);
         // save user to auth context and token to local storage
 
         setIsLoading(false);
@@ -105,23 +82,41 @@ const SignInPage = () => {
     }
   }
 
-  // ✅ TODO: send the signin request to the backend server
-  const FormSubmitHandler = async (data) => {
-    await signin({
+  const handleKeepAccount = async (data) => {
+    await keepAccount({
       username: data.username,
       password: data.password,
     });
   };
-
   // TODO ✅:  redirectToSignUp
   const redirectToSignUp = () => {
-    navigate("/new/signup");
+    console.log("Redirecting to sign in");
+    navigate("/new/signin");
   };
   const ContinueButtonIcon = isLoading ? (
     <span className={StyleSheet.spinner}></span>
   ) : (
-    <ArrowRight />
+    ""
   );
+
+  useEffect(() => {
+    if (!location.state) {
+      navigate("/new/signin");
+    }
+    if (!location.state?.gbpuatEmail || !location.state?.isDeleted) {
+      navigate("/new/signin");
+    }
+
+    if (location.state && location.state?.gbpuatEmail) {
+      console.log(location.state);
+      setFormData({
+        username: location.state.username,
+        password: location.state.password,
+        gbpuatEmail: location.state.gbpuatEmail,
+      });
+    }
+  }, [location]);
+
   return (
     <div className={StyleSheet.login}>
       <div className={StyleSheet.wrapper}>
@@ -134,45 +129,26 @@ const SignInPage = () => {
           <div className={StyleSheet.logo}>
             <img src="/cc_logo_mobile.png" alt="campusconnect_logo" />
           </div>
-          <div className={StyleSheet.signinInfo}>
-            <h3>Sign in to CampusConnect</h3>
-            <p>Welcome back! Please sign in to continue</p>
+          <div className={styles.contentContainer}>
+            <h3>Want to keep using this account?</h3>
+            <p>
+              You requested to delete itsrobin28. if you want to keep it, you
+              have until June 23, 2024 to let us know Otherwise, all your
+              information will be deleted.
+            </p>
           </div>
-          <Formik
-            enableReinitialize
-            initialValues={{ ...formData }}
-            validationSchema={validationSchema}
-            onSubmit={FormSubmitHandler}
-            className={StyleSheet.Formik}
-          >
-            {(formik) => (
-              <Form className={StyleSheet.FormikForm}>
-                <FormInput
-                  pathname="signin"
-                  label={"username"}
-                  name={"username"}
-                  FirstIconClassName={StyleSheet.usernameIcon}
-                  FirstIcon={<span>@</span>}
-                />
-                <FormInput
-                  label={"password"}
-                  SecondIcon={Icon}
-                  type={typePassword}
-                  IconClickHandler={IconClickHandler}
-                  name={"password"}
-                />
-                <SubmitButton
-                  type={"submit"}
-                  btnText={"Continue"}
-                  Icon={ContinueButtonIcon}
-                />
-              </Form>
-            )}
-          </Formik>
-          <div className={StyleSheet.DontHaveAccount}>
-            <p>Don't have an account?</p>
-            <span onClick={redirectToSignUp}>Sign up</span>
-          </div>
+          <SubmitButton
+            type={"submit"}
+            Icon={ContinueButtonIcon}
+            onClick={handleKeepAccount}
+            btnText={"Keep Account"}
+          />
+          <SubmitButton
+            className={styles.secondaryButton}
+            onClick={redirectToSignUp}
+            type={"submit"}
+            btnText={"Back to sign in"}
+          />
         </div>
         <img src="/newlogin1.png" alt="fgfgdg" className={StyleSheet.image_2} />
       </div>
@@ -180,4 +156,4 @@ const SignInPage = () => {
   );
 };
 
-export default SignInPage;
+export default AccountRecoveryConsentPage;

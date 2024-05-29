@@ -1,0 +1,21 @@
+.contentContainer {
+  max-width: 400px;
+  margin: 0 auto;
+}
+.contentContainer > h3 {
+  margin: 1rem auto;
+  text-align: center;
+  font-size: 1.4rem;
+}
+.contentContainer > p {
+  text-align: center;
+}
+.secondaryButton {
+  background-color: white;
+  border: 1px solid black;
+  color: black !important;
+}
+
+.secondaryButton > span {
+  color: black;
+}

@@ -20,12 +20,14 @@ import {
 import apiClient from "../../../../../helpers/apiClient";
 import axios from "axios";
 import { useDebounceValue } from "usehooks-ts";
+import {
+  CAMPUSCONNECT_AUTH_BACKEND_API,
+  GBPUAT_DATA_API,
+} from "../../../../../utils/proxy";
 
 const StepTwoForm = ({
   SteptwoSubmitHandler,
   isLoading,
-  setCustomError,
-  customError,
   setIsUsernameAvailable,
 }) => {
   const [formData, setFormData] = useState({
@@ -49,7 +51,7 @@ const StepTwoForm = ({
   const [selectedDepartment, setSelectedDepartment] = useState("");
   const [selectedDegreeProgram, setSelectedDegreeProgram] = useState("");
   const [username, setUsername] = useDebounceValue("", 300);
-
+  const [customError, setCustomError] = useState("");
   const navigate = useNavigate();
   const [typePassword, setTypePassword] = useState("password");
 
@@ -105,15 +107,14 @@ const StepTwoForm = ({
   };
 
   const previousHandler = () => {
+    setCustomError("");
     navigate("/new/signup", { state: null });
   };
 
   useEffect(() => {
     // fetching colleges lists
     async function fetchColleges() {
-      const res = await axios.get(
-        `https://gbpuat-data-service.onrender.com/api/v1/colleges`
-      );
+      const res = await axios.get(`${GBPUAT_DATA_API}/api/v1/colleges`);
       if (res.data) {
         const colleges = res.data;
         console.table(colleges);
@@ -132,7 +133,7 @@ const StepTwoForm = ({
     // fetching departments list under college by collegeId
     async function fetchDepartmentsOfCollegeById() {
       const res = await axios.get(
-        `https://gbpuat-data-service.onrender.com/api/v1/colleges/${selectedCollege}/departments`
+        `${GBPUAT_DATA_API}/api/v1/colleges/${selectedCollege}/departments`
       );
       if (res.data) {
         const departments = res.data;
@@ -153,7 +154,7 @@ const StepTwoForm = ({
     // fetching degreeProgram list that are offered by the department by departmentId
     async function fetchDegreeProgramOfferedByDepartmentById() {
       const res = await axios.get(
-        `https://gbpuat-data-service.onrender.com/api/v1/departments/${selectedDepartment}/degree-program`
+        `${GBPUAT_DATA_API}/api/v1/departments/${selectedDepartment}/degree-program`
       );
       if (res.data) {
         const degreePrograms = res.data;
@@ -174,7 +175,7 @@ const StepTwoForm = ({
     async function fetchGbpuatUserDetails() {
       if (location.state?.studentId) {
         const res = await axios.get(
-          `https://gbpuat-data-service.onrender.com/api/v1/gbpuat-users/${location.state?.studentId}`
+          `${GBPUAT_DATA_API}/api/v1/gbpuat-users/${location.state?.studentId}`
         );
         const data = res.data;
         setFormData({
@@ -201,7 +202,7 @@ const StepTwoForm = ({
     async function isUsernameAvailable() {
       try {
         const res = await axios.get(
-          `http://localhost:8080/api/v1/auth/check-username/${username}`
+          `${CAMPUSCONNECT_AUTH_BACKEND_API}/api/v1/auth/check-username/${username}`
         );
         // console.log(res.data.data.isUsernameAvailable);
         if (res.status === 200) {
