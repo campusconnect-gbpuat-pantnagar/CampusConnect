@@ -22,6 +22,10 @@ const adsSchema = new mongoose.Schema(
       type: String,
       max: 3000,
     },
+    is_safe: {
+			type: Boolean,
+			default: false
+		},
     contact: {
       type: String,
       required: true,
@@ -30,11 +34,34 @@ const adsSchema = new mongoose.Schema(
       type: Number,
       min: 0,
     },
-    picture: [
-      {
-        type: String,
-      },
-    ],
+    media: [
+			{
+				url: {
+					type: String,
+					default: null
+				},
+				format: {
+					type: String,
+					default: null
+				},
+				publicId: {
+					type: String,
+					default: null
+				},
+				resource_type: {
+					type: String,
+					default: null
+				},
+				thumbnail_url: {
+					type: String,
+					default: null
+				},
+				asset_id: {
+					type: String,
+					default: null
+				},
+			}
+		],
     likes: [
       {
         type: mongoose.Schema.ObjectId,

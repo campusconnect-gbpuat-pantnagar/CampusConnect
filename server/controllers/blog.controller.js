@@ -61,12 +61,12 @@ exports.upload = multer({ storage: storage, fileFilter: fileFilter });
 
 //create blog
 exports.createBlog = (req, res) => {
-  const { user, title, content } = req.body;
+  const { user, title, content, link } = req.body;
   var picture;
   if (req.file) {
     picture = req.file.path;
   }
-  const newBlog = Blog({ user, title, content, picture });
+  const newBlog = Blog({ user, title, content, picture, link });
   newBlog.save((err, blog) => {
     if (err) {
       res.status(400).json({
@@ -126,12 +126,12 @@ exports.updateBlog = (req, res) => {
       });
     }
   });
-  const { user, title, content } = req.body;
+  const { user, title, content, link } = req.body;
   var picture;
   if (req.file) {
     picture = req.file.path;
   }
-  const updateObj = { user, title, content, picture };
+  const updateObj = { user, title, content, picture, link };
 
   Blog.findByIdAndUpdate(
     { _id: req.blogs._id },

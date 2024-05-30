@@ -1,7 +1,7 @@
 import { Grid } from "@material-ui/core"
 import React from "react"
 
-export const FriendsLoading = () => {
+export const ConnectionsLoading = () => {
   return (
     <Grid container justifyContent="center">
       <div className="spinner-border text-primary" role="status">

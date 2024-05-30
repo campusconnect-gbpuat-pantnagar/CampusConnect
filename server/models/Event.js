@@ -18,6 +18,34 @@ const eventSchema = new mongoose.Schema(
 			type: String,
 			required: true,
 		},
+		media: [
+			{
+				url: {
+					type: String,
+					default: null
+				},
+				format: {
+					type: String,
+					default: null
+				},
+				publicId: {
+					type: String,
+					default: null
+				},
+				resource_type: {
+					type: String,
+					default: null
+				},
+				thumbnail_url: {
+					type: String,
+					default: null
+				},
+				asset_id: {
+					type: String,
+					default: null
+				},
+			}
+		],
 	},
 	{ timestamps: true }
 );

@@ -4,7 +4,7 @@ import React, { useContext, useState } from "react";
 import { Modal, Form } from "react-bootstrap";
 import AddPhotoAlternateIcon from "@material-ui/icons/AddPhotoAlternate";
 import { AuthContext } from "../../../context/authContext/authContext";
-import { sendNotificationToUser } from "../../../utils/notification";
+import { sendNotificationToUserWithImage } from "../../../utils/notification";
 import { Cloudinary } from "@cloudinary/url-gen";
 import CloudinaryUploadWidget from "../../common/cloudinary/cloudinary-upload-widget";
 import CustomCarousel from "../../common/custom-carousel/custom-carousel";
@@ -37,9 +37,9 @@ export const PostModal = ({
       ? postFunction(formData, authContext.user._id, post._id)
       : postFunction(formData, authContext.user._id);
     // console.log(authContext.user._id);
-    sendNotificationToUser(
+    sendNotificationToUserWithImage(
       "New Post",
-      `${authContext.user.name} created a new post`,
+      `${authContext.user.name} created a new post`, authContext?.user?._id,
       authContext.user._id
     );
     handleModal();
@@ -115,7 +115,7 @@ export const PostModal = ({
                 placeholder="Write a caption..."
                 value={content}
                 onChange={(e) => setContent(e.target.value)}
-                className={classes.textField}
+                className={`mb-3 ${classes.textField}`}
               />
             </Grid>
             <Grid item container direction="row">

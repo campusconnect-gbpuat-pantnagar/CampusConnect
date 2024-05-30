@@ -4,6 +4,7 @@
   flex-direction: column;
   padding-top: 80px;
   height: 100vh;
+  overflow-y: auto;
 }
 
 #demo {
@@ -81,11 +82,8 @@
   display: none;
 }
 
-@media (max-width: 960px) {
-  .home {
-    padding-top: 60px;
-  }
-
+iframe-container {
+  margin-top: 54px;
 }
 
 @media (max-width: 600px) {
@@ -116,6 +114,10 @@
   }
 
   .home-right-bar {
+    display: none;
+  }
+
+  .poll-arrow {
     display: none;
   }
 

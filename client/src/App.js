@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useContext } from "react";
 import "./App.css";
 import { Routing } from "./components/common/Routing";
 import { AdsState } from "./context/adsContext/AdsState";
@@ -18,6 +18,8 @@ import { ChatContextProvider } from "./context/chatContext/chatContext";
 import ModalProvider from "./components/Providers/modal-provider";
 import { ModalContextProvider } from "./context/modalContext";
 import setFirebaseMessaging from "./utils/firebaseMessaging";
+import { ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 import { NewAuthContextProvider } from "./context/newAuthContext";
 import { NetworkContextProvider } from "./context/networkContext";
 
@@ -46,7 +48,10 @@ export const App = () => {
                                   <UpdateState>
                                     <NoticeState>
                                       <Routing />
-                                    </NoticeState>
+                                      <ToastContainer 
+                                      position="top-right"
+                                    />
+                                  </NoticeState>
                                   </UpdateState>
                                 </JobState>
                               </StreamState>

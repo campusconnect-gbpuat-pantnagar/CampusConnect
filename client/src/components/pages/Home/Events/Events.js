@@ -121,6 +121,18 @@ export const Events = () => {
                                                     </Grid>
                                                 </Grid>
                                             </Grid>
+                                            <Grid item>
+                                                <div className="centered-image-container">
+                                                    {eve.picture && (
+                                                    <img
+                                                        className="centered-image"
+                                                        height="100%"
+                                                        src={`https://campusconnect-cp84.onrender.com/${eve.picture[0]}`}
+                                                        alt="event.png"
+                                                    />
+                                                    )}
+                                                </div>
+                                            </Grid>
                                         </Grid>
                                     </CardContent>
                                 </Card>

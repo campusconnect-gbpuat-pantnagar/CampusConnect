@@ -15,11 +15,37 @@ const postSchema = new mongoose.Schema(
 			type: String,
 			max: 3000,
 		},
-		picture: [
+		is_safe: {
+			type: Boolean,
+			default: false
+		},
+		media: [
 			{
-				type: String,
-				default: null,
-			},
+				url: {
+					type: String,
+					default: null
+				},
+				format: {
+					type: String,
+					default: null
+				},
+				publicId: {
+					type: String,
+					default: null
+				},
+				resource_type: {
+					type: String,
+					default: null
+				},
+				thumbnail_url: {
+					type: String,
+					default: null
+				},
+				asset_id: {
+					type: String,
+					default: null
+				},
+			}
 		],
 		likes: [
 			{

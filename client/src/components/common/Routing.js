@@ -15,9 +15,11 @@ import { PostContext } from "../../context/postContext/postContext";
 import { BlogContext } from "../../context/blogContext/BlogContext";
 import { UserContext } from "../../context/userContext/UserContext";
 import { AdsContext } from "../../context/adsContext/AdsContext";
-import { Friends } from "../pages/Friends/Friends";
+import { Connections } from "../pages/Connections/Connections";
 import { AboutUniversity } from "../pages/AboutUniversity/AboutUniversity";
 import { SettingsPrivacy } from "../pages/Setting-Privacy/SettingsPrivacy";
+import { BooksBrowse } from "../pages/BooksBrowse/BooksBrowse";
+import { OurTeam } from "../pages/OurTeam/OurTeam";
 import { Bookmarks } from "../pages/Home/Bookmarks/Bookmarks";
 import { Notice } from "../pages/Home/Notice/Notice";
 import { Events } from "../pages/Home/Events/Events";
@@ -172,7 +174,7 @@ export const Routing = () => {
     [mainPrimaryColor, mainSecondaryColor, paperColor, prefersDarkMode]
   );
   return (
-    <div style={styleTheme}>
+    <div className="main-div" style={styleTheme}>
       {responseMsg.errorStatus || responseMsg.successStatus
         ? showResponseMsg()
         : null}
@@ -203,8 +205,8 @@ export const Routing = () => {
               element={<PrivateRoute component={Profile} />}
             /> */}
           {/* <Route
-              path="/friends"
-              element={<PrivateRoute component={Friends} />}
+              path="/connections"
+              element={<PrivateRoute component={Connections} />}
             /> */}
           {/* <Route
               path="/events"
@@ -225,6 +227,14 @@ export const Routing = () => {
           {/* <Route
               path="/settings-privacy"
               element={<PrivateRoute component={SettingsPrivacy} />}
+            /> */}
+            <Route
+              path="/our-team"
+              element={<PrivateRoute component={OurTeam} />}
+            />
+            {/* <Route
+              path="/books-browse"
+              element={<PrivateRoute component={BooksBrowse} />}
             /> */}
           {/* <Route
               path="/feedback"

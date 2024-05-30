@@ -15,9 +15,9 @@ import { AuthContext } from "../../../../context/authContext/authContext"
 import { ButtonLoading } from "../../../Loading_Backdrop/ButtonLoading"
 import { API } from "../../../../utils/proxy"
 import { useNavigate } from "react-router-dom"
-import { sendNotificationToUser } from "../../../../utils/notification"
+import { sendNotificationToUserWithImage } from "../../../../utils/notification"
 
-export const FriendCard = ({ friend, type }) => {
+export const ConnectionCard = ({ friend, type }) => {
   const navigate = useNavigate();
   const userContext = useContext(UserContext)
   const authContext = useContext(AuthContext)
@@ -67,7 +67,7 @@ export const FriendCard = ({ friend, type }) => {
             <Button
               onClick={(e) => {
                 handleClickBtn(e, userContext.acceptFriendRequest)
-                sendNotificationToUser("New Friend", `${authContext.user.name} has accepted your friend request!`, `${friend._id}_self`);
+                sendNotificationToUserWithImage("New Connection", `${authContext.user.name} has accepted your connection request!`, authContext?.user?._id, `${friend._id}_self`);
               }}
               style={clickStyleTheme}
             >
@@ -77,7 +77,6 @@ export const FriendCard = ({ friend, type }) => {
             <Button
               onClick={(e) => {
                 handleClickBtn(e, userContext.rejectFriendRequest)
-                sendNotificationToUser("Friend Request Update", `${authContext.user.name} has declined your friend request`, `${friend._id}_self`);
               }}
               style={clickStyleTheme}
             >
@@ -90,11 +89,10 @@ export const FriendCard = ({ friend, type }) => {
           <>
             <Button onClick={(e) => {
                 handleClickBtn(e, userContext.unFriend)
-                sendNotificationToUser("Friend List Update", `${authContext.user.name} has removed you from their friends list`, `${friend._id}_self`);
               }} 
               style={{ color: "red" }}
             >
-              {loading ? <ButtonLoading /> : "Remove friend"}
+              {loading ? <ButtonLoading /> : "Remove Connection"}
               {/* Unfriend */}
             </Button>
           </>
@@ -103,11 +101,14 @@ export const FriendCard = ({ friend, type }) => {
         {type === "not-friend" && (
           <>
             <Button
-              onClick={(e) => handleClickBtn(e, userContext.sendFriendRequest)}
+              onClick={(e) => { 
+                handleClickBtn(e, userContext.sendFriendRequest)
+                sendNotificationToUserWithImage("Connection Request", `You have a new connection request from ${authContext.user.name}`, authContext?.user?._id, `${friend._id}_self`);
+              }}
               style={clickStyleTheme}
             >
-              {loading ? <ButtonLoading /> : "Add friend"}
-              {/* Add friend */}
+              {loading ? <ButtonLoading /> : "Add Connection"}
+              {/* Add Connection */}
             </Button>
           </>
         )}

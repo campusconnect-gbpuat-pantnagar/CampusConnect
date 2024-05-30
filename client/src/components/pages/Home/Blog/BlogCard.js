@@ -13,6 +13,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   Avatar,
   Card,
+  Button,
   CardActions,
   CardContent,
   CardHeader,
@@ -139,7 +140,9 @@ export const BlogCard = ({ blog }) => {
       : { background: "white", color: "black" };
 
   const clickStyleTheme =
-    authContext.theme === "dark" ? { color: "#03DAC6" } : { color: "blue" };
+    authContext.theme === "dark"
+      ? { color: "#03DAC6", borderColor: "#03DAC6" }
+      : { color: "blue", borderColor: "blue" }
 
   return (
     <>
@@ -168,13 +171,14 @@ export const BlogCard = ({ blog }) => {
           }
           action={
             <>
+            {authContext.user._id === blog.user._id ? (
               <IconButton
                 aria-label="settings"
                 onClick={handleMoreOption}
                 style={styleTheme}
               >
                 <MoreHorizIcon />
-              </IconButton>
+              </IconButton> ) : null }
               <Menu
                 id="fade-menu"
                 anchorEl={moreOption}
@@ -202,13 +206,13 @@ export const BlogCard = ({ blog }) => {
                     Delete
                   </MenuItem>
                 ) : null}
-                <MenuItem onClick={handleClose} style={styleTheme}>
+                {/* <MenuItem onClick={handleClose} style={styleTheme}>
                   Share
-                </MenuItem>
+                </MenuItem> */}
 
-                <MenuItem onClick={handleClose} style={styleTheme}>
+                {/* <MenuItem onClick={handleClose} style={styleTheme}>
                   Report blog
-                </MenuItem>
+                </MenuItem> */}
               </Menu>
             </>
           }
@@ -236,6 +240,21 @@ export const BlogCard = ({ blog }) => {
           <Typography variant="subtitle2" component="p">
             {blog.content}
           </Typography>
+          {blog.link && (
+          <CardActions className="pt-0 px-3 mt-2">
+            <Button
+              size="small"
+              variant="outlined"
+              onClick={() => {
+                window.open(`${blog.link}`)
+              }}
+              style={{ ...clickStyleTheme, right: '15px' }}
+              className="mt-2"
+            >
+              Read More
+            </Button>
+          </CardActions>
+        )}
         </CardContent>
         <div className="centered-image-container">
           {blog.picture && (
@@ -274,12 +293,12 @@ export const BlogCard = ({ blog }) => {
                   {blog.comments.length}
                 </Typography>
               </span>
-              <IconButton onClick={handleShareBtn} style={styleTheme}>
+              {/* <IconButton onClick={handleShareBtn} style={styleTheme}>
                 <FontAwesomeIcon icon={faShare} />
-              </IconButton>
-              <span>
+              </IconButton> */}
+              {/* <span>
                 <Typography variant="overline">{shareCount}</Typography>
-              </span>
+              </span> */}
             </Grid>
             <Grid item>
               <IconButton onClick={handleBookmarkBtn} style={styleTheme}>

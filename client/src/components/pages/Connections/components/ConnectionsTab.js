@@ -14,11 +14,11 @@ import React, { useState } from "react"
 import { useEffect } from "react"
 import { useContext } from "react"
 import { UserContext } from "../../../../context/userContext/UserContext"
-import { FriendCard } from "./FriendCard"
-import { FriendsLoading } from "./FriendsLoading"
+import { ConnectionCard } from "./ConnectionCard"
+import { ConnectionsLoading } from "./ConnectionsLoading"
 import { AuthContext } from "../../../../context/authContext/authContext"
 
-export const FriendsTab = () => {
+export const ConnectionsTab = () => {
   const [tab, setTab] = useState(true)
   const userContext = useContext(UserContext)
   const authContext = useContext(AuthContext)
@@ -42,7 +42,7 @@ export const FriendsTab = () => {
   }
   useEffect(() => {
     if (userContext.user === null) {
-      return <FriendsLoading />
+      return <ConnectionsLoading />
     } else {
       let arr = []
 
@@ -99,7 +99,7 @@ export const FriendsTab = () => {
           <Grid container justifyContent="space-between">
             <Grid item xs={6}>
               <Typography variant="h5" gutterBottom>
-                <b>Friends</b>
+                <b>Connections</b>
               </Typography>
             </Grid>
             <Grid item xs={6}>
@@ -128,7 +128,7 @@ export const FriendsTab = () => {
                   color: tab ? clickStyleTheme.color : styleTheme.color
                 }}
               >
-                Friend requests
+                Connection requests
               </Button>
             </Grid>
             <Grid item xs={6}>
@@ -140,17 +140,17 @@ export const FriendsTab = () => {
                   color: !tab ? clickStyleTheme.color : styleTheme.color
                 }}
               >
-                My Friends
+                My Connections
               </Button>
             </Grid>
           </Grid>
           <Grid container>
             <Grid item xs={12}>
               {userContext.loading ? (
-                <FriendsLoading />
+                <ConnectionsLoading />
               ) : tab ? (
                 userContext.user.receivedReqs.map((freq, i) => {
-                  return <FriendCard friend={freq} type="request" key={i} />
+                  return <ConnectionCard friend={freq} type="request" key={i} />
                 })
               ) : (
                 //  : (
@@ -168,7 +168,7 @@ export const FriendsTab = () => {
                 //   </Grid>
                 // )
                 userContext.user.friendList.map((friend, i) => {
-                  return <FriendCard friend={friend} type="friend" key={i} />
+                  return <ConnectionCard friend={friend} type="friend" key={i} />
                 })
               )}
             </Grid>
@@ -178,7 +178,7 @@ export const FriendsTab = () => {
             <Grid item xs={12}>
               {allUsers.map((user, index) => {
                 return (
-                  <FriendCard friend={user} type="not-friend" key={index} />
+                  <ConnectionCard friend={user} type="not-friend" key={index} />
                 )
               })}
             </Grid>

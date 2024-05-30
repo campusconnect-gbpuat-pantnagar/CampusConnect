@@ -1,0 +1,20 @@
+.iframe-container {
+  position: relative;
+  width: 100%;
+  height: calc(100vh - 56px); 
+  padding: 0;
+  overflow: scroll;
+}
+
+iframe {
+  position: absolute;
+  top: 0;
+  left: 0;
+  border: none;
+}
+
+/* @media (max-width: 600px) {
+  .iframe-container {
+    margin-top: 54px;
+  }
+} */

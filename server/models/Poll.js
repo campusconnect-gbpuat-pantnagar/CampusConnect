@@ -10,28 +10,27 @@ const pollSchema = new mongoose.Schema({
     type: String,
     required: true,
   },
-  poll: {
-    type: String,
-    required: true,
+  options: [
+    {
+      text: { type: String, required: true },
+      votes: [
+        {
+          type: mongoose.Schema.ObjectId,
+          ref: "User",
+        }
+      ],
+    }
+  ],
+  created: {
+    type: Date,
+    default: Date.now
   },
-  yes: [
+  totalVotes: [
     {
       type: mongoose.Schema.ObjectId,
       ref: "User",
-    },
-  ],
-  no: [
-    {
-      type: mongoose.Schema.ObjectId,
-      ref: "User",
-    },
-  ],
-  skip: [
-    {
-      type: mongoose.Schema.ObjectId,
-      ref: "User",
-    },
-  ],
-})
+    }
+  ]
+});
 
-module.exports = mongoose.model("Poll", pollSchema)
+module.exports = mongoose.model("Poll", pollSchema);

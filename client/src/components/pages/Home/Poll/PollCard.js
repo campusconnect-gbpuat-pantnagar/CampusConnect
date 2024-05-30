@@ -1,265 +1,239 @@
-import MoreHorizIcon from "@material-ui/icons/MoreHoriz"
-import {
-  Button,
-  ButtonGroup,
-  Card,
-  CardActions,
-  CardContent,
-  Grid,
-  IconButton,
-  Typography,
-} from "@material-ui/core"
-import React, { useContext, useEffect, useState } from "react"
-import { Carousel } from "react-bootstrap"
-import { AuthContext } from "../../../../context/authContext/authContext"
-import { PollContext } from "../../../../context/pollContext/PollContext"
-import { LoadingPoll } from "./LoadingPoll"
+import React, { useContext, useState, useEffect, useRef } from "react";
+import { Button, Card, CardActions, CardContent, Grid, Typography, IconButton, Avatar } from "@material-ui/core";
+import { Carousel } from "react-bootstrap";
+import { AuthContext } from "../../../../context/authContext/authContext";
+import { PollContext } from "../../../../context/pollContext/PollContext";
+import { LoadingPoll } from "./LoadingPoll";
+import { API } from "../../../../utils/proxy";
+import { useNavigate } from "react-router-dom";
+import Moment from "react-moment";
+import DeleteIcon from "@material-ui/icons/Delete";
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faChevronCircleRight, faChevronCircleLeft } from "@fortawesome/free-solid-svg-icons";
 
 export const PollCard = () => {
-  const authContext = useContext(AuthContext)
-  const pollContext = useContext(PollContext)
-  const [index, setIndex] = useState(0)
+  const ref = useRef(null);
+  const navigate = useNavigate();
+  const authContext = useContext(AuthContext);
+  const pollContext = useContext(PollContext);
+  const [index, setIndex] = useState(0);
   const [responseValue, setResponseValue] = useState({
     loading: false,
     error: "",
-  })
-  const [pollResult, setPollResult] = useState({
-    total: "",
-    yes: "",
-    no: "",
-    skip: "",
-  })
-  const [showResult, setShowResult] = useState(false)
-  useEffect(() => {
-    pollContext.getAllPolls()
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [])
-  // console.log(pollContext.polls)
+  });
 
-  const handlePollClick = async (e, typeOf, pollId) => {
+  useEffect(() => {
+    pollContext.getAllPolls();
+  }, []);
+
+  const handleSelect = (selectedIndex) => {
+    setIndex(selectedIndex);
+  };
+
+  const handlePrev = () => {
+    ref.current.prev();
+  };
+
+  const handleNext = () => {
+    ref.current.next();
+  };
+
+  const handlePollClick = async (e, option, pollId) => {
+    e.preventDefault();
+
     setResponseValue({
       ...responseValue,
       loading: true,
-    })
+    });
+
     try {
-      let response
-      if (typeOf === "yes") {
-        response = await pollContext.markPollYes(authContext.user._id, pollId)
-      }
-      if (typeOf === "no") {
-        response = await pollContext.markPollNo(authContext.user._id, pollId)
-      }
-      if (typeOf === "skip") {
-        response = await pollContext.skipPoll(authContext.user._id, pollId)
-      }
-      if (response._id === pollId) {
-        setPollResult({
-          total:
-            response.yes.length + response.no.length + response.skip.length,
-          yes: response.yes.length,
-          no: response.no.length,
-          skip: response.skip.length,
-        })
+      const response = await pollContext.voteOnPoll(pollId, option._id, authContext.user._id);
+      if (response && response.data._id === pollId) {
         setResponseValue({
           ...responseValue,
           loading: false,
-        })
-        setShowResult(true)
+        });
       }
-      console.log(response)
     } catch (error) {
       setResponseValue({
-        ...setResponseValue,
-        // error: error.response.data.errorMsg,
+        ...responseValue,
+        error: error.response?.data.errorMsg || "An error occurred",
         loading: false,
-      })
+      });
     }
-  }
+  };
 
-  const styleTheme =
-    authContext.theme === "dark"
-      ? { background: "#121212", color: "whitesmoke" }
-      : { background: "white", color: "black" }
+  const handlePollDelete = async (pollId) => {
+    try {
+      await pollContext.deletePoll(authContext.user._id, pollId);
+    } catch (error) {
+      console.log("Error deleting poll:", error);
+    }
+  };
+
+  const styleTheme = authContext.theme === "dark"
+    ? { background: "#121212", color: "whitesmoke", borderColor: "whitesmoke" }
+    : { background: "white", color: "black", borderColor: "black" };
+
+  const styleTheme2 = authContext.theme === "dark"
+    ? { background: "#121212", color: "whitesmoke" }
+    : { background: "whitesmoke", color: "black" };
 
   return (
     <div className="poll-card">
       {pollContext.loading ? (
-        LoadingPoll()
+        <LoadingPoll />
       ) : (
-        <>
-          <h6>
-            <b>Polls</b>
-          </h6>
-          <Card variant="elevation" elevation={3} className="pb-1" style={styleTheme}>
-            <Carousel
-              indicators={false}
-              controls={false}
-              interval={null}
-              activeIndex={index}
-            >
-              {pollContext.polls.map((poll, index) => {
-                return (
+        <Grid container direction="column">
+          <Grid container justifyContent="space-between">
+            <Grid item>
+              <h6><b>Polls</b></h6>
+            </Grid>
+            <Grid item className="poll-arrow">
+              <IconButton onClick={() => handlePrev()} style={{ cursor: 'pointer' }} size="small" className="mr-2">
+                <FontAwesomeIcon icon={faChevronCircleLeft} style={styleTheme2} />
+              </IconButton>
+              <IconButton onClick={() => handleNext()} style={{ cursor: 'pointer' }} size="small" className="mr-1">
+                <FontAwesomeIcon icon={faChevronCircleRight} style={styleTheme2} />
+              </IconButton>
+            </Grid>
+          </Grid>
+          <Grid item>
+            <Card variant="elevation" elevation={3} className="pb-3" style={styleTheme}>
+              <Carousel ref={ref} indicators={false} controls={false} activeIndex={index} onSelect={handleSelect}>
+                {pollContext.polls.length > 0 ? pollContext.polls.map((poll, index) => (
                   <Carousel.Item key={index}>
                     <Grid>
-                      <Grid
-                        item
-                        direction="row"
-                        className="py-1 pr-3"
-                        container
-                        alignItems="center"
-                        justifyContent="space-between"
-                      >
-                        <Grid item>
-                          {!showResult ? (
-                            <Button
-                              variant="text"
-                              size="small"
-                              style={styleTheme}
-                              onClick={(e) =>
-                                handlePollClick(e, "skip", poll._id)
-                              }
-                            >
-                              Skip
-                            </Button>
-                          ) : (
-                            <Button
-                              variant="text"
-                              style={styleTheme}
-                              size="small"
-                              onClick={() => {
-                                if (index < pollContext.polls.length) {
-                                  setIndex(index + 1)
-                                }
-                                setShowResult(false)
-                              }}
-                            >
-                              Next
-                            </Button>
-                          )}
+                      <Grid container direction="row" className="m-1" justifyContent="space-between">
+                        <Grid>
+                          <Grid container direction="row">
+                            <Grid item>
+                              <Avatar
+                                alt={poll?.user?.name}
+                                src={`${API}/pic/user/${poll?.user?._id}`}
+                                className="mt-2 ml-2"
+                              />
+                            </Grid>
+                            <Grid item>
+                              <Grid container direction="column" className="ml-2 mt-1">
+                                <Grid>
+                                  <b
+                                    style={{ ...styleTheme, fontSize: "smaller", cursor: "pointer" }}
+                                    onClick={() => {
+                                      navigate(`/profile/${poll?.user?._id}`);
+                                    }}
+                                  >
+                                    {poll?.user?.name}
+                                  </b>
+                                </Grid>
+                                <Grid>
+                                  <Moment fromNow style={{ ...styleTheme, fontSize: "smaller" }}>
+                                    {poll.created}
+                                  </Moment>
+                                </Grid>
+                              </Grid>
+                            </Grid>
+                          </Grid>
                         </Grid>
-
-                        <Grid item>
-                          <Button
-                            variant="text"
-                            size="small"
-                            style={styleTheme}
-                            onClick={(e) =>
-                              console.log("delete clicked")
-                            }
-                          >
-                            Delete
-                          </Button>
+                        <Grid>
+                          {authContext.user._id === poll?.user?._id ? (
+                            <IconButton
+                              aria-label="settings"
+                              onClick={() => handlePollDelete(poll?._id)}
+                              style={styleTheme}
+                            >
+                              <DeleteIcon />
+                            </IconButton>
+                          ) : null}
                         </Grid>
                       </Grid>
                     </Grid>
-                    <CardContent
-                      style={{ paddingTop: "0px", paddingBottom: "0" }}
-                    >
+                    <CardContent className="mt-2" style={{ paddingTop: "0px", paddingBottom: "0", ...styleTheme }}>
                       <Typography variant="body1" style={{ padding: "0", ...styleTheme }}>
                         {poll.title}
                       </Typography>
-                      <Typography
-                        variant="body2"
-                        color="textSecondary"
-                        style={{ paddingTop: "0px", ...styleTheme }}
-                      >
-                        {poll.poll}
+                      <Typography variant="body2" color="textSecondary" style={{ paddingTop: "0px", ...styleTheme }}>
+                        {poll?.options?.some(option => option.votes.includes(authContext.user._id)) ?
+                          poll?.options?.map((option, index) => (
+                            <div key={index}>
+                              <Button
+                                variant="outlined"
+                                className="mt-2"
+                                size="small"
+                                style={{
+                                  ...styleTheme,
+                                  width: '100%',
+                                  borderRadius: '4px',
+                                  overflow: 'hidden',
+                                  position: 'relative',
+                                }}
+                                disabled
+                              >
+                                <div 
+                                  style={{ 
+                                    position: 'absolute',
+                                    top: 0,
+                                    left: 0,
+                                    backgroundColor: '#4b9de4', 
+                                    height: '100%',
+                                    width: `${Math.round((option.votes.length / poll.totalVotes.length) * 100)}%`, 
+                                  }}
+                                />
+                                <div 
+                                  style={{ 
+                                    position: 'relative',
+                                    zIndex: 1,
+                                    color: `${authContext.theme === 'dark' ? "white" : "black"}`, 
+                                    textAlign: 'center',
+                                  }}
+                                >
+                                  <span style={{ textTransform: 'initial' }}>{option.text}</span> {Math.round((option.votes.length / poll.totalVotes.length) * 100)}%
+                                </div>
+                              </Button>
+                            </div>
+                          )) : 
+                          poll?.options?.map((option, index) => (
+                            <div key={index}>
+                              <Button
+                                variant="outlined"
+                                className="mt-2"
+                                size="small"
+                                style={styleTheme}
+                                onClick={(e) => handlePollClick(e, option, poll?._id)}
+                                fullWidth
+                              >
+                                <span style={{ textTransform: 'initial' }}>{option.text}</span>
+                              </Button>
+                            </div>
+                          ))}
                       </Typography>
                     </CardContent>
-                    <CardActions>
-                      {responseValue.loading && (
-                        <Button
-                          variant="outlined"
-                          size="small"
-                          fullWidth
-                          disabled
-                          style={styleTheme}
-                        >
-                          Loading
-                        </Button>
-                      )}
-                      {responseValue.loading ? null : !showResult ? (
-                        <ButtonGroup
-                          className="p-1"
-                          fullWidth
-                          variant="outlined"
-                          style={styleTheme}
-                        >
-                          <Button
-                            size="small"
-                            onClick={(e) => handlePollClick(e, "yes", poll._id)}
-                            style={{ borderColor: styleTheme.color, color: styleTheme.color }}
-                          >
-                            Yes
-                          </Button>
-                          <Button
-                            size="small"
-                            onClick={(e) => handlePollClick(e, "no", poll._id)}
-                            style={{ borderColor: styleTheme.color, color: styleTheme.color }}
-                          >
-                            No
-                          </Button>
-                        </ButtonGroup>
-                      ) : (
-                        <div
-                          className="px-1"
-                          style={{
-                            display: "flex",
-                            flexDirection: "row",
-                            width: "100%",
-                            textAlign: "center",
-                          }}
-                        >
-                          <div
-                            style={{
-                              background: "#6eff00",
-                              borderRadius: "2px",
-                              width: `${(pollResult.yes / pollResult.total) * 100
-                                }%`,
-                            }}
-                          >
-                            {Math.round(
-                              (pollResult.yes / pollResult.total) * 100
-                            )}
-                            %
-                          </div>
-                          <div
-                            style={{
-                              background: "#b5b5b5",
-                              borderRadius: "2px",
-                              width: `${(pollResult.skip / pollResult.total) * 100
-                                }%`,
-                            }}
-                          >
-                            {Math.round(
-                              (pollResult.skip / pollResult.total) * 100
-                            )}
-                            %
-                          </div>
-                          <div
-                            style={{
-                              background: "tomato",
-                              borderRadius: "2px",
-                              width: `${(pollResult.no / pollResult.total) * 100
-                                }%`,
-                            }}
-                          >
-                            {Math.round(
-                              (pollResult.no / pollResult.total) * 100
-                            )}
-                            %
-                          </div>
-                        </div>
-                      )}
-                    </CardActions>
                   </Carousel.Item>
-                )
-              })}
-            </Carousel>
-          </Card>
-        </>
-      )
-      }
-    </div >
-  )
-}
+                )) : (
+                  <div
+                    className="m-auto"
+                    style={{
+                      height: "20vh",
+                      display: "flex",
+                      justifyContent: "center",
+                    }}
+                  >
+                    <Grid
+                      container
+                      spacing={3}
+                      direction="column"
+                      justifyContent="center"
+                      alignItems="center"
+                    >
+                      <h6 className="mt-2">No poll out there</h6>
+                    </Grid>
+                  </div>
+                )}
+              </Carousel>
+            </Card>
+          </Grid>
+        </Grid>
+      )}
+    </div>
+  );
+};

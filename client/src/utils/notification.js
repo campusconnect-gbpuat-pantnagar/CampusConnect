@@ -13,7 +13,6 @@ export const requestFirebaseNotificationPermission = async () => {
           console.log('Notification permission granted.');
           return getToken(messaging, { vapidKey: process.env.REACT_APP_FIREBASE_VAPID_KEY });
         } else {
-          alert("You have disabled notifications. You can change this in the settings to receive notifications.");
           throw new Error('User did not grant permission.');
         }
       })
@@ -27,7 +26,7 @@ export const requestFirebaseNotificationPermission = async () => {
       });
   } else if (permission === "granted") {
     console.log('Notification permission already granted.');
-    const currentToken = await getToken(messaging);
+    const currentToken = await getToken(messaging, { vapidKey: process.env.REACT_APP_FIREBASE_VAPID_KEY });
     if (currentToken) {
       console.log('FCM Token:', currentToken);
       return currentToken;
@@ -35,7 +34,7 @@ export const requestFirebaseNotificationPermission = async () => {
       return await getToken(messaging, { vapidKey: process.env.REACT_APP_FIREBASE_VAPID_KEY });
     }
   } else {
-    alert("You have disabled notifications. You can change this in the settings to receive notifications.");
+    // can add something later
   }
 };
 
@@ -53,6 +52,48 @@ export const sendNotificationToUser = async (title, body, topic) => {
     console.error('Error sending notification:', error.response ? error.response.data : error.message);
   }
 };
+
+export const getUserAvatar = async (id) => {
+  const avatarUrl = `${API}/pic/user/${id}`;
+  const response = await fetch(avatarUrl);
+  const contentType = response.headers.get("Content-Type");
+  if (response.ok && contentType && contentType.includes("image")) {
+      return avatarUrl;
+  } else {
+    return "https://campusconnect-ten.vercel.app/profile.png";
+  }
+}
+
+export const sendNotificationToUserWithImage = async (title, body, id, topic) => {
+  const avatarImage = await getUserAvatar(id);
+  try {
+    const notificationData = {
+      notificationTitle: title,
+      notificationBody: body,
+      notificationImage: avatarImage,
+      registrationTopic: topic,
+    };
+
+    const response = await axios.post(`${API}/send-notification-with-image`, notificationData);
+    console.log('Notification sent successfully:', response.data);
+  } catch (error) {
+    console.error('Error sending notification:', error.response ? error.response.data : error.message);
+  }
+};
+
+export const chatNotification = async (name, id, sendMessage, topic) => {
+  const formatNotificationMessage = (sendMessage) => {
+    const maxLength = 50;
+    if (sendMessage.length > maxLength) {
+        let trimmedMessage = sendMessage.slice(0, maxLength);
+        trimmedMessage = trimmedMessage.trimEnd();
+        return trimmedMessage + "...";
+    } else {
+        return sendMessage;
+    }
+  }
+  sendNotificationToUserWithImage(name, formatNotificationMessage(sendMessage), id, topic);
+}
 
 export const subscribeUserToTopic = async (token, topic) => {
   try {
