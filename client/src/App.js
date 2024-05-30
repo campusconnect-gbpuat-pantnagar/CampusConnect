@@ -19,6 +19,7 @@ import ModalProvider from "./components/Providers/modal-provider";
 import { ModalContextProvider } from "./context/modalContext";
 import setFirebaseMessaging from "./utils/firebaseMessaging";
 import { NewAuthContextProvider } from "./context/newAuthContext";
+import { NetworkContextProvider } from "./context/networkContext";
 
 export const App = () => {
   useEffect(() => {
@@ -26,39 +27,41 @@ export const App = () => {
   }, []);
 
   return (
-    <ServiceWorkerProvider>
-      <NewAuthContextProvider>
-        <FirebaseContextProvider>
-          <ChatContextProvider>
-            <AuthState>
-              <ModalContextProvider>
-                <ModalProvider />
-                <UserState>
-                  <PollState>
-                    <PostState>
-                      <BlogState>
-                        <AdsState>
-                          <EventState>
-                            <StreamState>
-                              <JobState>
-                                <UpdateState>
-                                  <NoticeState>
-                                    <Routing />
-                                  </NoticeState>
-                                </UpdateState>
-                              </JobState>
-                            </StreamState>
-                          </EventState>
-                        </AdsState>
-                      </BlogState>
-                    </PostState>
-                  </PollState>
-                </UserState>
-              </ModalContextProvider>
-            </AuthState>
-          </ChatContextProvider>
-        </FirebaseContextProvider>
-      </NewAuthContextProvider>
-    </ServiceWorkerProvider>
+    <NetworkContextProvider>
+      <ServiceWorkerProvider>
+        <NewAuthContextProvider>
+          <FirebaseContextProvider>
+            <ChatContextProvider>
+              <AuthState>
+                <ModalContextProvider>
+                  <ModalProvider />
+                  <UserState>
+                    <PollState>
+                      <PostState>
+                        <BlogState>
+                          <AdsState>
+                            <EventState>
+                              <StreamState>
+                                <JobState>
+                                  <UpdateState>
+                                    <NoticeState>
+                                      <Routing />
+                                    </NoticeState>
+                                  </UpdateState>
+                                </JobState>
+                              </StreamState>
+                            </EventState>
+                          </AdsState>
+                        </BlogState>
+                      </PostState>
+                    </PollState>
+                  </UserState>
+                </ModalContextProvider>
+              </AuthState>
+            </ChatContextProvider>
+          </FirebaseContextProvider>
+        </NewAuthContextProvider>
+      </ServiceWorkerProvider>
+    </NetworkContextProvider>
   );
 };
