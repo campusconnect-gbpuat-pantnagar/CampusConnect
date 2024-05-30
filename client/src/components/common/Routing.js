@@ -228,11 +228,11 @@ export const Routing = () => {
               path="/settings-privacy"
               element={<PrivateRoute component={SettingsPrivacy} />}
             /> */}
-            <Route
-              path="/our-team"
-              element={<PrivateRoute component={OurTeam} />}
-            />
-            {/* <Route
+          <Route
+            path="/our-team"
+            element={<PrivateRoute component={OurTeam} />}
+          />
+          {/* <Route
               path="/books-browse"
               element={<PrivateRoute component={BooksBrowse} />}
             /> */}
