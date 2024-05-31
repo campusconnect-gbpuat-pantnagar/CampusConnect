@@ -1,9 +1,0 @@
-node_modules
-server/node_modules
-.env
-*.env
-/uploads/posts/*
-/uploads/ads/*
-/uploads/blogs/*
-/uploads/events/*
-/uploads/feedbacks/*
