@@ -189,7 +189,7 @@ export const Routing = () => {
           {/* <Route path="/signin" element={<SimpleRoute component={Login} />} /> */}
 
           {/* <Route path="/" element={<PrivateRoute component={Post} />} /> */}
-          {/* <Route path="/chats" element={<PrivateRoute component={Chat} />} /> */}
+          <Route path="/chats" element={<PrivateRoute component={Chat} />} />
           {/* <Route path="/posts" element={<PrivateRoute component={Post} />} /> */}
           {/* <Route
               path="/bookmarks"

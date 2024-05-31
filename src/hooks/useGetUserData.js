@@ -16,6 +16,5 @@ export const useGetUserData = (talkingWithId) => {
     talkingWithId && getUserData();
   }, [talkingWithId]);
 
-
   return userData;
 };

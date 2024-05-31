@@ -9,6 +9,7 @@ import { ChatContext } from "../../../../context/chatContext/chatContext";
 import { AuthContext } from "../../../../context/authContext/authContext";
 import { ModalContext } from "../../../../context/modalContext";
 import { ModalType } from "../../../../context/modalContext/modalTypes";
+import { NewAuthContext } from "../../../../context/newAuthContext";
 
 export const ChatHeader = ({ userData }) => {
   // console.log(userData);
@@ -16,22 +17,23 @@ export const ChatHeader = ({ userData }) => {
   const [chatSettingsPopOver, setChatSettingsPopOver] = useState(false);
   const { setChatId, setTalkingWithId, setChatWallpaper } =
     useContext(ChatContext);
-  const authContext = useContext(AuthContext);
-
+  // const authContext = useContext(AuthContext);
+  const { user } = useContext(NewAuthContext);
+  const profilePicture = user.profilePicture
+    ? user.profilePicture
+    : "https://firebasestorage.googleapis.com/v0/b/campus-connect-90a41.appspot.com/o/image%2F2024644_login_user_avatar_person_users_icon.png?alt=media&token=639b6775-2181-4c05-985c-a7797d4a95bd";
   const styleTheme =
-    authContext.theme === "dark"
+    "light" === "dark"
       ? { background: "#151515", color: "white" }
       : { background: "#DEDEDE", color: "black" };
 
   const styleTheme2 =
-  authContext.theme === "dark"
-    ? { background: "black", color: "white" }
-    : { background: "white", color: "black" };
+    "light" === "dark"
+      ? { background: "black", color: "white" }
+      : { background: "white", color: "black" };
 
   const styleTheme3 =
-  authContext.theme === "dark"
-    ? { color: "#03DAC6" }
-    : { color: "black" }
+    "light" === "dark" ? { color: "#03DAC6" } : { color: "black" };
 
   const handleArrowBack = () => {
     localStorage.removeItem("chatId");
@@ -52,19 +54,12 @@ export const ChatHeader = ({ userData }) => {
           <div className={styles.avatar}>
             {/* avatar */}
             {/*  below image will  changed once the profile update get fix !!*/}
-            <img
-              src={`${
-                userData?.photoUrl
-                  ? "https://firebasestorage.googleapis.com/v0/b/campus-connect-90a41.appspot.com/o/image%2F2024644_login_user_avatar_person_users_icon.png?alt=media&token=639b6775-2181-4c05-985c-a7797d4a95bd"
-                  : userData?.photoUrl
-              }`}
-              alt="user_avatar"
-            />
+            <img src={`${profilePicture}`} alt="user_avatar" />
           </div>
         </div>
         <div className={styles.userInfo}>
           {/* userInfo and status */}
-          <p>{`${userData?.name}`}</p>
+          <p>{`${user?.firstName} ${user?.lastName}`}</p>
           <span style={styleTheme3}>Online</span>
         </div>
       </div>

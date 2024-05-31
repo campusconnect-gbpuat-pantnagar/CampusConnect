@@ -12,6 +12,8 @@ import { AuthContext } from "../../../../../context/authContext/authContext";
 import { MessageDeleted } from "./messageDeleted";
 import moment from "moment";
 import "moment-timezone";
+import { ThemeContext } from "../../../../../context/themeContext";
+import { NewAuthContext } from "../../../../../context/newAuthContext";
 const MessageComponent = {
   image: MessageImage,
   text: MessageText,
@@ -21,7 +23,10 @@ export const Message = ({ me, userData, message }) => {
   const Component = MessageComponent[message?.type];
   const [popOver, setPopOver] = useState(false);
   const { setModalState } = useContext(ModalContext);
-  const authContext = useContext(AuthContext);
+  // theme context
+  const { theme } = useContext(ThemeContext);
+  // new auth context
+  const { user } = useContext(NewAuthContext);
   const scrollRef = useRef();
   useEffect(() => {
     scrollRef.current?.scrollIntoView({ behavior: "smooth" });
@@ -29,19 +34,19 @@ export const Message = ({ me, userData, message }) => {
   // console.log(userData);
 
   const styleTheme =
-    authContext.theme === "dark"
+    theme === "dark"
       ? { background: "#151515", color: "white" }
       : { background: "#DEDEDE", color: "black" };
 
   const styleTheme2 =
-  authContext.theme === "dark"
-    ? { background: "black", color: "white" }
-    : { background: "white", color: "black" };
+    theme === "dark"
+      ? { background: "black", color: "white" }
+      : { background: "white", color: "black" };
 
   const styleTheme3 =
-  authContext.theme === "dark"
-    ? { color: "#03DAC6", borderColor: "#03DAC6" }
-    : { color: "blue", borderColor: "blue" }
+    theme === "dark"
+      ? { color: "#03DAC6", borderColor: "#03DAC6" }
+      : { color: "blue", borderColor: "blue" };
 
   const handleDeleteModal = () => {
     setPopOver(false);
@@ -54,17 +59,15 @@ export const Message = ({ me, userData, message }) => {
 
   // console.log(message);
 
-  const isMessageDeletedForMe = message.deletedFor.includes(
-    authContext?.user._id
-  );
+  const isMessageDeletedForMe = message.deletedFor.includes(user.id);
 
   const isMessageDeletedForEveryone =
-    message.deletedFor.includes(authContext?.user._id) &&
+    message.deletedFor.includes(user.id) &&
     message.deletedFor.includes(userData?.appUserId);
 
   // console.log(isMessageDeletedForMe, isMessageDeletedForEveryone);
   const isMessageDeletedByme = message.deletedFor.includes(message.senderId);
-  const isOwnerofMessage = message.senderId === authContext.user._id;
+  const isOwnerofMessage = message.senderId === user.id;
 
   // Convert to JavaScript Date object
   const date = new Date(
@@ -74,6 +77,9 @@ export const Message = ({ me, userData, message }) => {
   // Format the date in Indian date format using Moment.js
   const formattedTime = moment(date).format("HH:mma");
 
+  const profilePicture = user.profilePicture
+    ? user.profilePicture
+    : "https://firebasestorage.googleapis.com/v0/b/campus-connect-90a41.appspot.com/o/image%2F2024644_login_user_avatar_person_users_icon.png?alt=media&token=639b6775-2181-4c05-985c-a7797d4a95bd";
   return (
     <div
       ref={scrollRef}
@@ -83,7 +89,7 @@ export const Message = ({ me, userData, message }) => {
     >
       <div className={me ? `${styles.hidden}` : styles.userAvatar}>
         {/* user avatar */}
-        <img src={`${userData?.photoUrl}`} alt="user_avatar" />
+        <img src={`${profilePicture}`} alt="user_avatar" />
       </div>
       <div
         className={

@@ -22,6 +22,7 @@ import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { NewAuthContextProvider } from "./context/newAuthContext";
 import { NetworkContextProvider } from "./context/networkContext";
+import { ThemeContextProvider } from "./context/themeContext";
 
 export const App = () => {
   useEffect(() => {
@@ -30,43 +31,43 @@ export const App = () => {
 
   return (
     <NetworkContextProvider>
-      <ServiceWorkerProvider>
-        <NewAuthContextProvider>
-          <FirebaseContextProvider>
-            <ChatContextProvider>
-              <AuthState>
-                <ModalContextProvider>
-                  <ModalProvider />
-                  <UserState>
-                    <PollState>
-                      <PostState>
-                        <BlogState>
-                          <AdsState>
-                            <EventState>
-                              <StreamState>
-                                <JobState>
-                                  <UpdateState>
-                                    <NoticeState>
-                                      <Routing />
-                                      <ToastContainer 
-                                      position="top-right"
-                                    />
-                                  </NoticeState>
-                                  </UpdateState>
-                                </JobState>
-                              </StreamState>
-                            </EventState>
-                          </AdsState>
-                        </BlogState>
-                      </PostState>
-                    </PollState>
-                  </UserState>
-                </ModalContextProvider>
-              </AuthState>
-            </ChatContextProvider>
-          </FirebaseContextProvider>
-        </NewAuthContextProvider>
-      </ServiceWorkerProvider>
+      <ThemeContextProvider>
+        <ServiceWorkerProvider>
+          <NewAuthContextProvider>
+            <FirebaseContextProvider>
+              <ChatContextProvider>
+                <AuthState>
+                  <ModalContextProvider>
+                    <ModalProvider />
+                    <UserState>
+                      <PollState>
+                        <PostState>
+                          <BlogState>
+                            <AdsState>
+                              <EventState>
+                                <StreamState>
+                                  <JobState>
+                                    <UpdateState>
+                                      <NoticeState>
+                                        <Routing />
+                                        <ToastContainer position="top-right" />
+                                      </NoticeState>
+                                    </UpdateState>
+                                  </JobState>
+                                </StreamState>
+                              </EventState>
+                            </AdsState>
+                          </BlogState>
+                        </PostState>
+                      </PollState>
+                    </UserState>
+                  </ModalContextProvider>
+                </AuthState>
+              </ChatContextProvider>
+            </FirebaseContextProvider>
+          </NewAuthContextProvider>
+        </ServiceWorkerProvider>
+      </ThemeContextProvider>
     </NetworkContextProvider>
   );
 };

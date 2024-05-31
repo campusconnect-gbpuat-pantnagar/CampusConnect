@@ -80,7 +80,6 @@ export const AuthState = ({ children }) => {
           signupData.email,
           signupData.password
         );
-   
 
         const userRef = doc(db, "users", response.data.data._id);
         await setDoc(userRef, {

@@ -141,13 +141,6 @@ const SignUpPage = () => {
 
         const userRef = doc(db, "users", user.id);
 
-        console.log({
-          uid: firebaseUser.user.uid,
-          name: `${user.firstName} ${user.lastName}`,
-          email: firebaseUser.user.email,
-          appUserId: user.id,
-        });
-
         await setDoc(userRef, {
           uid: firebaseUser.user.uid,
           name: `${user.firstName} ${user.lastName}`,

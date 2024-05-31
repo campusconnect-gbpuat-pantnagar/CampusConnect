@@ -4,17 +4,20 @@ import { ChatHeader } from "./ChatHeader";
 import styles from "./chatIdPage.module.css";
 import { ChatMessages } from "./chatMessages";
 import { ChatContext } from "../../../context/chatContext/chatContext";
-import { AuthContext } from "../../../context/authContext/authContext"
+import { AuthContext } from "../../../context/authContext/authContext";
 import { useGetUserData } from "../../../hooks/useGetUserData";
+import { NewAuthContext } from "../../../context/newAuthContext";
+import { ThemeContext } from "../../../context/themeContext";
 
 const ChatIdPage = () => {
   const { talkingWithId } = useContext(ChatContext);
-  const authContext = useContext(AuthContext);
+  const { user } = useContext(NewAuthContext);
+  const { theme } = useContext(ThemeContext);
   const userData = useGetUserData(talkingWithId);
   console.log(userData);
 
   const styleTheme =
-    authContext.theme === "dark"
+    theme === "dark"
       ? { background: "#151515", color: "white" }
       : { background: "#DEDEDE", color: "black" };
 

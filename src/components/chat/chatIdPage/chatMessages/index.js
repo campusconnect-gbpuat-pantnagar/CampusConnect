@@ -5,9 +5,10 @@ import { ChatContext } from "../../../../context/chatContext/chatContext";
 import { doc, onSnapshot } from "firebase/firestore";
 import { db } from "../../../../utils/config/firebase";
 import { AuthContext } from "../../../../context/authContext/authContext";
+import { NewAuthContext } from "../../../../context/newAuthContext";
 export const ChatMessages = ({ userData }) => {
   const { chatId, chatWallpaper } = useContext(ChatContext);
-  const authContext = useContext(AuthContext);
+  const { user } = useContext(NewAuthContext);
   const [messages, setMessages] = useState([]);
 
   useEffect(() => {
@@ -32,7 +33,7 @@ export const ChatMessages = ({ userData }) => {
       }}
     >
       {messages?.map((msg) => {
-        const me = msg?.senderId === authContext.user?._id;
+        const me = msg?.senderId === user.id;
         return <Message me={me} userData={userData} message={msg} />;
       })}
     </div>

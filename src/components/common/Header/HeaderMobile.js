@@ -16,13 +16,11 @@ import MenuIcon from "@material-ui/icons/Menu";
 import { AuthContext } from "../../../context/authContext/authContext";
 import { Link, useNavigate, useLocation } from "react-router-dom";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import PeopleAltRoundedIcon from "@material-ui/icons/PeopleAltRounded"
-import NoteRoundedIcon from '@material-ui/icons/NoteRounded';
-import BusinessCenterRoundedIcon from '@material-ui/icons/BusinessCenterRounded';
-import HomeRoundedIcon from '@material-ui/icons/HomeRounded';
-import {
-  faCommentDots,
-} from "@fortawesome/free-solid-svg-icons";
+import PeopleAltRoundedIcon from "@material-ui/icons/PeopleAltRounded";
+import NoteRoundedIcon from "@material-ui/icons/NoteRounded";
+import BusinessCenterRoundedIcon from "@material-ui/icons/BusinessCenterRounded";
+import HomeRoundedIcon from "@material-ui/icons/HomeRounded";
+import { faCommentDots } from "@fortawesome/free-solid-svg-icons";
 import { FeedbackModal } from "../../pages/Modals/FeedbackModal";
 
 const currentTab = (location, path) => {
@@ -115,28 +113,45 @@ const HeaderMobile = () => {
               <Grid item>
                 <Link to="/">
                   <IconButton>
-                    <HomeRoundedIcon style={{ ...currentTab(location, "/"), fontSize: "30px" }} />
+                    <HomeRoundedIcon
+                      style={{ ...currentTab(location, "/"), fontSize: "30px" }}
+                    />
                   </IconButton>
                 </Link>
               </Grid>
               <Grid item>
                 <Link to="/connections">
                   <IconButton>
-                    <PeopleAltRoundedIcon style={{ ...currentTab(location, "/connections"), fontSize: "30px" }} />
+                    <PeopleAltRoundedIcon
+                      style={{
+                        ...currentTab(location, "/connections"),
+                        fontSize: "30px",
+                      }}
+                    />
                   </IconButton>
                 </Link>
               </Grid>
               <Grid item>
                 <Link to="/notices">
                   <IconButton>
-                    <NoteRoundedIcon style={{ ...currentTab(location, "/notices"), fontSize: "30px" }} />
+                    <NoteRoundedIcon
+                      style={{
+                        ...currentTab(location, "/notices"),
+                        fontSize: "30px",
+                      }}
+                    />
                   </IconButton>
                 </Link>
               </Grid>
               <Grid item>
                 <Link to="/jobs-and-placements">
                   <IconButton>
-                    <BusinessCenterRoundedIcon style={{ ...currentTab(location, "/jobs-and-placements"), fontSize: "30px" }} />
+                    <BusinessCenterRoundedIcon
+                      style={{
+                        ...currentTab(location, "/jobs-and-placements"),
+                        fontSize: "30px",
+                      }}
+                    />
                   </IconButton>
                 </Link>
               </Grid>
@@ -145,7 +160,10 @@ const HeaderMobile = () => {
                   <IconButton className="m-1">
                     <FontAwesomeIcon
                       icon={faCommentDots}
-                      style={{ ...currentTab(location, "/chats"), fontSize: "25px" }}
+                      style={{
+                        ...currentTab(location, "/chats"),
+                        fontSize: "25px",
+                      }}
                     />
                   </IconButton>
                 </Link>

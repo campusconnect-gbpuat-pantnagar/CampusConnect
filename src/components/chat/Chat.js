@@ -12,7 +12,6 @@ import { ChatContext } from "../../context/chatContext/chatContext";
 import { useMediaQuery } from "react-responsive";
 
 const Chat = () => {
-  const authContext = useContext(AuthContext);
   const { chatId } = useContext(ChatContext);
   const isTabletOrMobile = useMediaQuery({ query: "(max-width: 996px)" });
   return (
