@@ -14,6 +14,8 @@ import { NewAuthContext } from "../../../../context/newAuthContext";
 import { useLocalStorage } from "usehooks-ts";
 import ServiceConfig from "../../../../helpers/service-endpoint";
 import HttpRequest from "../../../../helpers/public-client";
+import { signInWithEmailAndPassword } from "firebase/auth";
+import { auth } from "../../../../utils/config/firebase";
 const SignInPage = () => {
   const [formData, setFormData] = useState({
     username: "",
@@ -104,7 +106,12 @@ const SignInPage = () => {
           });
           return;
         }
-
+        // Implementation of signin with firebase using user email and password
+        await signInWithEmailAndPassword(
+          auth,
+          user.gbpuatEmail,
+          formData.password
+        );
         console.log(user, tokens);
         // save user to auth context and token to local storage
         setUser({

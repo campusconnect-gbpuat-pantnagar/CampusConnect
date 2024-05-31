@@ -19,6 +19,9 @@ import {
 } from "../../../../utils/proxy";
 import ServiceConfig from "../../../../helpers/service-endpoint";
 import HttpRequest from "../../../../helpers/public-client";
+import { createUserWithEmailAndPassword } from "firebase/auth";
+import { auth, db } from "../../../../utils/config/firebase";
+import { doc, getDoc, setDoc } from "firebase/firestore";
 const SignUpPage = () => {
   const navigate = useNavigate();
   const { state } = useLocation();
@@ -112,7 +115,7 @@ const SignUpPage = () => {
           designation: data.designation,
         },
       };
-      // console.log(userData);
+      console.log(userData);
       // const response = await axios.post(
       //   `${CAMPUSCONNECT_AUTH_BACKEND_API}/api/v1/auth/signup`,
       //   userData
@@ -128,7 +131,41 @@ const SignUpPage = () => {
       console.log(response);
       if (response.data.data) {
         const { user } = response.data.data;
-        console.log(user);
+
+        // if the new user created the we create firebase user
+        const firebaseUser = await createUserWithEmailAndPassword(
+          auth,
+          user.gbpuatEmail,
+          userData.password
+        );
+
+        const userRef = doc(db, "users", user.id);
+
+        console.log({
+          uid: firebaseUser.user.uid,
+          name: `${user.firstName} ${user.lastName}`,
+          email: firebaseUser.user.email,
+          appUserId: user.id,
+        });
+
+        await setDoc(userRef, {
+          uid: firebaseUser.user.uid,
+          name: `${user.firstName} ${user.lastName}`,
+          email: firebaseUser.user.email,
+          appUserId: user.id,
+        });
+
+        // creating a userChats collection
+        const currentUserRef = doc(db, "userChats", user.id);
+        const CurrentUserChatsDocSnap = await getDoc(currentUserRef);
+
+        console.log(currentUserRef, "currentUserRef");
+
+        if (!CurrentUserChatsDocSnap.exists()) {
+          await setDoc(doc(db, "userChats", user.id), {});
+        }
+
+        // add the user in the firebase document
         navigate("/signup", { state: null });
         navigate("/verify-email", {
           state: {
@@ -144,7 +181,8 @@ const SignUpPage = () => {
       setCustomError("");
       setIsLoading(false);
     } catch (err) {
-      alert(`Error: ${err.response.data.message}`);
+      console.log(err);
+      alert(`Error: ${err.response?.data.message}`);
       setIsLoading(false);
     }
   };

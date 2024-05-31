@@ -80,7 +80,7 @@ export const AuthState = ({ children }) => {
           signupData.email,
           signupData.password
         );
-        console.log(firebaseUser.user, "firenase ", response.data);
+   
 
         const userRef = doc(db, "users", response.data.data._id);
         await setDoc(userRef, {
