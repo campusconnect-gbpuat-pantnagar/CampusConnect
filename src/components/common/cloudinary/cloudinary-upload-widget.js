@@ -20,7 +20,18 @@ const CloudinaryUploadWidget = ({ setMediaFiles }) => {
           setMediaFiles([]);
         }
         if (result && result.event === "success") {
-          const uploadedFiles = result.event === "success" ? result.info : {};
+          console.log(result.info);
+          const uploadedFiles =
+            result.event === "success"
+              ? {
+                  url: result.info.secure_url,
+                  format: result.info.format,
+                  publicId: result.info.public_id,
+                  resource_type: result.info.resource_type,
+                  thumbnail_url: result.info.thumbnail_url,
+                  asset_id: result.info.asset_id,
+                }
+              : {};
           setMediaFiles((prevMediaFiles) => [...prevMediaFiles, uploadedFiles]);
         }
       }

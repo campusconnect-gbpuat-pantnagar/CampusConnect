@@ -1,15 +1,18 @@
-import React, { useContext, useEffect, useState } from "react"
-import { Home } from "../../../common/Base/Home"
-import { PostCard } from "./PostCard"
-import CameraIcon from "@material-ui/icons/Camera"
-import { LoadingPost } from "./LoadingPost"
-import { Grid } from "@material-ui/core"
-import ServiceConfig from "../../../../helpers/service-endpoint"
-import HttpRequestPrivate from "../../../../helpers/private-client"
+import React, { useContext, useEffect, useState } from "react";
+import { Home } from "../../../common/Base/Home";
+import { PostCard } from "./PostCard";
+import CameraIcon from "@material-ui/icons/Camera";
+import { LoadingPost } from "./LoadingPost";
+import { Grid } from "@material-ui/core";
+import ServiceConfig from "../../../../helpers/service-endpoint";
+import HttpRequestPrivate from "../../../../helpers/private-client";
+import { toast } from "react-toastify";
+import { ThemeContext } from "../../../../context/themeContext";
 
 export const Post = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [posts, setPosts] = useState([]);
+  const { theme } = useContext(ThemeContext);
 
   async function getPosts() {
     setIsLoading(true);
@@ -23,7 +26,7 @@ export const Post = () => {
       const response = await HttpRequestPrivate(requestOptions);
       console.log(response);
       setIsLoading(false);
-      if(response.data.data){
+      if (response.data.data) {
         setPosts(response.data.data);
       }
     } catch (err) {
@@ -35,7 +38,40 @@ export const Post = () => {
   useEffect(() => {
     getPosts();
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [])
+  }, []);
+
+  const deletePost = async (postId) => {
+    try {
+      const updatedPosts = posts.filter((post) => post.id !== postId);
+      setPosts(updatedPosts);
+      const requestOptions = {
+        url: `${ServiceConfig.postEndpoint}/${postId}`,
+        method: "DELETE",
+        showActual: true,
+        withCredentials: true,
+      };
+      const response = await HttpRequestPrivate(requestOptions);
+      if (response.data.data) {
+        toast.success(response.data.message, {
+          theme: `${theme === "dark" ? "dark" : "light"}`,
+        });
+      }
+    } catch (err) {
+      console.log(err);
+      toast.error(err?.data?.message, {
+        theme: `${theme === "dark" ? "dark" : "light"}`,
+      });
+    }
+  };
+
+  const updatePostList = (updatedPost) => {
+    if (updatedPost) {
+      const updatedPosts = posts.map((post) =>
+        post.id === updatedPost.id ? updatedPost : post
+      );
+      setPosts(updatedPosts);
+    }
+  };
 
   return (
     <Home>
@@ -46,9 +82,13 @@ export const Post = () => {
           posts.map((post) => {
             return (
               <div key={post.id}>
-                <PostCard post={post} />
+                <PostCard
+                  updatedPost={updatePostList}
+                  deletePost={deletePost}
+                  post={post}
+                />
               </div>
-            )
+            );
           })
         ) : (
           <div
@@ -73,5 +113,5 @@ export const Post = () => {
         )}
       </div>
     </Home>
-  )
-}
+  );
+};

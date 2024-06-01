@@ -1,4 +1,7 @@
-import { CAMPUSCONNECT_AUTH_BACKEND_API, CAMPUSCONNECT_BACKEND_API } from "../utils/proxy";
+import {
+  CAMPUSCONNECT_AUTH_BACKEND_API,
+  CAMPUSCONNECT_BACKEND_API,
+} from "../utils/proxy";
 
 const ServiceConfig = {
   refreshTokenEndPoint: `${CAMPUSCONNECT_AUTH_BACKEND_API}/api/v1/auth/refresh-token`,
@@ -17,10 +20,10 @@ const ServiceConfig = {
   adEndpoint: `${CAMPUSCONNECT_BACKEND_API}/api/v1/ads`,
   eventEndpoint: `${CAMPUSCONNECT_BACKEND_API}/api/v1/events`,
   noticeEndpoint: `${CAMPUSCONNECT_BACKEND_API}/api/v1/notices`,
-  pollEndpoint: `${CAMPUSCONNECT_BACKEND_API}/api/v1/polls`,
+  pollsEndpoint: `${CAMPUSCONNECT_BACKEND_API}/api/v1/polls`,
   siteUpdateEndpoint: `${CAMPUSCONNECT_BACKEND_API}/api/v1/site-updates`,
   feedbackEndpoint: `${CAMPUSCONNECT_BACKEND_API}/api/v1/feedbacks`,
-  getUserEndpoint: `${CAMPUSCONNECT_BACKEND_API}/api/v1/users`,
+  getUserEndpoint: `${CAMPUSCONNECT_AUTH_BACKEND_API}/api/v1/users`,
 };
 
 export default ServiceConfig;

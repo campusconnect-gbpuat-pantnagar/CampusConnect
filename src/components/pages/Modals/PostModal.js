@@ -8,28 +8,23 @@ import { Cloudinary } from "@cloudinary/url-gen";
 import CloudinaryUploadWidget from "../../common/cloudinary/cloudinary-upload-widget";
 import CustomCarousel from "../../common/custom-carousel/custom-carousel";
 import ServiceConfig from "../../../helpers/service-endpoint";
-import { NewAuthContext } from './../../../context/newAuthContext';
+import { NewAuthContext } from "./../../../context/newAuthContext";
 import { ThemeContext } from "../../../context/themeContext";
 import { toast } from "react-toastify";
-import HttpRequestPrivate from './../../../helpers/private-client';
+import HttpRequestPrivate from "./../../../helpers/private-client";
 
-export const PostModal = ({
-  show,
-  handleModal,
-  modalTitle,
-  post,
-}) => {
+export const PostModal = ({ show, handleModal, modalTitle, post }) => {
   const { user } = useContext(NewAuthContext);
   const { theme } = useContext(ThemeContext);
   // ADDED THE CLOUDINARY FOR UPLOADING AND HANDLING THE MEDIA FILES..
-  const [mediaFiles, setMediaFiles] = useState([]);
+  const [mediaFiles, setMediaFiles] = useState(post ? post.media : []);
+
   const [isLoading, setIsLoading] = useState(false);
-  const [preview, setPreview] = useState(
-    post === undefined ? "" : post.media
-  );
+  const [preview, setPreview] = useState(post === undefined ? "" : post.media);
   const [content, setContent] = useState(
     post === undefined ? "" : post.content
   );
+
   console.log(preview);
 
   async function postCreate() {
@@ -45,20 +40,26 @@ export const PostModal = ({
         showActual: true,
         withCredentials: true,
       };
+      console.log(requestOptions);
       const response = await HttpRequestPrivate(requestOptions);
       setIsLoading(false);
-      if(response.data.data){
-        toast.success(response.data.message, { theme: `${theme === "dark" ? "dark" : "light"}` });
+      if (response.data.data) {
+        toast.success(response.data.message, {
+          theme: `${theme === "dark" ? "dark" : "light"}`,
+        });
         sendNotificationToUserWithImage(
           "New Post",
-          `${user.firstName} created a new post`, user.id,
+          `${user.firstName} created a new post`,
+          user.id,
           user.id
         );
       }
     } catch (err) {
       setIsLoading(false);
       console.log(err);
-      toast.error(err?.data?.message, { theme: `${theme === "dark" ? "dark" : "light"}` });
+      toast.error(err?.data?.message, {
+        theme: `${theme === "dark" ? "dark" : "light"}`,
+      });
     }
   }
 
@@ -77,22 +78,26 @@ export const PostModal = ({
       };
       const response = await HttpRequestPrivate(requestOptions);
       setIsLoading(false);
-      if(response.data.data){
-        toast.success(response.data.message, { theme: `${theme === "dark" ? "dark" : "light"}` });
+      if (response.data.data) {
+        toast.success(response.data.message, {
+          theme: `${theme === "dark" ? "dark" : "light"}`,
+        });
       }
     } catch (err) {
       setIsLoading(false);
       console.log(err);
-      toast.error(err.data.message, { theme: `${theme === "dark" ? "dark" : "light"}` });
+      toast.error(err.data.message, {
+        theme: `${theme === "dark" ? "dark" : "light"}`,
+      });
     }
   }
 
   const handleForm = async (e) => {
     e.preventDefault();
-    post
-      ? postUpdate(post.id)
-      : postCreate();
-    handleModal();
+    if (content || mediaFiles.length > 0) {
+      post ? postUpdate(post.id) : postCreate();
+      handleModal({ ...post, content: content, media: mediaFiles });
+    }
   };
   const styleTheme =
     theme === "dark"
@@ -123,16 +128,12 @@ export const PostModal = ({
     },
   }));
 
+  const handleRemoveMediafiles = () => {
+    setMediaFiles([]);
+  };
+
   const classes = useStyles();
-
-  const slides = [
-    "https://res.cloudinary.com/hzxyensd5/image/upload/v1715431486/rcgbsyqhawobm0ekbpr9.png",
-    "https://res.cloudinary.com/hzxyensd5/image/upload/v1715431363/azebpkm4oimprgtzduid.png",
-    "http://res.cloudinary.com/hzxyensd5/image/upload/v1715290741/w3yi2fpejje2cphvtclo.jpg",
-    "https://res.cloudinary.com/hzxyensd5/image/upload/v1715431518/u8xooexm5wxvwijhfpxy.png",
-    // "https://res.cloudinary.com/hzxyensd5/video/upload/v1715432290/ebpclk0epocp75aulhgj.mp4",
-  ];
-
+  console.log(post);
   return (
     <Modal
       show={show}
@@ -172,21 +173,26 @@ export const PostModal = ({
               {/* cloudinary upload widget  */}
               <CloudinaryUploadWidget setMediaFiles={setMediaFiles} />
               {/* css pending for delete button */}
-              <button>Delete All</button>
+              <button onClick={handleRemoveMediafiles}>Delete All</button>
             </Grid>
           </Grid>
-          <Grid item style={{ width: "100%", margin: "auto", height: "300px" }}>
-            <div
-              style={{
-                margin: "auto",
-                position: "relative",
-                width: "100%",
-                height: "100%",
-              }}
+          {mediaFiles.length > 0 && (
+            <Grid
+              item
+              style={{ width: "100%", margin: "auto", height: "300px" }}
             >
-              <CustomCarousel slides={slides} />
-            </div>
-          </Grid>
+              <div
+                style={{
+                  margin: "auto",
+                  position: "relative",
+                  width: "100%",
+                  height: "100%",
+                }}
+              >
+                <CustomCarousel slides={mediaFiles} />
+              </div>
+            </Grid>
+          )}
         </Grid>
       </Modal.Body>
       <Modal.Footer style={styleTheme}>

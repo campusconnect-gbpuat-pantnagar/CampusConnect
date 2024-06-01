@@ -113,7 +113,7 @@ export const Routing = () => {
             /> */}
           {/* <Route path="/signin" element={<SimpleRoute component={Login} />} /> */}
 
-          {/* <Route path="/" element={<PrivateRoute component={Post} />} /> */}
+          <Route path="/" element={<PrivateRoute component={Post} />} />
           {/* <Route path="/chats" element={<PrivateRoute component={Chat} />} /> */}
           {/* <Route path="/posts" element={<PrivateRoute component={Post} />} /> */}
           {/* <Route
@@ -194,10 +194,10 @@ export const Routing = () => {
             path="/account-recovery-consent"
             element={<PublicRoute component={AccountRecoveryConsentPage} />}
           />
-          <Route
+          {/* <Route
             path="/"
             element={<PrivateRoute component={TestingHomePage} />}
-          />
+          /> */}
         </Routes>
       </ThemeProvider>
     </div>

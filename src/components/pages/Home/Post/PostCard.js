@@ -41,8 +41,11 @@ import { ThemeContext } from "../../../../context/themeContext";
 import ServiceConfig from "../../../../helpers/service-endpoint";
 import HttpRequestPrivate from "../../../../helpers/private-client";
 import { toast } from "react-toastify";
+import { dividerClasses } from "@mui/material";
+import { LoadingPost } from "./LoadingPost";
+import CustomCarousel from "../../../common/custom-carousel/custom-carousel";
 
-export const PostCard = ({ post }) => {
+export const PostCard = ({ post, deletePost, updatedPost }) => {
   const navigate = useNavigate();
   const { user } = useContext(NewAuthContext);
   const { theme } = useContext(ThemeContext);
@@ -54,22 +57,34 @@ export const PostCard = ({ post }) => {
   const [moreOption, setMoreOption] = useState(null);
   const [expanded, setExpanded] = useState(false);
 
-  const getUserById = async (userId) => {
+  const [isLoading, setIsLoading] = useState(false);
+  const [postUser, setPostUser] = useState();
+
+  const getUserById = async () => {
     try {
+      setIsLoading(true);
       const requestOptions = {
-        url: `${ServiceConfig.getUserEndpoint}/${userId}`,
+        url: `${ServiceConfig.getUserEndpoint}/profile/${post.userId}`,
         method: "GET",
         showActual: true,
         withCredentials: true,
       };
       const response = await HttpRequestPrivate(requestOptions);
-      if(response.data.data){
-        
+      if (response.data.data && response.data.data.user) {
+        console.log(user, "user profile by userId");
+        setPostUser(response.data.data.user);
+        setIsLoading(false);
       }
+      setIsLoading(false);
     } catch (err) {
+      setIsLoading(false);
       console.log(err);
     }
-  }
+  };
+
+  useEffect(() => {
+    getUserById();
+  }, [post]);
 
   const toggleComments = () => {
     setExpanded(!expanded);
@@ -85,7 +100,8 @@ export const PostCard = ({ post }) => {
 
   const [showPost, setShowPost] = useState(false);
 
-  const handleModalPost = () => {
+  const handleModalPost = (post) => {
+    updatedPost(post);
     handleClose();
     setShowPost(!showPost);
   };
@@ -98,31 +114,22 @@ export const PostCard = ({ post }) => {
   //     });
   //   }
   // }, [post._id, userContext.loading, userContext.user.bookmark.post]);
+
   useEffect(() => {
-    if (post.likes.includes(user.id)) {
+    const isLikedByCurrentUser = post.likes
+      .map((likedUser) => likedUser.userId)
+      .includes(user.id);
+
+    if (isLikedByCurrentUser) {
       setLikeStatus(true);
     } else {
       setLikeStatus(false);
     }
   }, [user.id, post.likes]);
 
-  const deletePost = async () => {
-    try {
-      const requestOptions = {
-        url: `${ServiceConfig.postEndpoint}/${post.id}`,
-        method: "DELETE",
-        showActual: true,
-        withCredentials: true,
-      };
-      const response = await HttpRequestPrivate(requestOptions);
-      if(response.data.data){
-        toast.success(response.data.message, { theme: `${theme === "dark" ? "dark" : "light"}` });
-      }
-    } catch (err) {
-      console.log(err);
-      toast.error(err?.data?.message, { theme: `${theme === "dark" ? "dark" : "light"}` });
-    }
-  }
+  const handleDelete = () => {
+    deletePost(post.id);
+  };
 
   const handleLikeBtn = async () => {
     if (!likeStatus) {
@@ -134,12 +141,16 @@ export const PostCard = ({ post }) => {
           withCredentials: true,
         };
         const response = await HttpRequestPrivate(requestOptions);
-        if(response.data.data){
-          toast.success(response.data.message, { theme: `${theme === "dark" ? "dark" : "light"}` });
+        if (response.data.data) {
+          toast.success("you liked the post", {
+            theme: `${theme === "dark" ? "dark" : "light"}`,
+          });
         }
       } catch (err) {
         console.log(err);
-        toast.error(err?.data?.message, { theme: `${theme === "dark" ? "dark" : "light"}` });
+        toast.error(err?.data?.message, {
+          theme: `${theme === "dark" ? "dark" : "light"}`,
+        });
       }
       setLikeCount(likeCount + 1);
       setLikeStatus(true);
@@ -152,17 +163,22 @@ export const PostCard = ({ post }) => {
           withCredentials: true,
         };
         const response = await HttpRequestPrivate(requestOptions);
-        if(response.data.data){
-          toast.success(response.data.message, { theme: `${theme === "dark" ? "dark" : "light"}` });
+        if (response.data.data) {
+          toast.success(`you unliked the post`, {
+            theme: `${theme === "dark" ? "dark" : "light"}`,
+          });
         }
       } catch (err) {
         console.log(err);
-        toast.error(err?.data?.message, { theme: `${theme === "dark" ? "dark" : "light"}` });
+        toast.error(err?.data?.message, {
+          theme: `${theme === "dark" ? "dark" : "light"}`,
+        });
       }
       setLikeCount(likeCount - 1);
       setLikeStatus(false);
     }
   };
+
   const handleBookmarkBtn = () => {
     // const formData = {
     //   type: post.objType,
@@ -176,6 +192,7 @@ export const PostCard = ({ post }) => {
     //   setBookmarkStatus(false);
     // }
   };
+
   const handleCommentSend = async () => {
     try {
       const requestOptions = {
@@ -188,12 +205,16 @@ export const PostCard = ({ post }) => {
         withCredentials: true,
       };
       const response = await HttpRequestPrivate(requestOptions);
-      if(response.data.data){
-        toast.success(response.data.message, { theme: `${theme === "dark" ? "dark" : "light"}` });
+      if (response.data.data) {
+        toast.success(response.data.message, {
+          theme: `${theme === "dark" ? "dark" : "light"}`,
+        });
       }
     } catch (err) {
       console.log(err);
-      toast.error(err?.data?.message, { theme: `${theme === "dark" ? "dark" : "light"}` });
+      toast.error(err?.data?.message, {
+        theme: `${theme === "dark" ? "dark" : "light"}`,
+      });
     }
   };
 
@@ -206,193 +227,229 @@ export const PostCard = ({ post }) => {
     theme === "dark" ? { color: "#03DAC6" } : { color: "blue" };
 
   return (
-    <Card variant="elevation" elevation={3} className="mb-3" style={styleTheme}>
-      {showPost && (
-        <PostModal
-          show={showPost}
-          handleModal={handleModalPost}
-          modalTitle="Update Post"
-          post={post}
-        />
-      )}
-      <CardHeader
-        // avatar={
-        //   <Avatar
-        //     alt={post.user.name}
-        //     src={`${API}/pic/user/${post.user._id}`}
-        //   />
-        // }
-        action={
-          <>
-          {user.id === post.userId ? (
-            <IconButton
-              aria-label="settings"
-              onClick={handleMoreOption}
-              style={styleTheme}
-            >
-              <MoreHorizIcon />
-            </IconButton> ) : null }
-            <Menu
-              id="fade-menu"
-              anchorEl={moreOption}
-              keepMounted
-              open={open}
-              onClose={handleClose}
-              TransitionComponent={Fade}
-              PaperProps={{ style: { backgroundColor: styleTheme.background } }}
-            >
-              {user.id === post.userId ? (
-                <MenuItem onClick={handleModalPost} style={styleTheme}>
-                  Edit
-                </MenuItem>
-              ) : null}
-              {user.id === post.userId ? (
-                <MenuItem
-                  onClick={() => {
-                    deletePost();
-                    handleClose();
+    <>
+      {isLoading ? (
+        <div style={{ margin: "1rem 0" }}>
+          <LoadingPost />
+        </div>
+      ) : (
+        <Card
+          variant="elevation"
+          elevation={3}
+          className="mb-3"
+          style={styleTheme}
+        >
+          {showPost && (
+            <PostModal
+              show={showPost}
+              handleModal={handleModalPost}
+              modalTitle="Update Post"
+              post={post}
+            />
+          )}
+          <CardHeader
+            avatar={<Avatar alt={postUser?.firstName} src={``} />}
+            action={
+              <>
+                {user.id === post.userId ? (
+                  <IconButton
+                    aria-label="settings"
+                    onClick={handleMoreOption}
+                    style={styleTheme}
+                  >
+                    <MoreHorizIcon />
+                  </IconButton>
+                ) : null}
+                <Menu
+                  id="fade-menu"
+                  anchorEl={moreOption}
+                  keepMounted
+                  open={open}
+                  onClose={handleClose}
+                  TransitionComponent={Fade}
+                  PaperProps={{
+                    style: { backgroundColor: styleTheme.background },
                   }}
-                  style={styleTheme}
                 >
-                  Delete
-                </MenuItem>
-              ) : null}
-              {/* <MenuItem onClick={handleClose} style={styleTheme}>Share</MenuItem>
-              <MenuItem onClick={handleClose} style={styleTheme}>Bookmark</MenuItem> */}
-              {/* <MenuItem onClick={handleClose} style={styleTheme}>
-                Report Post
-              </MenuItem> */}
-            </Menu>
-          </>
-        }
-        title={
-          <b
-            style={{ cursor: "pointer" }}
-            onClick={() => {
-              navigate(`/profile/${post.user._id}`);
-            }}
-          >
-            {post.user.name}
-          </b>
-        }
-        subheader={
-          <Moment style={styleTheme} fromNow>
-            {post.createdAt}
-          </Moment>
-        }
-      />
-      <CardContent className="py-1">
-        <Typography variant="body1" component="p">
-          {post.content}
-        </Typography>
-      </CardContent>
-      <div className="centered-image-container">
-{/*  TODO✅: Implement rendering the media files  */}
-        {post.media.length > 0 && (
-          <img
-            className="centered-image"
-            height="100%"
-            src={`https://campusconnect-cp84.onrender.com/${post.picture[0]}`}
-            alt="post.png"
-          />
-        )}
-      </div>
-      <CardActions disableSpacing className="my-0 py-0">
-        <Grid container justifyContent="space-between">
-          <Grid item>
-            <IconButton onClick={handleLikeBtn}>
-              {likeStatus ? (
-                <FontAwesomeIcon
-                  icon={faHeartSolid}
-                  style={{ color: "#ed4c56" }}
-                />
-              ) : (
-                <FontAwesomeIcon icon={faHeartRegualar} style={styleTheme} />
-              )}
-            </IconButton>
-            <IconButton onClick={toggleComments}>
-              <FontAwesomeIcon icon={faComment} style={styleTheme} />
-            </IconButton>
-            {/* <IconButton>
-              <FontAwesomeIcon icon={faShareSquare} style={styleTheme} />
-            </IconButton> */}
-          </Grid>
-          <Grid item>
-            <IconButton onClick={handleBookmarkBtn} style={styleTheme}>
-              {bookmarkStatus ? (
-                <FontAwesomeIcon icon={faBookmarkSolid} />
-              ) : (
-                <FontAwesomeIcon icon={faBookmarkRegular} />
-              )}
-            </IconButton>
-          </Grid>
-        </Grid>
-      </CardActions>
-      <Accordion expanded={expanded} onChange={toggleComments} variant="elevation" style={styleTheme}>
-        <AccordionSummary>
-          <Grid container justifyContent="space-between">
-            <Grid item>
-              <Typography
-                onClick={(event) => event.stopPropagation()}
-                onFocus={(event) => event.stopPropagation()}
-                variant="subtitle2"
-                gutterBottom
+                  {user.id === post.userId ? (
+                    <MenuItem onClick={handleModalPost} style={styleTheme}>
+                      Edit
+                    </MenuItem>
+                  ) : null}
+                  {user.id === post.userId ? (
+                    <MenuItem
+                      onClick={() => {
+                        handleDelete();
+                        handleClose();
+                      }}
+                      style={styleTheme}
+                    >
+                      Delete
+                    </MenuItem>
+                  ) : null}
+                  {/* <MenuItem onClick={handleClose} style={styleTheme}>Share</MenuItem>
+          <MenuItem onClick={handleClose} style={styleTheme}>Bookmark</MenuItem> */}
+                  {/* <MenuItem onClick={handleClose} style={styleTheme}>
+            Report Post
+          </MenuItem> */}
+                </Menu>
+              </>
+            }
+            title={
+              <b
+                style={{ cursor: "pointer" }}
+                onClick={() => {
+                  navigate(`/profile/${postUser?.username}`);
+                }}
               >
-                {`Liked by ${likeCount}`}
-              </Typography>
+                {`${
+                  postUser?.firstName[0].toUpperCase() +
+                  postUser?.firstName.slice(1)
+                } ${
+                  postUser?.lastName[0].toUpperCase() +
+                  postUser?.lastName.slice(1)
+                }`}
+              </b>
+            }
+            subheader={
+              <Moment style={styleTheme} fromNow>
+                {post.createdAt}
+              </Moment>
+            }
+          />
+          <CardContent className="py-1">
+            <Typography variant="body1" component="p">
+              {post.content}
+            </Typography>
+          </CardContent>
+          {/* <div className="centered-image-container"> */}
+          {/*  TODO✅: Implement rendering the media files  */}
+          {post.media.length > 0 && (
+            <Grid
+              item
+              style={{ width: "100%", margin: "1rem 0", height: "300px" }}
+            >
+              <div
+                style={{
+                  margin: "auto",
+                  position: "relative",
+                  width: "100%",
+                  height: "100%",
+                }}
+              >
+                <CustomCarousel slides={post.media} />
+              </div>
             </Grid>
-            <Grid item>
-              <Typography variant="subtitle2">{`View all ${post.comments.length} comments`}</Typography>
+          )}
+          {/* </div> */}
+          <CardActions disableSpacing className="my-0 py-0">
+            <Grid container justifyContent="space-between">
+              <Grid item>
+                <IconButton onClick={handleLikeBtn}>
+                  {likeStatus ? (
+                    <FontAwesomeIcon
+                      icon={faHeartSolid}
+                      style={{ color: "#ed4c56" }}
+                    />
+                  ) : (
+                    <FontAwesomeIcon
+                      icon={faHeartRegualar}
+                      style={styleTheme}
+                    />
+                  )}
+                </IconButton>
+                <IconButton onClick={toggleComments}>
+                  <FontAwesomeIcon icon={faComment} style={styleTheme} />
+                </IconButton>
+                {/* <IconButton>
+          <FontAwesomeIcon icon={faShareSquare} style={styleTheme} />
+        </IconButton> */}
+              </Grid>
+              <Grid item>
+                <IconButton onClick={handleBookmarkBtn} style={styleTheme}>
+                  {bookmarkStatus ? (
+                    <FontAwesomeIcon icon={faBookmarkSolid} />
+                  ) : (
+                    <FontAwesomeIcon icon={faBookmarkRegular} />
+                  )}
+                </IconButton>
+              </Grid>
             </Grid>
-          </Grid>
-        </AccordionSummary>
-        <AccordionDetails>
-          <Grid container direction="column">
-            <Grid item>
-              {post.comments.map((comment) => {
-                return (
-                  <span style={{ display: "flex" }} key={comment._id}>
-                    <Typography variant="body2" className="pr-3">
-                      <b>{comment.user.name}</b>
-                    </Typography>
-                    <Typography variant="subtitle2">{comment.text}</Typography>
-                  </span>
-                );
-              })}
-            </Grid>
-            <Grid item>
-              <FormControl fullWidth size="small">
-                <InputLabel>Add a comment...</InputLabel>
-                <Input
-                  value={comment}
-                  style={styleTheme}
-                  onChange={(e) => {
-                    if (e.target.value === "") {
-                      setSendBtnColor("grey");
-                      console.log(e.target.value);
-                    } else {
-                      setSendBtnColor(clickStyleTheme.color);
-                      console.log(e.target.value);
-                    }
-                    setComment(e.target.value);
-                  }}
-                  endAdornment={
-                    <InputAdornment position="end">
-                      <IconButton type="submit" onClick={handleCommentSend}>
-                        <FontAwesomeIcon
-                          color={sendBtnColor}
-                          size="sm"
-                          icon={faPaperPlane}
-                        />
-                      </IconButton>
-                    </InputAdornment>
-                  }
-                />
-              </FormControl>
-            </Grid>
-          </Grid>
-        </AccordionDetails>
-      </Accordion>
-    </Card>
+          </CardActions>
+          <Accordion
+            expanded={expanded}
+            onChange={toggleComments}
+            variant="elevation"
+            style={styleTheme}
+          >
+            <AccordionSummary>
+              <Grid container justifyContent="space-between">
+                <Grid item>
+                  <Typography
+                    onClick={(event) => event.stopPropagation()}
+                    onFocus={(event) => event.stopPropagation()}
+                    variant="subtitle2"
+                    gutterBottom
+                  >
+                    {`Liked by ${likeCount}`}
+                  </Typography>
+                </Grid>
+                <Grid item>
+                  <Typography variant="subtitle2">{`View all ${post.comments.length} comments`}</Typography>
+                </Grid>
+              </Grid>
+            </AccordionSummary>
+            <AccordionDetails>
+              <Grid container direction="column">
+                <Grid item>
+                  {post.comments.map((comment) => {
+                    return (
+                      <span style={{ display: "flex" }} key={comment._id}>
+                        <Typography variant="body2" className="pr-3">
+                          <b>{comment.userId}</b>
+                        </Typography>
+                        <Typography variant="subtitle2">
+                          {comment.text}
+                        </Typography>
+                      </span>
+                    );
+                  })}
+                </Grid>
+                <Grid item>
+                  <FormControl fullWidth size="small">
+                    <InputLabel>Add a comment...</InputLabel>
+                    <Input
+                      value={comment}
+                      style={styleTheme}
+                      onChange={(e) => {
+                        if (e.target.value === "") {
+                          setSendBtnColor("grey");
+                          console.log(e.target.value);
+                        } else {
+                          setSendBtnColor(clickStyleTheme.color);
+                          console.log(e.target.value);
+                        }
+                        setComment(e.target.value);
+                      }}
+                      endAdornment={
+                        <InputAdornment position="end">
+                          <IconButton type="submit" onClick={handleCommentSend}>
+                            <FontAwesomeIcon
+                              color={sendBtnColor}
+                              size="sm"
+                              icon={faPaperPlane}
+                            />
+                          </IconButton>
+                        </InputAdornment>
+                      }
+                    />
+                  </FormControl>
+                </Grid>
+              </Grid>
+            </AccordionDetails>
+          </Accordion>
+        </Card>
+      )}
+    </>
   );
 };

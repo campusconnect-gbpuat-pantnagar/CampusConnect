@@ -1,14 +1,13 @@
-import React, { useContext } from "react"
-import { Card, CardContent, CardHeader } from "@material-ui/core"
-import { Skeleton } from "@material-ui/lab"
-import { AuthContext } from "../../../../context/authContext/authContext"
+import React, { useContext } from "react";
+import { Card, CardContent, CardHeader } from "@material-ui/core";
+import { Skeleton } from "@material-ui/lab";
+import { AuthContext } from "../../../../context/authContext/authContext";
+import { ThemeContext } from "../../../../context/themeContext";
 
 export const LoadingPost = () => {
-  const authContext = useContext(AuthContext)
+  const { theme } = useContext(ThemeContext);
   const styleTheme =
-    authContext.theme === "dark"
-      ? { background: "#121212", color: "whitesmoke" }
-      : null
+    theme === "dark" ? { background: "#121212", color: "whitesmoke" } : null;
 
   return (
     <Card variant="elevation" elevation={3} style={styleTheme}>
@@ -37,5 +36,5 @@ export const LoadingPost = () => {
         <Skeleton animation="wave" height={10} width="80%" />
       </CardContent>
     </Card>
-  )
-}
+  );
+};

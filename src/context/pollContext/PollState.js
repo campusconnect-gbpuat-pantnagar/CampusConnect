@@ -2,7 +2,15 @@ import React, { useReducer } from "react";
 import { PollContext } from "./PollContext";
 import axios from "axios";
 import { API } from "../../utils/proxy";
-import { POLL_CREATE, POLL_ERROR, POLL_GET_ALL, POLL_LOADING, POLL_VOTE, POLL_SUCCESS, POLL_DELETE } from "../types";
+import {
+  POLL_CREATE,
+  POLL_ERROR,
+  POLL_GET_ALL,
+  POLL_LOADING,
+  POLL_VOTE,
+  POLL_SUCCESS,
+  POLL_DELETE,
+} from "../types";
 import Pollreducer from "./Pollreducer";
 
 export const PollState = ({ children }) => {
@@ -31,11 +39,17 @@ export const PollState = ({ children }) => {
   const createPoll = async (userId, pollData) => {
     dispatch({ type: POLL_LOADING, payload: true });
     try {
-      const response = await axios.post(`${API}/create/poll/${userId}`, pollData, {
-        headers: {
-          Authorization: `Bearer ${JSON.parse(localStorage.getItem("_token"))}`,
-        },
-      });
+      const response = await axios.post(
+        `${API}/create/poll/${userId}`,
+        pollData,
+        {
+          headers: {
+            Authorization: `Bearer ${JSON.parse(
+              localStorage.getItem("_token")
+            )}`,
+          },
+        }
+      );
       dispatch({ type: POLL_CREATE, payload: response.data });
       getAllPolls();
     } catch (error) {
@@ -45,12 +59,21 @@ export const PollState = ({ children }) => {
 
   const voteOnPoll = async (pollId, optionId, userId) => {
     try {
-      const response = await axios.put(`${API}/vote/${pollId}/${optionId}/${userId}`, {}, {
-        headers: {
-          Authorization: `Bearer ${JSON.parse(localStorage.getItem("_token"))}`,
-        },
+      const response = await axios.put(
+        `${API}/vote/${pollId}/${optionId}/${userId}`,
+        {},
+        {
+          headers: {
+            Authorization: `Bearer ${JSON.parse(
+              localStorage.getItem("_token")
+            )}`,
+          },
+        }
+      );
+      dispatch({
+        type: POLL_VOTE,
+        payload: { pollId, optionId, userId, data: response.data },
       });
-      dispatch({ type: POLL_VOTE, payload: { pollId, optionId, userId, data: response.data } });
       getAllPolls();
     } catch (error) {
       console.error(error);
@@ -69,15 +92,15 @@ export const PollState = ({ children }) => {
             )}`,
           },
         }
-      )
+      );
       if (response) {
         dispatch({
           type: POLL_SUCCESS,
           payload: "Successfully deleted!",
-        })
+        });
         dispatch({
           type: POLL_DELETE,
-          payload: pollId
+          payload: pollId,
         });
         getAllPolls();
       }
@@ -85,21 +108,23 @@ export const PollState = ({ children }) => {
       dispatch({
         type: POLL_ERROR,
         payload: error.response.data.errorMsg,
-      })
+      });
     }
   };
 
   return (
-    <PollContext.Provider value={{
-      polls: state.polls,
-      error: state.error,
-      loading: state.loading,
-      getAllPolls,
-      createPoll,
-      deletePoll,
-      voteOnPoll
-    }}>
+    <PollContext.Provider
+      value={{
+        polls: state.polls,
+        error: state.error,
+        loading: state.loading,
+        getAllPolls,
+        createPoll,
+        deletePoll,
+        voteOnPoll,
+      }}
+    >
       {children}
     </PollContext.Provider>
-  )
-}
+  );
+};
