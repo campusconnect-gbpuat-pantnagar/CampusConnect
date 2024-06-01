@@ -44,6 +44,7 @@ import { toast } from "react-toastify";
 import { dividerClasses } from "@mui/material";
 import { LoadingPost } from "./LoadingPost";
 import CustomCarousel from "../../../common/custom-carousel/custom-carousel";
+import PostCardComment from "./post-card-comment";
 
 export const PostCard = ({ post, deletePost, updatedPost }) => {
   const navigate = useNavigate();
@@ -194,7 +195,12 @@ export const PostCard = ({ post, deletePost, updatedPost }) => {
   };
 
   const handleCommentSend = async () => {
+    console.log(post);
     try {
+      updatedPost({
+        ...post,
+        comments: [...post.comments, { userId: user.id, text: comment }],
+      });
       const requestOptions = {
         url: `${ServiceConfig.postEndpoint}/${post.id}/comments`,
         method: "PATCH",
@@ -210,6 +216,8 @@ export const PostCard = ({ post, deletePost, updatedPost }) => {
           theme: `${theme === "dark" ? "dark" : "light"}`,
         });
       }
+      // toggleComments();
+      setComment("");
     } catch (err) {
       console.log(err);
       toast.error(err?.data?.message, {
@@ -233,12 +241,7 @@ export const PostCard = ({ post, deletePost, updatedPost }) => {
           <LoadingPost />
         </div>
       ) : (
-        <Card
-          variant="elevation"
-          elevation={3}
-          className="mb-3"
-          style={styleTheme}
-        >
+        <Card variant="elevation" className="mb-3" style={styleTheme}>
           {showPost && (
             <PostModal
               show={showPost}
@@ -403,16 +406,7 @@ export const PostCard = ({ post, deletePost, updatedPost }) => {
               <Grid container direction="column">
                 <Grid item>
                   {post.comments.map((comment) => {
-                    return (
-                      <span style={{ display: "flex" }} key={comment._id}>
-                        <Typography variant="body2" className="pr-3">
-                          <b>{comment.userId}</b>
-                        </Typography>
-                        <Typography variant="subtitle2">
-                          {comment.text}
-                        </Typography>
-                      </span>
-                    );
+                    return <PostCardComment comment={comment} />;
                   })}
                 </Grid>
                 <Grid item>
