@@ -13,7 +13,8 @@ import {
   Toolbar,
 } from "@material-ui/core";
 import MoreVertIcon from "@material-ui/icons/MoreVert";
-import { AuthContext } from "../../../context/authContext/authContext";
+import { NewAuthContext } from "../../../context/newAuthContext";
+import { ThemeContext } from "../../../context/themeContext";
 import { Link, useNavigate, useLocation } from "react-router-dom";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import PeopleAltRoundedIcon from "@material-ui/icons/PeopleAltRounded";
@@ -22,7 +23,6 @@ import BusinessCenterRoundedIcon from "@material-ui/icons/BusinessCenterRounded"
 import HomeRoundedIcon from "@material-ui/icons/HomeRounded";
 import { faCommentDots } from "@fortawesome/free-solid-svg-icons";
 import { FeedbackModal } from "../../pages/Modals/FeedbackModal";
-import { UserContext } from "../../../context/userContext/UserContext";
 import {
   requestFirebaseNotificationPermission,
   unsubscribeUserFromTopic,
@@ -38,14 +38,10 @@ const currentTab = (location, path) => {
 const Header = () => {
   const navigate = useNavigate();
   const location = useLocation();
-  const userContext = useContext(UserContext);
-  const authContext = useContext(AuthContext);
+  const { user } = useContext(NewAuthContext);
+  const { theme } = useContext(ThemeContext);
   const [showFeedback, setShowFeedback] = useState(false);
   const [moreOption, setMoreOption] = useState(null);
-  // useEffect(() => {
-  //   userContext.getUserById(authContext.user._id);
-  //   // eslint-disable-next-line react-hooks/exhaustive-deps
-  // }, [authContext.user._id]);
 
   const handleMoreOption = (e) => {
     setMoreOption(e.currentTarget);
@@ -59,7 +55,7 @@ const Header = () => {
     setShowFeedback(!showFeedback);
   };
   const styleTheme =
-    authContext.theme === "dark"
+    theme === "dark"
       ? { background: "#212121", color: "white" }
       : { background: "white", color: "black" };
 
@@ -87,7 +83,6 @@ const Header = () => {
 
   const classes = useStyles();
 
-  // console.log(authContext)
   return (
     <div className="header">
       {showFeedback ? (
@@ -102,7 +97,7 @@ const Header = () => {
                 navigate("/");
               }}
             >
-              {authContext.theme === "dark" ? (
+              {theme === "dark" ? (
                 <img
                   src="/cc_logo_horizontal_white.png"
                   alt="logo"
@@ -117,12 +112,6 @@ const Header = () => {
                   height="40px"
                 />
               )}
-              {/* {authContext.theme === "dark"
-                ? <img src="/cc_logo_mobile_white.png" alt="logo" className="mobile-logo" height="40px" />
-                : <img src="/cc_logo_mobile.png" alt="logo" className="mobile-logo" height="40px" />} */}
-              {/* <Typography variant="h6" id="header-name" style={{ color: styleTheme.color }}>
-                CampusConnect
-              </Typography> */}
             </Button>
           </div>
           <div className="header-part-2">
@@ -212,7 +201,7 @@ const Header = () => {
               <MenuItem
                 // onClick={handleClose}
                 onClick={() => {
-                  navigate(`/profile/${authContext.user._id}`);
+                  navigate(`/profile/${user.username}`);
                 }}
                 style={styleTheme}
               >
@@ -263,7 +252,7 @@ const Header = () => {
                   if (Notification.permission === "granted") {
                     requestFirebaseNotificationPermission()
                       .then((token) => {
-                        if (authContext.user.role !== 2) {
+                        if (user.role !== 'admin') {
                           unsubscribeUserFromTopic(token, "campus")
                             .then(() => {
                               console.log("Unsubscribed (common)");
@@ -275,7 +264,7 @@ const Header = () => {
                               );
                             });
                         }
-                        if (authContext.user.role !== 2) {
+                        if (user.role !== 'admin') {
                           unsubscribeUserFromTopic(token, "marketing")
                             .then(() => {
                               console.log("Unsubscribed (marketing)");
@@ -287,7 +276,7 @@ const Header = () => {
                               );
                             });
                         }
-                        let self_topic = `${authContext.user._id}_self`;
+                        let self_topic = `${user.id}_self`;
                         unsubscribeUserFromTopic(token, self_topic)
                           .then(() => {
                             console.log("Unsubscribed (self)");
@@ -298,8 +287,8 @@ const Header = () => {
                               error
                             );
                           });
-                        userContext.user.friendList.forEach((friend) => {
-                          let topic = friend._id;
+                        user.connectionLists.forEach((connection) => {
+                          let topic = connection.userId;
                           unsubscribeUserFromTopic(token, topic)
                             .then(() => {
                               console.log("Unsubscribed");
@@ -316,7 +305,7 @@ const Header = () => {
                         );
                       });
                   }
-                  authContext.signoutUser();
+                  // New Auth signoutUser()
                 }}
                 style={styleTheme}
               >

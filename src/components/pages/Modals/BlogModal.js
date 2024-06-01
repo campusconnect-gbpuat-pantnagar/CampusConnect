@@ -1,46 +1,103 @@
 import { Button, Grid, TextField } from "@material-ui/core"
 import { makeStyles } from "@material-ui/core/styles"
 import React, { useContext, useState } from "react"
-import { AuthContext } from "../../../context/authContext/authContext"
 import AddPhotoAlternateIcon from "@material-ui/icons/AddPhotoAlternate"
 import { Form, Modal } from "react-bootstrap"
 import { sendNotificationToUserWithImage } from "../../../utils/notification"
+import ServiceConfig from "../../../helpers/service-endpoint";
+import { NewAuthContext } from './../../../context/newAuthContext';
+import { ThemeContext } from "../../../context/themeContext";
+import { toast } from "react-toastify";
+import HttpRequestPrivate from './../../../helpers/private-client';
 
 export const BlogModal = ({
   show,
   handleModal,
-  blogFunction,
   modalTitle,
   blog,
 }) => {
-  const authContext = useContext(AuthContext)
-  const [uploadFile, setUploadFile] = useState(null)
-  const [preview, setPreview] = useState(blog === undefined ? "" : blog.picture)
+  const { user } = useContext(NewAuthContext);
+  const { theme } = useContext(ThemeContext);
+  const [mediaFiles, setMediaFiles] = useState([]);
+  const [uploadFile, setUploadFile] = useState()
+  const [isLoading, setIsLoading] = useState(false);
+  const [preview, setPreview] = useState(blog === undefined ? "" : blog.media)
   const [content, setContent] = useState(blog === undefined ? "" : blog.content)
   const [title, setTitle] = useState(blog === undefined ? "" : blog.title)
   const [link, setLink] = useState(blog === undefined ? "" : blog.link)
 
-  console.log(preview)
-  const handleForm = async (e) => {
-    e.preventDefault()
-    const formData = new FormData()
-    formData.append("user", authContext.user._id)
-    formData.append("title", title)
-    formData.append("content", content)
-    formData.append("picture", uploadFile)
-    formData.append("link", link)
-    blog
-      ? blogFunction(formData, authContext.user._id, blog._id)
-      : blogFunction(formData, authContext.user._id)
-      sendNotificationToUserWithImage("New Blog", `${authContext.user.name} created a new blog`, authContext?.user?._id, authContext.user._id);
-    handleModal()
+  async function blogCreate() {
+    setIsLoading(true);
+    try {
+      const requestOptions = {
+        url: ServiceConfig.blogEndpoint,
+        method: "POST",
+        data: {
+          title: title,
+          content: content,
+          link: link,
+          media: mediaFiles,
+        },
+        showActual: true,
+        withCredentials: true,
+      };
+      const response = await HttpRequestPrivate(requestOptions);
+      setIsLoading(false);
+      if(response.data.data){
+        toast.success(response.data.message, { theme: `${theme === "dark" ? "dark" : "light"}` });
+        sendNotificationToUserWithImage(
+          "New Blog",
+          `${user.firstName} created a new blog`, user.id,
+          user.id
+        );
+      }
+    } catch (err) {
+      setIsLoading(false);
+      console.log(err);
+      toast.error(err.data.message, { theme: `${theme === "dark" ? "dark" : "light"}` });
+    }
   }
+
+  async function blogUpdate(blogId) {
+    setIsLoading(true);
+    try {
+      const requestOptions = {
+        url: `${ServiceConfig.blogEndpoint}/${blogId}`,
+        method: "PUT",
+        data: {
+          title: title,
+          content: content,
+          link: link,
+          media: mediaFiles,
+        },
+        showActual: true,
+        withCredentials: true,
+      };
+      const response = await HttpRequestPrivate(requestOptions);
+      setIsLoading(false);
+      if(response.data.data){
+        toast.success(response.data.message, { theme: `${theme === "dark" ? "dark" : "light"}` });
+      }
+    } catch (err) {
+      setIsLoading(false);
+      console.log(err);
+      toast.error(err.data.message, { theme: `${theme === "dark" ? "dark" : "light"}` });
+    }
+  }
+
+  const handleForm = async (e) => {
+    e.preventDefault();
+    blog
+      ? blogUpdate(blog._id)
+      : blogCreate();
+    handleModal();
+  };
   const styleTheme =
-    authContext.theme === "dark"
+    theme === "dark"
       ? { background: "#121212", color: "whitesmoke" }
       : { background: "white", color: "black" }
   const styleThemeMain =
-    authContext.theme === "dark" ? { background: "rgb(0 0 0 / 88%)" } : null
+    theme === "dark" ? { background: "rgb(0 0 0 / 88%)" } : null
 
   const useStyles = makeStyles((theme) => ({
     textField: {

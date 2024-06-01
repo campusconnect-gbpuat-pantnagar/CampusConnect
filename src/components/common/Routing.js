@@ -2,7 +2,6 @@ import { Snackbar, SnackbarContent } from "@material-ui/core";
 import { createTheme, ThemeProvider } from "@mui/material/styles";
 import React, { useContext, useEffect, useState } from "react";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
-import { AuthContext } from "../../context/authContext/authContext";
 import { Loading } from "../Loading_Backdrop/Loading";
 import { Login } from "../Login/Login";
 import { Signup } from "../Login/Signup";
@@ -11,10 +10,6 @@ import { Blog } from "../pages/Home/Blog/Blog";
 import { Profile } from "../pages/Profile/Profile";
 import { Jobs } from "../pages/Home/Jobs/Jobs";
 import { Ads } from "../pages/Home/Ads/Ads";
-import { PostContext } from "../../context/postContext/postContext";
-import { BlogContext } from "../../context/blogContext/BlogContext";
-import { UserContext } from "../../context/userContext/UserContext";
-import { AdsContext } from "../../context/adsContext/AdsContext";
 import { Connections } from "../pages/Connections/Connections";
 import { AboutUniversity } from "../pages/AboutUniversity/AboutUniversity";
 import { SettingsPrivacy } from "../pages/Setting-Privacy/SettingsPrivacy";
@@ -35,13 +30,12 @@ import VerifyEmailPage from "../pages/Auth/verify-email/verifyEmail";
 import SignUpPage from "../pages/Auth/signup/signup";
 import AccountRecoveryConsentPage from "../pages/Auth/account-recovery-consent/account-recovery-consent";
 import TestingHomePage from "../pages/Auth/testing-home-page";
+import { NewAuthContext } from "../../context/newAuthContext";
+import { ThemeContext } from "../../context/themeContext";
 
 export const Routing = () => {
-  const authContext = useContext(AuthContext);
-  const postContext = useContext(PostContext);
-  const blogContext = useContext(BlogContext);
-  const userContext = useContext(UserContext);
-  const adsContext = useContext(AdsContext);
+  const { user } = useContext(NewAuthContext);
+  const { theme } = useContext(ThemeContext);
 
   const [responseMsg, setResponseMsg] = useState({
     successStatus: false,
@@ -82,80 +76,15 @@ export const Routing = () => {
     );
   };
 
-  useEffect(() => {
-    if (authContext.error) {
-      setResponseMsg({
-        errorStatus: true,
-        msg: authContext.error,
-        color: "#ff7961",
-      });
-    }
-    if (blogContext.error) {
-      setResponseMsg({
-        errorStatus: true,
-        msg: blogContext.error,
-        color: "#ff7961",
-      });
-    }
-    if (postContext.error) {
-      setResponseMsg({
-        errorStatus: true,
-        msg: postContext.error,
-        color: "#ff7961",
-      });
-    }
-    if (userContext.error) {
-      setResponseMsg({
-        errorStatus: true,
-        msg: userContext.error,
-        color: "#ff7961",
-      });
-    }
-    if (adsContext.error) {
-      setResponseMsg({
-        errorStatus: true,
-        msg: adsContext.error,
-        color: "#ff7961",
-      });
-    }
-    if (authContext.success) {
-      setResponseMsg({
-        successStatus: true,
-        msg: authContext.success,
-        color: "#58D68D",
-      });
-    }
-    if (postContext.success) {
-      setResponseMsg({
-        successStatus: true,
-        msg: postContext.success,
-        color: "#58D68D",
-      });
-    }
-    if (blogContext.success) {
-      setResponseMsg({
-        successStatus: true,
-        msg: blogContext.success,
-        color: "#58D68D",
-      });
-    }
-    if (adsContext.success) {
-      setResponseMsg({
-        successStatus: true,
-        msg: adsContext.success,
-        color: "#58D68D",
-      });
-    }
-  }, [authContext, postContext, blogContext, userContext, adsContext]);
   const styleTheme =
-    authContext.theme === "dark"
+    theme === "dark"
       ? { background: "black", color: "white" }
       : { background: "whitesmoke", color: "black" };
-  const prefersDarkMode = authContext.theme;
+  const prefersDarkMode = theme;
   const mainPrimaryColor = prefersDarkMode === "dark" ? "#03DAC6" : "#3551bf";
   const mainSecondaryColor = prefersDarkMode === "dark" ? "#018786" : "#002984";
   const paperColor = prefersDarkMode === "dark" ? "#212121" : "#fff";
-  const theme = React.useMemo(
+  const newTheme = React.useMemo(
     () =>
       createTheme({
         palette: {
@@ -176,10 +105,6 @@ export const Routing = () => {
 
   return (
     <div className="main-div" style={styleTheme}>
-      {responseMsg.errorStatus || responseMsg.successStatus
-        ? showResponseMsg()
-        : null}
-      {authContext.loading && <Loading />}
       <ThemeProvider theme={theme}>
         <Routes>
           {/* <Route
@@ -189,7 +114,7 @@ export const Routing = () => {
           {/* <Route path="/signin" element={<SimpleRoute component={Login} />} /> */}
 
           {/* <Route path="/" element={<PrivateRoute component={Post} />} /> */}
-          <Route path="/chats" element={<PrivateRoute component={Chat} />} />
+          {/* <Route path="/chats" element={<PrivateRoute component={Chat} />} /> */}
           {/* <Route path="/posts" element={<PrivateRoute component={Post} />} /> */}
           {/* <Route
               path="/bookmarks"

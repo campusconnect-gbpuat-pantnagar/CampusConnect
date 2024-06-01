@@ -2,15 +2,40 @@ import { Button, Grid, TextField } from "@material-ui/core";
 import { makeStyles } from "@material-ui/core/styles";
 import React, { useContext, useState } from "react";
 import { Modal } from "react-bootstrap";
-import { AuthContext } from "../../../context/authContext/authContext";
-import { toast } from 'react-toastify';
-import { PollContext } from "../../../context/pollContext/PollContext";
+import ServiceConfig from "../../../helpers/service-endpoint";
+import { NewAuthContext } from './../../../context/newAuthContext';
+import { ThemeContext } from "../../../context/themeContext";
+import { toast } from "react-toastify";
+import HttpRequestPrivate from './../../../helpers/private-client';
 
-export const PollModal = ({ show, handleModal, modalTitle, pollFunction }) => {
-  const authContext = useContext(AuthContext);
-  const pollContext = useContext(PollContext);
+export const PollModal = ({ show, handleModal, modalTitle }) => {
+  const { user } = useContext(NewAuthContext);
+  const { theme } = useContext(ThemeContext);
   const [title, setTitle] = useState("");
+  const [isLoading, setIsLoading] = useState(false);
   const [options, setOptions] = useState(["", ""]);
+
+  async function pollCreate(data) {
+    setIsLoading(true);
+    try {
+      const requestOptions = {
+        url: ServiceConfig.pollEndpoint,
+        method: "POST",
+        data: data,
+        showActual: true,
+        withCredentials: true,
+      };
+      const response = await HttpRequestPrivate(requestOptions);
+      setIsLoading(false);
+      if(response.data.data){
+        toast.success(response.data.message, { theme: `${theme === "dark" ? "dark" : "light"}` });
+      }
+    } catch (err) {
+      setIsLoading(false);
+      console.log(err);
+      toast.error(err.data.message, { theme: `${theme === "dark" ? "dark" : "light"}` });
+    }
+  }
 
   const handleOptionChange = (value, index) => {
     const newOptions = [...options];
@@ -33,36 +58,33 @@ export const PollModal = ({ show, handleModal, modalTitle, pollFunction }) => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     const pollData = {
-      user: authContext.user._id,
-      title,
-      options: options.filter(option => option.trim() !== ""), 
-    }
+      title: title,
+      options: options.filter(option => option.trim() !== ""),
+    };    
     if (pollData.options.length >= 2) {
       try {
-        const response = await pollFunction(authContext.user._id, pollData);
-        console.log(response);
+        pollCreate(pollData);
         handleModal();
-        pollContext.getAllPolls();
       } catch (error) {
         console.log(error.response.data.errorMsg);
       }
     } else {
-      toast.error("Please add at least two options.", { theme: `${authContext.theme === "dark" ? "dark" : "light"}` });
+      toast.error("Please add at least two options.", { theme: `${theme === "dark" ? "dark" : "light"}` });
     }
   }
 
   const styleTheme =
-    authContext.theme === "dark"
+    theme === "dark"
       ? { background: "#121212", color: "whitesmoke" }
       : { background: "white", color: "black" }
 
   const clickStyleTheme =
-  authContext.theme === "dark"
+  theme === "dark"
     ? { color: "#03DAC6" }
     : { color: "blue" }
 
   const styleThemeMain =
-    authContext.theme === "dark" ? { background: "rgb(0 0 0 / 88%)" } : null
+    theme === "dark" ? { background: "rgb(0 0 0 / 88%)" } : null
 
   const useStyles = makeStyles((theme) => ({
     textField: {

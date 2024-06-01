@@ -12,11 +12,9 @@ import {
   Typography,
 } from "@material-ui/core"
 import SearchIcon from "@material-ui/icons/Search"
-import { UserContext } from "../../../context/userContext/UserContext"
-import { AuthContext } from "../../../context/authContext/authContext"
+import { NewAuthContext } from "../../../context/newAuthContext"
+import { ThemeContext } from "../../../context/themeContext"
 import { useNavigate } from "react-router-dom"
-// import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
-// import { faUserConnections } from "@fortawesome/free-solid-svg-icons"
 import { Skeleton } from "@material-ui/lab"
 import { API } from "../../../utils/proxy"
 
@@ -52,26 +50,14 @@ const ListConnectionLoading = () => {
 
 export const Contacts = () => {
   const navigate = useNavigate()
-  const userContext = useContext(UserContext)
-  const authContext = useContext(AuthContext)
-  useEffect(() => {
-    userContext.getUserById(authContext.user._id)
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [authContext.user._id])
-
+  const { theme } = useContext(ThemeContext);
+  const { user } = useContext(NewAuthContext);
+  
   const styleTheme =
-    authContext.theme === "dark"
+    theme === "dark"
       ? { background: "#121212", color: "whitesmoke" }
       : null
-
-  // if (userContext.loading) {
-  //   return (
-  // <Grid container>
-  //   <ListConnectionLoading />
-  // </Grid>
-  //   )
-  // }
-
+  
   return (
     <div className="mt-3">
       <h6>
@@ -128,18 +114,3 @@ export const Contacts = () => {
     </div>
   )
 }
-
-// : (
-//   <Grid
-//     container
-//     justifyContent="center"
-//     direction="column"
-//     alignItems="center"
-//     className="my-3"
-//   >
-//     <FontAwesomeIcon color="grey" icon={faUserConnections} />
-//     <Typography variant="body2" color="textSecondary">
-//       Your friend list is empty!
-//     </Typography>
-//   </Grid>
-// )}

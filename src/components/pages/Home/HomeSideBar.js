@@ -9,7 +9,8 @@ import {
   Typography,
 } from "@material-ui/core"
 import React, { useContext } from "react"
-import { AuthContext } from "../../../context/authContext/authContext"
+import { NewAuthContext } from "../../../context/newAuthContext"
+import { ThemeContext } from "../../../context/themeContext"
 import PeopleAltRoundedIcon from "@material-ui/icons/PeopleAltRounded"
 import SupervisedUserCircleRoundedIcon from "@material-ui/icons/SupervisedUserCircleRounded"
 import { faBookReader, faHandsHelping } from "@fortawesome/free-solid-svg-icons";
@@ -24,9 +25,10 @@ import { API } from "../../../utils/proxy"
 export const HomeSideBar = () => {
   const navigate = useNavigate()
   const location = useLocation()
-  const authContext = useContext(AuthContext)
+  const { user } = useContext(NewAuthContext);
+  const { theme } = useContext(ThemeContext);
   const styleTheme =
-    authContext.theme === "dark"
+    theme === "dark"
       ? { background: "#121212", color: "whitesmoke" }
       : null
 
@@ -50,23 +52,24 @@ export const HomeSideBar = () => {
           <ListItem
             button
             onClick={() => {
-              navigate(`/profile/${authContext.user._id}`)
+              navigate(`/profile/${user.username}`)
             }}
           >
             <ListItemIcon>
               <Avatar
-                alt={authContext.user.name}
-                src={`${API}/pic/user/${authContext.user._id}`}
+                alt={user.firstName}
+                src={user.profilePicture}
                 style={{ height: "50px", width: "50px" }}
               />
             </ListItemIcon>
             <ListItemText
-              primary={<b>{authContext.user.name}</b>}
+              primary={<b>{user.firstName}</b>}
               secondary={
                 <Typography variant="subtitle2" color="textSecondary" style={styleTheme}>
-                  {authContext.user.role === 0 && "Student"}
-                  {authContext.user.role === 1 && "Faculty"}
-                  {authContext.user.role === 2 && "Admin"}
+                  {user.role === "student" && "Student"}
+                  {user.role === "faculty" && "Faculty"}
+                  {user.role === "admin" && "Admin"}
+                  {user.role === "moderator" && "Moderator"}
                 </Typography>
               }
             />

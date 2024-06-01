@@ -3,7 +3,7 @@ import { Container, Row, Col, Card } from 'react-bootstrap';
 import './OurTeam.css';
 import Header from "../../common/Header/Header";
 import HeaderMobile from "../../common/Header/HeaderMobile";
-import { AuthContext } from '../../../context/authContext/authContext';
+import { ThemeContext } from '../../../context/themeContext';
 
 const members = [
   { id: "56278", name: "Mayank Tripathi", photo: "/members/mt.png", domain: "Research, Development & Management" },
@@ -14,20 +14,20 @@ const members = [
 ];
 
 export const OurTeam = () => {
-  const authContext = useContext(AuthContext);
+  const { theme } = useContext(ThemeContext);
   
   const styleTheme =
-    authContext.theme === "dark"
+    theme === "dark"
       ? { background: "#151515", color: "white" }
       : { background: "white", color: "black" };
 
   const BackgroundStyleTheme =
-    authContext.theme === "dark"
+    theme === "dark"
       ? { backgroundColor: "black" }
       : { backgroundColor: "whitesmoke" };
 
   const clickStyleTheme =
-  authContext.theme === "dark"
+  theme === "dark"
     ? { color: "#03DAC6" }
     : { color: "blue" }
     

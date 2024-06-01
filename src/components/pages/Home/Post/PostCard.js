@@ -21,8 +21,6 @@ import {
 import React, { useContext, useEffect, useState } from "react";
 import MoreHorizIcon from "@material-ui/icons/MoreHoriz";
 import Moment from "react-moment";
-import { AuthContext } from "../../../../context/authContext/authContext";
-import { PostContext } from "../../../../context/postContext/postContext";
 import { PostModal } from "../../Modals/PostModal";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
@@ -37,14 +35,17 @@ import {
   faPaperPlane,
 } from "@fortawesome/free-solid-svg-icons";
 import { useNavigate } from "react-router-dom";
-import { UserContext } from "../../../../context/userContext/UserContext";
 import { API, CDN_URL } from "../../../../utils/proxy";
+import { NewAuthContext } from "../../../../context/newAuthContext";
+import { ThemeContext } from "../../../../context/themeContext";
+import ServiceConfig from "../../../../helpers/service-endpoint";
+import HttpRequestPrivate from "../../../../helpers/private-client";
+import { toast } from "react-toastify";
 
 export const PostCard = ({ post }) => {
   const navigate = useNavigate();
-  const authContext = useContext(AuthContext);
-  const userContext = useContext(UserContext);
-  const postContext = useContext(PostContext);
+  const { user } = useContext(NewAuthContext);
+  const { theme } = useContext(ThemeContext);
   const [bookmarkStatus, setBookmarkStatus] = useState(false);
   const [comment, setComment] = useState("");
   // const [bookmark, setBookmark] = useState("")
@@ -52,6 +53,23 @@ export const PostCard = ({ post }) => {
   const [likeCount, setLikeCount] = useState(post.likes.length);
   const [moreOption, setMoreOption] = useState(null);
   const [expanded, setExpanded] = useState(false);
+
+  const getUserById = async (userId) => {
+    try {
+      const requestOptions = {
+        url: `${ServiceConfig.getUserEndpoint}/${userId}`,
+        method: "GET",
+        showActual: true,
+        withCredentials: true,
+      };
+      const response = await HttpRequestPrivate(requestOptions);
+      if(response.data.data){
+        
+      }
+    } catch (err) {
+      console.log(err);
+    }
+  }
 
   const toggleComments = () => {
     setExpanded(!expanded);
@@ -71,78 +89,121 @@ export const PostCard = ({ post }) => {
     handleClose();
     setShowPost(!showPost);
   };
+  // useEffect(() => {
+  //   if (!userContext.loading) {
+  //     userContext.user.bookmark.post.forEach((element) => {
+  //       if (element._id === post._id) {
+  //         setBookmarkStatus(true);
+  //       }
+  //     });
+  //   }
+  // }, [post._id, userContext.loading, userContext.user.bookmark.post]);
   useEffect(() => {
-    if (!userContext.loading) {
-      // console.log(userContext.user.bookmark.post)
-      userContext.user.bookmark.post.forEach((element) => {
-        if (element._id === post._id) {
-          setBookmarkStatus(true);
-        }
-      });
-      // if (userContext.user.bookmark.post.includes(post._id)) {
-      //   setBookmarkStatus(true)
-      // } else {
-      //   setBookmarkStatus(false)
-      // }
-      // userContext.user.bookmark.post.map((item) => {
-      //   if (item._id === post._id) {
-      //     setBookmarkStatus(true)
-      //   } else {
-      //     setBookmarkStatus(false)
-      //   }
-      //   return 0
-      // })
-    }
-  }, [post._id, userContext.loading, userContext.user.bookmark.post]);
-  useEffect(() => {
-    // post.likes.filter((like) => {
-    //   if (like === authContext.user._id) {
-    //     setLikeStatus(true)
-    //   } else {
-    //     setLikeStatus(false)
-    //   }
-    if (post.likes.includes(authContext.user._id)) {
+    if (post.likes.includes(user.id)) {
       setLikeStatus(true);
     } else {
       setLikeStatus(false);
     }
-  }, [authContext.user._id, post.likes]);
+  }, [user.id, post.likes]);
 
-  const handleLikeBtn = () => {
+  const deletePost = async () => {
+    try {
+      const requestOptions = {
+        url: `${ServiceConfig.postEndpoint}/${post.id}`,
+        method: "DELETE",
+        showActual: true,
+        withCredentials: true,
+      };
+      const response = await HttpRequestPrivate(requestOptions);
+      if(response.data.data){
+        toast.success(response.data.message, { theme: `${theme === "dark" ? "dark" : "light"}` });
+      }
+    } catch (err) {
+      console.log(err);
+      toast.error(err?.data?.message, { theme: `${theme === "dark" ? "dark" : "light"}` });
+    }
+  }
+
+  const handleLikeBtn = async () => {
     if (!likeStatus) {
-      postContext.likePost(post._id, authContext.user._id);
+      try {
+        const requestOptions = {
+          url: `${ServiceConfig.postEndpoint}/${post.id}/like`,
+          method: "PATCH",
+          showActual: true,
+          withCredentials: true,
+        };
+        const response = await HttpRequestPrivate(requestOptions);
+        if(response.data.data){
+          toast.success(response.data.message, { theme: `${theme === "dark" ? "dark" : "light"}` });
+        }
+      } catch (err) {
+        console.log(err);
+        toast.error(err?.data?.message, { theme: `${theme === "dark" ? "dark" : "light"}` });
+      }
       setLikeCount(likeCount + 1);
       setLikeStatus(true);
     } else {
-      postContext.unLikePost(post._id, authContext.user._id);
+      try {
+        const requestOptions = {
+          url: `${ServiceConfig.postEndpoint}/${post.id}/unlike`,
+          method: "PATCH",
+          showActual: true,
+          withCredentials: true,
+        };
+        const response = await HttpRequestPrivate(requestOptions);
+        if(response.data.data){
+          toast.success(response.data.message, { theme: `${theme === "dark" ? "dark" : "light"}` });
+        }
+      } catch (err) {
+        console.log(err);
+        toast.error(err?.data?.message, { theme: `${theme === "dark" ? "dark" : "light"}` });
+      }
       setLikeCount(likeCount - 1);
       setLikeStatus(false);
     }
   };
   const handleBookmarkBtn = () => {
-    const formData = {
-      type: post.objType,
-      typeId: post._id,
-    };
-    if (!bookmarkStatus) {
-      userContext.bookmarkItem(authContext.user._id, formData);
-      setBookmarkStatus(true);
-    } else {
-      userContext.unBookmarkItem(authContext.user._id, formData);
-      setBookmarkStatus(false);
-    }
+    // const formData = {
+    //   type: post.objType,
+    //   typeId: post._id,
+    // };
+    // if (!bookmarkStatus) {
+    //   userContext.bookmarkItem(authContext.user._id, formData);
+    //   setBookmarkStatus(true);
+    // } else {
+    //   userContext.unBookmarkItem(authContext.user._id, formData);
+    //   setBookmarkStatus(false);
+    // }
   };
   const handleCommentSend = async () => {
-    await postContext.addComment(post._id, authContext.user._id, comment);
+    try {
+      const requestOptions = {
+        url: `${ServiceConfig.postEndpoint}/${post.id}/comments`,
+        method: "PATCH",
+        data: {
+          text: comment,
+        },
+        showActual: true,
+        withCredentials: true,
+      };
+      const response = await HttpRequestPrivate(requestOptions);
+      if(response.data.data){
+        toast.success(response.data.message, { theme: `${theme === "dark" ? "dark" : "light"}` });
+      }
+    } catch (err) {
+      console.log(err);
+      toast.error(err?.data?.message, { theme: `${theme === "dark" ? "dark" : "light"}` });
+    }
   };
 
   const styleTheme =
-    authContext.theme === "dark"
+    theme === "dark"
       ? { background: "#121212", color: "whitesmoke" }
       : { background: "white", color: "black" };
 
   const clickStyleTheme =
-    authContext.theme === "dark" ? { color: "#03DAC6" } : { color: "blue" };
+    theme === "dark" ? { color: "#03DAC6" } : { color: "blue" };
 
   return (
     <Card variant="elevation" elevation={3} className="mb-3" style={styleTheme}>
@@ -150,21 +211,20 @@ export const PostCard = ({ post }) => {
         <PostModal
           show={showPost}
           handleModal={handleModalPost}
-          postFunction={postContext.updatePost}
           modalTitle="Update Post"
           post={post}
         />
       )}
       <CardHeader
-        avatar={
-          <Avatar
-            alt={post.user.name}
-            src={`${API}/pic/user/${post.user._id}`}
-          />
-        }
+        // avatar={
+        //   <Avatar
+        //     alt={post.user.name}
+        //     src={`${API}/pic/user/${post.user._id}`}
+        //   />
+        // }
         action={
           <>
-          {authContext.user._id === post.user._id ? (
+          {user.id === post.userId ? (
             <IconButton
               aria-label="settings"
               onClick={handleMoreOption}
@@ -181,15 +241,15 @@ export const PostCard = ({ post }) => {
               TransitionComponent={Fade}
               PaperProps={{ style: { backgroundColor: styleTheme.background } }}
             >
-              {authContext.user._id === post.user._id ? (
+              {user.id === post.userId ? (
                 <MenuItem onClick={handleModalPost} style={styleTheme}>
                   Edit
                 </MenuItem>
               ) : null}
-              {authContext.user._id === post.user._id ? (
+              {user.id === post.userId ? (
                 <MenuItem
                   onClick={() => {
-                    postContext.deletePost(authContext.user._id, post._id);
+                    deletePost();
                     handleClose();
                   }}
                   style={styleTheme}
@@ -228,7 +288,7 @@ export const PostCard = ({ post }) => {
       </CardContent>
       <div className="centered-image-container">
 {/*  TODO✅: Implement rendering the media files  */}
-        {post.picture.length > 0 && (
+        {post.media.length > 0 && (
           <img
             className="centered-image"
             height="100%"

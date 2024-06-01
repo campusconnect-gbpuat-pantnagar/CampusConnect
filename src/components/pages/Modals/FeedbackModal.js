@@ -7,8 +7,11 @@ import { faPaperclip } from "@fortawesome/free-solid-svg-icons"
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
 import axios from "axios"
 import { API } from "../../../utils/proxy"
-import { AuthContext } from "../../../context/authContext/authContext"
-import { toast } from 'react-toastify';
+import ServiceConfig from "../../../helpers/service-endpoint";
+import { NewAuthContext } from './../../../context/newAuthContext';
+import { ThemeContext } from "../../../context/themeContext";
+import { toast } from "react-toastify";
+import HttpRequestPrivate from './../../../helpers/private-client';
 
 const useStyles1 = makeStyles((theme) => ({
   root: {
@@ -27,10 +30,13 @@ const useStyles1 = makeStyles((theme) => ({
 
 export const FeedbackModal = ({ show, onhide }) => {
   const classes2 = useStyles1()
-  const authContext = useContext(AuthContext)
+  const { user } = useContext(NewAuthContext);
+  const { theme } = useContext(ThemeContext);
   const [value, setValue] = React.useState("")
   const [preview, setPreview] = useState("")
-  const [picture, setPicture] = useState("")
+  const [mediaFiles, setMediaFiles] = useState([]);
+  const [picture, setPicture] = useState();
+  const [isLoading, setIsLoading] = useState(false);
   const [color, setColor] = useState(null)
   const [success, setSuccess] = useState(false)
   const [loading, setLoading] = useState(false)
@@ -53,8 +59,8 @@ export const FeedbackModal = ({ show, onhide }) => {
       user_id: my_id,
       template_params: {
         from_name: name,
-        user_name: authContext.user.name,
-        user_id: authContext.user._id,
+        user_name: user.firstName,
+        user_id: user.id,
         message: value,
       }
     };
@@ -67,44 +73,35 @@ export const FeedbackModal = ({ show, onhide }) => {
     }
   };
 
+  async function feedbackCreate() {
+    setIsLoading(true);
+    try {
+      const requestOptions = {
+        url: ServiceConfig.feedbackEndpoint,
+        method: "POST",
+        data: {
+          feedback: value,
+          media: mediaFiles,
+        },
+        showActual: true,
+        withCredentials: true,
+      };
+      const response = await HttpRequestPrivate(requestOptions);
+      setIsLoading(false);
+      if(response.data.data){
+        toast.success(response.data.message, { theme: `${theme === "dark" ? "dark" : "light"}` });
+        sendEmail();
+      }
+    } catch (err) {
+      setIsLoading(false);
+      console.log(err);
+      toast.error(err.data.message, { theme: `${theme === "dark" ? "dark" : "light"}` });
+    }
+  }
+
   const handleSubmit = async (e) => {
     e.preventDefault();
-
-    const formData = new FormData()
-    formData.append("feedback", value)
-    formData.append("picture", picture)
-
-    try {
-      setLoading(true)
-      setError("")
-      const response = await axios.post(
-        `${API}/create/feedback/${authContext.user._id}`,
-        formData,
-        {
-          headers: {
-            "content-type": "multipart/form-data",
-            Authorization: `Bearer ${JSON.parse(
-              localStorage.getItem("_token")
-            )}`,
-          },
-        }
-      )
-      if (response) {
-        setSuccess("Thanks for your feedback!")
-        setLoading(false)
-        setError("")
-        setColor("green")
-        toast.success("Thanks for your feedback!", { theme: `${authContext.theme === "dark" ? "dark" : "light"}` });
-        // console.log(response)
-      }
-    } catch (error) {
-      setColor("tomato");
-      setError(error.response?.data?.errorMsg || "An error occurred");
-      toast.error("An error occurred", { theme: `${authContext.theme === "dark" ? "dark" : "light"}` });
-    } finally {
-      setLoading(false);
-    }
-    sendEmail();
+    feedbackCreate();
     onhide();
   }
 
@@ -114,35 +111,14 @@ export const FeedbackModal = ({ show, onhide }) => {
     setSuccess(false)
     setError("")
   }
-  const showResponseMsg = () => {
-    return (
-      <Snackbar
-        anchorOrigin={{
-          vertical: "bottom",
-          horizontal: "center",
-        }}
-        open={error || success}
-        autoHideDuration={3000}
-        onClose={handleClose}
-      >
-        <SnackbarContent
-          message={success || error}
-          style={{
-            background: color,
-            display: "flex",
-            justifyContent: "center",
-          }}
-        />
-      </Snackbar>
-    )
-  }
+
   const styleTheme =
-    authContext.theme === "dark"
+    theme === "dark"
       ? { background: "#121212", color: "whitesmoke" }
       : { background: "white", color: "black" }
   
   const styleThemeMain =
-    authContext.theme === "dark" ? { background: "rgb(0 0 0 / 88%)" } : { background: "rgba(0, 0, 0, 0.555)" }
+    theme === "dark" ? { background: "rgb(0 0 0 / 88%)" } : { background: "rgba(0, 0, 0, 0.555)" }
 
   const useStyles = makeStyles((theme) => ({
     textField: {

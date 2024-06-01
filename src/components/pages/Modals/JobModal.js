@@ -1,41 +1,114 @@
 import { Button, Grid, TextField } from "@material-ui/core"
 import { makeStyles } from "@material-ui/core/styles"
 import React, { useContext, useState } from "react"
-import { AuthContext } from "../../../context/authContext/authContext"
 import { Modal } from "react-bootstrap"
 import { sendNotificationToUser } from "../../../utils/notification"
+import ServiceConfig from "../../../helpers/service-endpoint";
+import { NewAuthContext } from './../../../context/newAuthContext';
+import { ThemeContext } from "../../../context/themeContext";
+import { toast } from "react-toastify";
+import HttpRequestPrivate from './../../../helpers/private-client';
 
 export const JobModal = ({
     show,
     handleModal,
-    jobFunction,
     modalTitle,
     job,
 }) => {
-    const authContext = useContext(AuthContext)
+    const { user } = useContext(NewAuthContext);
+    const { theme } = useContext(ThemeContext);
+    const [isLoading, setIsLoading] = useState(false);
     const [skillsReq, setSkillsReq] = useState(job === undefined ? [] : job.skillsReq)
     const [workTitle, setWorkTitle] = useState(job === undefined ? "" : job.workTitle)
     const [workLocation, setWorkLocation] = useState(job === undefined ? "" : job.workLocation)
+    const [batchYear, setBatchYear] = useState(job === undefined ? null : job.batchYear)
+    const [collegeId, setCollegeId] = useState(job === undefined ? "" : job.collegeId)
     const [eligibility, setEligibility] = useState(job === undefined ? "" : job.eligibility)
     const [applyBy, setApplyBy] = useState(job === undefined ? "" : job.applyBy)
     const [company, setCompany] = useState(job === undefined ? "" : job.company)
     const [salary, setSalary] = useState(job === undefined ? "" : job.salary)
     const [link, setLink] = useState(job === undefined ? "" : job.link)
 
-    const handleForm = async (e) => {
-        e.preventDefault()
+    async function jobCreate() {
+        setIsLoading(true);
+        try {
+          const requestOptions = {
+            url: ServiceConfig.jobEndpoint,
+            method: "POST",
+            data: {
+                workTitle: workTitle, 
+                company: company, 
+                batchYear: batchYear, 
+                collegeId: collegeId, 
+                eligibility: eligibility, 
+                skillsReq: skillsReq,
+                workLocation: workLocation, 
+                salary: salary, 
+                applyBy: applyBy, 
+                link: link,
+            },
+            showActual: true,
+            withCredentials: true,
+          };
+          const response = await HttpRequestPrivate(requestOptions);
+          setIsLoading(false);
+          if(response.data.data){
+            toast.success(response.data.message, { theme: `${theme === "dark" ? "dark" : "light"}` });
+            sendNotificationToUser("New Job Opportunity Available", "Explore the latest job listing now", "campus");
+          }
+        } catch (err) {
+          setIsLoading(false);
+          console.log(err);
+          toast.error(err.data.message, { theme: `${theme === "dark" ? "dark" : "light"}` });
+        }
+      }
+    
+      async function jobUpdate(jobId) {
+        setIsLoading(true);
+        try {
+          const requestOptions = {
+            url: `${ServiceConfig.jobEndpoint}/${jobId}`,
+            method: "PUT",
+            data: {
+                workTitle: workTitle, 
+                company: company, 
+                batchYear: batchYear, 
+                collegeId: collegeId, 
+                eligibility: eligibility, 
+                skillsReq: skillsReq,
+                workLocation: workLocation, 
+                salary: salary, 
+                applyBy: applyBy, 
+                link: link,
+            },
+            showActual: true,
+            withCredentials: true,
+          };
+          const response = await HttpRequestPrivate(requestOptions);
+          setIsLoading(false);
+          if(response.data.data){
+            toast.success(response.data.message, { theme: `${theme === "dark" ? "dark" : "light"}` });
+          }
+        } catch (err) {
+          setIsLoading(false);
+          console.log(err);
+          toast.error(err.data.message, { theme: `${theme === "dark" ? "dark" : "light"}` });
+        }
+      }
+    
+      const handleForm = async (e) => {
+        e.preventDefault();
         job
-            ? jobFunction({ workTitle, company, eligibility, skillsReq, workLocation, salary, applyBy, link }, authContext.user._id, job._id)
-            : jobFunction({ workTitle, company, eligibility, skillsReq, workLocation, salary, applyBy, link }, authContext.user._id)
-        sendNotificationToUser("New Job Opportunity Available", "Explore the latest job listing now", "campus");
-        handleModal()
-    }
+          ? jobUpdate(job._id)
+          : jobCreate();
+        handleModal();
+      };
     const styleTheme =
-        authContext.theme === "dark"
+        theme === "dark"
             ? { background: "#121212", color: "whitesmoke" }
             : { background: "white", color: "black" }
     const styleThemeMain =
-        authContext.theme === "dark" ? { background: "rgb(0 0 0 / 88%)" } : null
+        theme === "dark" ? { background: "rgb(0 0 0 / 88%)" } : null
 
     const useStyles = makeStyles((theme) => ({
         textField: {
@@ -97,6 +170,24 @@ export const JobModal = ({
                                     value={company}
                                     fullWidth
                                     onChange={(e) => setCompany(e.target.value)}
+                                />
+                                <TextField
+                                    className={`mt-3 ${classes.textField}`}
+                                    variant="outlined"
+                                    placeholder="Batch Year"
+                                    size="small"
+                                    value={batchYear}
+                                    fullWidth
+                                    onChange={(e) => setBatchYear(e.target.value)}
+                                />
+                                <TextField
+                                    className={`mt-3 ${classes.textField}`}
+                                    variant="outlined"
+                                    placeholder="College"
+                                    size="small"
+                                    value={collegeId}
+                                    fullWidth
+                                    onChange={(e) => setCollegeId(e.target.value)}
                                 />
                                 <TextField
                                     className={`mt-3 ${classes.textField}`}

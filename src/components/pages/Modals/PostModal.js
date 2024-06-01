@@ -3,53 +3,103 @@ import { makeStyles } from "@material-ui/core/styles";
 import React, { useContext, useState } from "react";
 import { Modal, Form } from "react-bootstrap";
 import AddPhotoAlternateIcon from "@material-ui/icons/AddPhotoAlternate";
-import { AuthContext } from "../../../context/authContext/authContext";
 import { sendNotificationToUserWithImage } from "../../../utils/notification";
 import { Cloudinary } from "@cloudinary/url-gen";
 import CloudinaryUploadWidget from "../../common/cloudinary/cloudinary-upload-widget";
 import CustomCarousel from "../../common/custom-carousel/custom-carousel";
+import ServiceConfig from "../../../helpers/service-endpoint";
+import { NewAuthContext } from './../../../context/newAuthContext';
+import { ThemeContext } from "../../../context/themeContext";
+import { toast } from "react-toastify";
+import HttpRequestPrivate from './../../../helpers/private-client';
 
 export const PostModal = ({
   show,
   handleModal,
-  postFunction,
   modalTitle,
   post,
 }) => {
-  const authContext = useContext(AuthContext);
-  const [uploadFile, setUploadFile] = useState(null);
+  const { user } = useContext(NewAuthContext);
+  const { theme } = useContext(ThemeContext);
   // ADDED THE CLOUDINARY FOR UPLOADING AND HANDLING THE MEDIA FILES..
   const [mediaFiles, setMediaFiles] = useState([]);
+  const [isLoading, setIsLoading] = useState(false);
   const [preview, setPreview] = useState(
-    post === undefined ? "" : post.picture[0]
+    post === undefined ? "" : post.media
   );
   const [content, setContent] = useState(
     post === undefined ? "" : post.content
   );
   console.log(preview);
+
+  async function postCreate() {
+    setIsLoading(true);
+    try {
+      const requestOptions = {
+        url: ServiceConfig.postEndpoint,
+        method: "POST",
+        data: {
+          content: content,
+          media: mediaFiles,
+        },
+        showActual: true,
+        withCredentials: true,
+      };
+      const response = await HttpRequestPrivate(requestOptions);
+      setIsLoading(false);
+      if(response.data.data){
+        toast.success(response.data.message, { theme: `${theme === "dark" ? "dark" : "light"}` });
+        sendNotificationToUserWithImage(
+          "New Post",
+          `${user.firstName} created a new post`, user.id,
+          user.id
+        );
+      }
+    } catch (err) {
+      setIsLoading(false);
+      console.log(err);
+      toast.error(err?.data?.message, { theme: `${theme === "dark" ? "dark" : "light"}` });
+    }
+  }
+
+  async function postUpdate(postId) {
+    setIsLoading(true);
+    try {
+      const requestOptions = {
+        url: `${ServiceConfig.postEndpoint}/${postId}`,
+        method: "PATCH",
+        data: {
+          content: content,
+          media: mediaFiles,
+        },
+        showActual: true,
+        withCredentials: true,
+      };
+      const response = await HttpRequestPrivate(requestOptions);
+      setIsLoading(false);
+      if(response.data.data){
+        toast.success(response.data.message, { theme: `${theme === "dark" ? "dark" : "light"}` });
+      }
+    } catch (err) {
+      setIsLoading(false);
+      console.log(err);
+      toast.error(err.data.message, { theme: `${theme === "dark" ? "dark" : "light"}` });
+    }
+  }
+
   const handleForm = async (e) => {
     e.preventDefault();
-    const formData = new FormData();
-    formData.append("user", authContext.user._id);
-    formData.append("content", content);
-    formData.append("picture", uploadFile);
     post
-      ? postFunction(formData, authContext.user._id, post._id)
-      : postFunction(formData, authContext.user._id);
-    // console.log(authContext.user._id);
-    sendNotificationToUserWithImage(
-      "New Post",
-      `${authContext.user.name} created a new post`, authContext?.user?._id,
-      authContext.user._id
-    );
+      ? postUpdate(post.id)
+      : postCreate();
     handleModal();
   };
   const styleTheme =
-    authContext.theme === "dark"
+    theme === "dark"
       ? { background: "#121212", color: "whitesmoke" }
       : { background: "white", color: "black" };
   const styleThemeMain =
-    authContext.theme === "dark" ? { background: "rgb(0 0 0 / 88%)" } : null;
+    theme === "dark" ? { background: "rgb(0 0 0 / 88%)" } : null;
 
   const useStyles = makeStyles((theme) => ({
     textField: {

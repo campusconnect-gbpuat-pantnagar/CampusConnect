@@ -13,7 +13,7 @@ import {
   Toolbar,
 } from "@material-ui/core";
 import MenuIcon from "@material-ui/icons/Menu";
-import { AuthContext } from "../../../context/authContext/authContext";
+import { NewAuthContext } from "../../../context/newAuthContext";
 import { Link, useNavigate, useLocation } from "react-router-dom";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import PeopleAltRoundedIcon from "@material-ui/icons/PeopleAltRounded";
@@ -22,6 +22,7 @@ import BusinessCenterRoundedIcon from "@material-ui/icons/BusinessCenterRounded"
 import HomeRoundedIcon from "@material-ui/icons/HomeRounded";
 import { faCommentDots } from "@fortawesome/free-solid-svg-icons";
 import { FeedbackModal } from "../../pages/Modals/FeedbackModal";
+import { ThemeContext } from "../../../context/themeContext";
 
 const currentTab = (location, path) => {
   if (location.pathname === path) {
@@ -33,7 +34,8 @@ const currentTab = (location, path) => {
 const HeaderMobile = () => {
   const navigate = useNavigate();
   const location = useLocation();
-  const authContext = useContext(AuthContext);
+  const { user } = useContext(NewAuthContext);
+  const { theme } = useContext(ThemeContext);
   const [showFeedback, setShowFeedback] = useState(false);
   const [moreOption, setMoreOption] = useState(null);
   const handleMoreOption = (e) => {
@@ -48,7 +50,7 @@ const HeaderMobile = () => {
     setShowFeedback(!showFeedback);
   };
   const styleTheme =
-    authContext.theme === "dark"
+    theme === "dark"
       ? { background: "#212121", color: "white" }
       : { background: "white", color: "black" };
 
@@ -91,7 +93,7 @@ const HeaderMobile = () => {
                 navigate("/");
               }}
             >
-              {authContext.theme === "dark" ? (
+              {theme === "dark" ? (
                 <img
                   src="/cc_logo_horizontal_white.png"
                   alt="logo"
@@ -187,7 +189,7 @@ const HeaderMobile = () => {
               <MenuItem
                 // onClick={handleClose}
                 onClick={() => {
-                  navigate(`/profile/${authContext.user._id}`);
+                  navigate(`/profile/${user.username}`);
                 }}
                 style={styleTheme}
               >

@@ -1,28 +1,51 @@
-import React, { useContext, useEffect } from "react"
+import React, { useContext, useEffect, useState } from "react"
 import { Home } from "../../../common/Base/Home"
-import { PostContext } from "../../../../context/postContext/postContext"
 import { PostCard } from "./PostCard"
 import CameraIcon from "@material-ui/icons/Camera"
 import { LoadingPost } from "./LoadingPost"
 import { Grid } from "@material-ui/core"
-import { UserContext } from "../../../../context/userContext/UserContext"
+import ServiceConfig from "../../../../helpers/service-endpoint"
+import HttpRequestPrivate from "../../../../helpers/private-client"
 
 export const Post = () => {
-  const postContext = useContext(PostContext)
-  const userContext = useContext(UserContext)
+  const [isLoading, setIsLoading] = useState(false);
+  const [posts, setPosts] = useState([]);
+
+  async function getPosts() {
+    setIsLoading(true);
+    try {
+      const requestOptions = {
+        url: ServiceConfig.postEndpoint,
+        method: "GET",
+        showActual: true,
+        withCredentials: true,
+      };
+      const response = await HttpRequestPrivate(requestOptions);
+      console.log(response);
+      setIsLoading(false);
+      if(response.data.data){
+        setPosts(response.data.data);
+      }
+    } catch (err) {
+      setIsLoading(false);
+      console.log(err);
+    }
+  }
+
   useEffect(() => {
-    postContext.getAllPost()
+    getPosts();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
+
   return (
     <Home>
       <div className="px-2">
-        {postContext.loading || userContext.loading ? (
+        {isLoading ? (
           <LoadingPost />
-        ) : postContext.post.length > 0 ? (
-          postContext.post.map((post) => {
+        ) : posts.length > 0 ? (
+          posts.map((post) => {
             return (
-              <div key={post._id}>
+              <div key={post.id}>
                 <PostCard post={post} />
               </div>
             )

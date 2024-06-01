@@ -1,46 +1,93 @@
 import { Button, Grid, TextField } from "@material-ui/core"
 import { makeStyles } from "@material-ui/core/styles"
 import React, { useContext, useState } from "react"
-import { AuthContext } from "../../../context/authContext/authContext"
 import { Modal } from "react-bootstrap"
 import { sendNotificationToUser } from "../../../utils/notification"
+import ServiceConfig from "../../../helpers/service-endpoint";
+import { NewAuthContext } from './../../../context/newAuthContext';
+import { ThemeContext } from "../../../context/themeContext";
+import { toast } from "react-toastify";
+import HttpRequestPrivate from './../../../helpers/private-client';
 
 export const NoticeModal = ({
     show,
     handleModal,
-    noticeFunction,
     modalTitle,
     notice,
 }) => {
-    const authContext = useContext(AuthContext)
+    const { user } = useContext(NewAuthContext);
+    const { theme } = useContext(ThemeContext);
+    const [isLoading, setIsLoading] = useState(false);
     const [description, setDescription] = useState(notice === undefined ? "" : notice.description)
     const [title, setTitle] = useState(notice === undefined ? "" : notice.title)
     const [link, setLink] = useState(notice === undefined ? "" : notice.link)
 
-    const handleForm = async (e) => {
-        e.preventDefault()
-        const formData = new FormData()
-        // console.log(formData);
-        // console.log(title);
-        // console.log(description);
-        // console.log(link);
-        // formData.append("user", authContext.user._id);
-        // formData.append("title", title);
-        // formData.append("description", description);
-        // formData.append("link", link);
-        // console.log(formData);
+    async function noticeCreate() {
+        setIsLoading(true);
+        try {
+          const requestOptions = {
+            url: ServiceConfig.noticeEndpoint,
+            method: "POST",
+            data: {
+              title: title,
+              description: description,
+              link: link,
+            },
+            showActual: true,
+            withCredentials: true,
+          };
+          const response = await HttpRequestPrivate(requestOptions);
+          setIsLoading(false);
+          if(response.data.data){
+            toast.success(response.data.message, { theme: `${theme === "dark" ? "dark" : "light"}` });
+            sendNotificationToUser("New Notice", title, "campus");
+          }
+        } catch (err) {
+          setIsLoading(false);
+          console.log(err);
+          toast.error(err.data.message, { theme: `${theme === "dark" ? "dark" : "light"}` });
+        }
+      }
+    
+      async function noticeUpdate(noticeId) {
+        setIsLoading(true);
+        try {
+          const requestOptions = {
+            url: `${ServiceConfig.noticeEndpoint}/${noticeId}`,
+            method: "PUT",
+            data: {
+                title: title,
+                description: description,
+                link: link,
+            },
+            showActual: true,
+            withCredentials: true,
+          };
+          const response = await HttpRequestPrivate(requestOptions);
+          setIsLoading(false);
+          if(response.data.data){
+            toast.success(response.data.message, { theme: `${theme === "dark" ? "dark" : "light"}` });
+          }
+        } catch (err) {
+          setIsLoading(false);
+          console.log(err);
+          toast.error(err.data.message, { theme: `${theme === "dark" ? "dark" : "light"}` });
+        }
+      }
+    
+      const handleForm = async (e) => {
+        e.preventDefault();
         notice
-            ? noticeFunction({ description, title, link }, authContext.user._id, notice._id)
-            : noticeFunction({ description, title, link }, authContext.user._id)
-        sendNotificationToUser("New Notice", title, "campus");
-        handleModal()
-    }
+          ? noticeUpdate(notice._id)
+          : noticeCreate();
+        handleModal();
+      };
     const styleTheme =
-        authContext.theme === "dark"
+        theme === "dark"
             ? { background: "#121212", color: "whitesmoke" }
             : { background: "white", color: "black" }
     const styleThemeMain =
-        authContext.theme === "dark" ? { background: "rgb(0 0 0 / 88%)" } : null
+        theme === "dark" ? { background: "rgb(0 0 0 / 88%)" } : null
 
     const useStyles = makeStyles((theme) => ({
         textField: {

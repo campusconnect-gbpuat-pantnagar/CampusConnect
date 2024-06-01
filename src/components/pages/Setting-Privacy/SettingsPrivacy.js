@@ -15,42 +15,30 @@ import "./SettingsPrivacy.css"
 import Header from "../../common/Header/Header"
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
 import { faEdit } from "@fortawesome/free-solid-svg-icons"
-import { AuthContext } from "../../../context/authContext/authContext"
+import { NewAuthContext } from "../../../context/newAuthContext"
+import { ThemeContext } from "../../../context/themeContext"
 import HeaderMobile from "../../common/Header/HeaderMobile"
 
 export const SettingsPrivacy = () => {
-  const authContext = useContext(AuthContext)
+  const { user } = useContext(NewAuthContext);
+  const { theme, handleTheme } = useContext(ThemeContext);
   const [isThemeDark, setIsThemeDark] = useState(false)
   const [notification, setNotification] = useState(Notification.permission === "granted")
-  //   console.log(isThemeDark)
-  const handleTheme = () => {
-    // console.log(isThemeDark)
-    // if (localStorage.getItem("_theme") === "light") {
-    //   setIsThemeDark(true)
-    //   localStorage.setItem("_theme", "dark")
-    //   window.location.reload()
-    // } else {
-    //   setIsThemeDark(false)
-    //   localStorage.setItem("_theme", "light")
-    //   window.location.reload()
-    // }
-    authContext.handleTheme()
-  }
-  // console.log(isThemeDark)
+  
   useEffect(() => {
-    if (authContext.theme === "dark") {
+    if (theme === "dark") {
       setIsThemeDark(true)
     } else {
       setIsThemeDark(false)
     }
-  }, [authContext.theme])
+  }, [theme])
 
   const handleNotification = () => {
 
   }
 
   const styleTheme =
-    authContext.theme === "dark"
+    theme === "dark"
       ? { background: "#121212", color: "whitesmoke" }
       : { background: "white", color: "black" }
 
@@ -86,7 +74,7 @@ export const SettingsPrivacy = () => {
                           </Grid>
                           <Grid item xs={9}>
                             <Typography variant="subtitle2">
-                              {authContext.user.name}
+                              {user.firstName} {user.lastName}
                             </Typography>
                           </Grid>
                         </Grid>
@@ -95,11 +83,11 @@ export const SettingsPrivacy = () => {
                       <li className="py-2">
                         <Grid container spacing={3}>
                           <Grid item xs={3}>
-                            <Typography variant="button">Roll No.</Typography>
+                            <Typography variant="button">ID No.</Typography>
                           </Grid>
                           <Grid item xs={9}>
                             <Typography variant="subtitle2">
-                              {authContext.user.rollno}
+                              {user.gbpuatId}
                             </Typography>
                           </Grid>
                         </Grid>
@@ -112,7 +100,7 @@ export const SettingsPrivacy = () => {
                           </Grid>
                           <Grid item xs={9}>
                             <Typography variant="subtitle2">
-                              {authContext.user.email}
+                              {user.gbpuatEmail}
                             </Typography>
                           </Grid>
                         </Grid>

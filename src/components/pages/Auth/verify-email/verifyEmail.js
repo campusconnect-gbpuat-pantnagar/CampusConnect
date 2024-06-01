@@ -99,7 +99,7 @@ const VerifyEmailPage = () => {
           showOnBoarding: user.showOnBoarding,
           role: user?.role,
           lastActive: user?.lastActive,
-
+          connectionLists:user?.connectionLists,
           academicDetails: {
             college: {
               name: user?.academicDetails?.college?.name,

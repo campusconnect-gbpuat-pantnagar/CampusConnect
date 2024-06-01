@@ -9,33 +9,31 @@ import {
 import { makeStyles } from "@material-ui/core/styles"
 import React, { useContext, useEffect, useState } from "react"
 import { Modal } from "react-bootstrap"
-import { AuthContext } from "../../../context/authContext/authContext"
-import { UserContext } from "../../../context/userContext/UserContext"
+import { NewAuthContext } from "../../../context/newAuthContext"
+import { ThemeContext } from "../../../context/themeContext"
+import ServiceConfig from "../../../helpers/service-endpoint"
+import HttpRequestPrivate from "../../../helpers/private-client"
+import { toast } from "react-toastify"
+
 export const EditProfileModal = ({ show, onHide }) => {
-  const userContext = useContext(UserContext)
-  const authContext = useContext(AuthContext)
-  const [loading, setLoading] = useState(false)
+  const { user } = useContext(NewAuthContext);
+  const { theme } = useContext(ThemeContext);
+  const [isLoading, setIsLoading] = useState(false)
   const [color, setColor] = useState(null)
   const [error, setError] = useState("")
   const [userDetails, setUserDetails] = useState({
-    name: "",
-    age: "",
-    email: "",
-    dob: "",
-    rollno: "",
-    branch: "",
-    intro: "",
-    year: "",
+    firstName: "",
+    lastName: "",
+    // username: "",
+    bio: "",
   })
   useEffect(() => {
     setUserDetails({
       ...userDetails,
-      name: userContext.user.name,
-      email: userContext.user.email,
-      intro: userContext.user.intro,
-      rollno: userContext.user.rollno,
-      branch: userContext.user.branch,
-      year: userContext.user.year,
+      firstName: user.firstName,
+      lastName: user.lastName,
+      // username: user.username,
+      bio: user.bio,
     })
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
@@ -45,38 +43,38 @@ export const EditProfileModal = ({ show, onHide }) => {
       [e.target.name]: e.target.value,
     })
   }
-  const formData = {
-    name: userDetails.name,
-    intro: userDetails.intro,
-    branch: userDetails.branch,
-    year: userDetails.year,
-  }
+  
   const handleForm = async (e) => {
     e.preventDefault()
-    console.log(userDetails.year)
+    setIsLoading(true);
     try {
-      setLoading(true)
-      const response = await userContext.updateUserProfileDetails(
-        authContext.user._id,
-        formData
-      )
-      if (response) {
-        setLoading(false)
-        setError(false)
-        setColor("green")
-        onHide()
-        window.location.reload()
+      const requestOptions = {
+        url: ServiceConfig.updateUserProfile,
+        method: "PATCH",
+        data: {
+          firstName: userDetails.firstName,
+          lastName: userDetails.lastName,
+          // username: userDetails.username,
+          bio: userDetails.bio,
+        },
+        showActual: true,
+        withCredentials: true,
+      };
+      const response = await HttpRequestPrivate(requestOptions);
+      setIsLoading(false);
+      if(response.data.data){
+        toast.success(response.data.message, { theme: `${theme === "dark" ? "dark" : "light"}` });
       }
-    } catch (error) {
-      setLoading(false)
-      setColor("tomato")
-      setError(error.response.data.errorMsg)
-      // console.log(error)
+    } catch (err) {
+      setIsLoading(false);
+      console.log(err);
+      toast.error(err.data.message, { theme: `${theme === "dark" ? "dark" : "light"}` });
     }
   }
+
   const handleClose = () => {
     setColor("")
-    setLoading(false)
+    setIsLoading(false)
     setError("")
   }
   const showResponseMsg = () => {
@@ -103,15 +101,15 @@ export const EditProfileModal = ({ show, onHide }) => {
   }
 
   const styleThemeMain =
-    authContext.theme === "dark" ? { background: "rgb(0 0 0 / 88%)" } : null
+    theme === "dark" ? { background: "rgb(0 0 0 / 88%)" } : null
 
   const styleTheme =
-    authContext.theme === "dark"
+    theme === "dark"
       ? { background: "#212121", color: "whitesmoke" }
       : { background: "white", color: "black" }
 
   const clickStyleTheme =
-    authContext.theme === "dark"
+    theme === "dark"
       ? { color: "#03DAC6" }
       : { color: "blue" }
 
@@ -165,38 +163,55 @@ export const EditProfileModal = ({ show, onHide }) => {
             padding: "0 16px",
           }}
         >
-          {userContext.user.role === 0 && (
+          {user.role === "student" && (
             <Typography variant="button" style={clickStyleTheme} gutterBottom>
               Student Profile
             </Typography>
           )}
-          {userContext.user.role === 1 && (
+          {user.role === "faculty" && (
             <Typography variant="button" style={clickStyleTheme} gutterBottom>
               Faculty Profile
             </Typography>
           )}
-          {userContext.user.role === 2 && (
+          {user.role === "admin" && (
             <Typography variant="button" style={clickStyleTheme} gutterBottom>
               Admin Profile
+            </Typography>
+          )}
+          {user.role === "moderator" && (
+            <Typography variant="button" style={clickStyleTheme} gutterBottom>
+              Moderator Profile
             </Typography>
           )}
           <form onSubmit={handleForm}>
             <TextField
               disabled
-              name="name"
+              name="firstName"
               variant="outlined"
               size="small"
               InputLabelProps={{
                 shrink: true,
               }}
               fullWidth
-              label="Full Name"
+              label="First Name"
               className={`mt-3 ${classes.textField}`}
-              value={userDetails.name}
-            // onChange={handleChangeData}
+              value={userDetails.firstName}
+            />
+            <TextField
+              disabled
+              name="lastName"
+              variant="outlined"
+              size="small"
+              InputLabelProps={{
+                shrink: true,
+              }}
+              fullWidth
+              label="Last Name"
+              className={`mt-3 ${classes.textField}`}
+              value={userDetails.lastName}
             />
             <Grid container justifyContent="space-between" spacing={3}>
-              <Grid item xs={6}>
+              {/* <Grid item xs={6}>
                 <TextField
                   disabled
                   variant="outlined"
@@ -205,12 +220,12 @@ export const EditProfileModal = ({ show, onHide }) => {
                     shrink: true,
                   }}
                   fullWidth
-                  value={userDetails.email}
-                  label="E-mail"
+                  value={userDetails.username}
+                  label="username"
                   className={`mt-3 ${classes.textField}`}
                 />
-              </Grid>
-              <Grid item xs={4}>
+              </Grid> */}
+              {/* <Grid item xs={4}>
                 <TextField
                   disabled
                   variant="outlined"
@@ -223,8 +238,8 @@ export const EditProfileModal = ({ show, onHide }) => {
                   label="Roll No."
                   className={`mt-3 ${classes.textField}`}
                 />
-              </Grid>
-              <Grid item xs={2}>
+              </Grid> */}
+              {/* <Grid item xs={2}>
                 <TextField
                   variant="outlined"
                   name="year"
@@ -238,9 +253,9 @@ export const EditProfileModal = ({ show, onHide }) => {
                   className={`mt-3 ${classes.textField}`}
                   onChange={handleChangeData}
                 />
-              </Grid>
+              </Grid> */}
             </Grid>
-            <TextField
+            {/* <TextField
               name="branch"
               variant="outlined"
               value={userDetails.branch}
@@ -252,11 +267,11 @@ export const EditProfileModal = ({ show, onHide }) => {
               fullWidth
               label="Branch"
               className={`mt-3 ${classes.textField}`}
-            />
+            /> */}
             <TextField
               variant="outlined"
               size="small"
-              name="intro"
+              name="bio"
               onChange={handleChangeData}
               InputLabelProps={{
                 shrink: true,
@@ -265,8 +280,8 @@ export const EditProfileModal = ({ show, onHide }) => {
               fullWidth
               multiline
               minRows={3}
-              value={userDetails.intro}
-              label="Intro"
+              value={userDetails.bio}
+              label="Bio"
             />
           </form>
         </div>
@@ -280,7 +295,7 @@ export const EditProfileModal = ({ show, onHide }) => {
           className="ml-3"
           variant="outlined"
         >
-          {loading ? "..." : "Save"}
+          {isLoading ? "..." : "Save"}
         </Button>
       </Modal.Footer>
     </Modal>

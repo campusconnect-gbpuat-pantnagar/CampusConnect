@@ -14,11 +14,10 @@ import {
 } from "@material-ui/core";
 import React, { useContext, useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
+import { NewAuthContext } from "../../../context/newAuthContext";
 import { AuthContext } from "../../../context/authContext/authContext";
-import { BlogContext } from "../../../context/blogContext/BlogContext";
-import { PostContext } from "../../../context/postContext/postContext";
 import { UserContext } from "../../../context/userContext/UserContext";
-import { AdsContext } from "../../../context/adsContext/AdsContext";
+import { ThemeContext } from "../../../context/themeContext";
 import Header from "../../common/Header/Header";
 import { InputBox } from "../Home/InputBox";
 import { EditProfileModal } from "../Modals/EditProfileModal";
@@ -40,11 +39,10 @@ import { ChatContext } from "../../../context/chatContext/chatContext";
 export const Profile = () => {
   const { userId } = useParams();
   const navigate = useNavigate();
-  const postContext = useContext(PostContext);
-  const blogContext = useContext(BlogContext);
-  const userContext = useContext(UserContext);
+  const { user } = useContext(NewAuthContext);
+  const { theme } = useContext(ThemeContext);
   const authContext = useContext(AuthContext);
-  const adsContext = useContext(AdsContext);
+  const userContext = useContext(UserContext);
   const [data, setData] = useState(null);
   const [dataPost, setDataPost] = useState([]);
   const [dataBlog, setDataBlog] = useState([]);
@@ -83,17 +81,17 @@ export const Profile = () => {
 
   useEffect(() => {
     async function fetchPostsByUser() {
-      const abc = await postContext.getAllPostByUserId(userId);
-      setDataPost(abc);
-      setData(abc);
+      // const abc = await postContext.getAllPostByUserId(userId);
+      // setDataPost(abc);
+      // setData(abc);
     }
     async function fetchBlogsByUser() {
-      const abc = await blogContext.getAllBlogsByUserId(userId);
-      setDataBlog(abc);
+      // const abc = await blogContext.getAllBlogsByUserId(userId);
+      // setDataBlog(abc);
     }
     async function fetchAdsByUser() {
-      const abc = await adsContext.getAllAdsByUser(userId);
-      setDataAds(abc);
+      // const abc = await adsContext.getAllAdsByUser(userId);
+      // setDataAds(abc);
     }
     if (userContext.user) {
       fetchPostsByUser();
@@ -193,12 +191,12 @@ export const Profile = () => {
   };
 
   const styleTheme =
-    authContext.theme === "dark"
+    theme === "dark"
       ? { background: "#121212", color: "whitesmoke" }
       : { background: "white", color: "black" };
 
   const clickStyleTheme =
-    authContext.theme === "dark"
+    theme === "dark"
       ? { color: "#03DAC6", borderColor: "#03DAC6" }
       : { color: "blue", borderColor: "blue" };
 

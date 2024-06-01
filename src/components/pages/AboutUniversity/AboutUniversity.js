@@ -10,17 +10,17 @@ import {
 } from "@material-ui/core";
 import "./AboutUniversity.css";
 import OpenInNewIcon from "@material-ui/icons/OpenInNew";
-import { AuthContext } from "../../../context/authContext/authContext";
+import { ThemeContext } from "../../../context/themeContext";
 import HeaderMobile from "../../common/Header/HeaderMobile";
 
 export const AboutUniversity = () => {
-	const authContext = useContext(AuthContext)
+	const { theme } = useContext(ThemeContext);
 	const styleTheme =
-		authContext.theme === "dark"
+		theme === "dark"
 			? { background: "#121212", color: "whitesmoke" }
 			: null
 	const clickStyleTheme =
-		authContext.theme === "dark"
+		theme === "dark"
 			? { color: "#03DAC6" }
 			: { color: "blue" }
 

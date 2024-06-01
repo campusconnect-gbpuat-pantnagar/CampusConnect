@@ -5,16 +5,18 @@ import wallpaperStyles from "./chatwallpaper.module.css";
 import { ModalType } from "../../context/modalContext/modalTypes";
 import FileUploadIcon from "@material-ui/icons/CloudUpload";
 import { ChatContext } from "../../context/chatContext/chatContext";
-import { AuthContext } from "../../context/authContext/authContext";
+import { NewAuthContext } from "../../context/newAuthContext";
+import { ThemeContext } from "../../context/themeContext";
 import { doc, getDoc, serverTimestamp, updateDoc } from "firebase/firestore";
 import { db } from "../../utils/config/firebase";
 const ChatWallpaper = () => {
   const { modalState, setModalState, onClose } = useContext(ModalContext);
   const { chatId, talkingWithId, setChatWallpaper } = useContext(ChatContext);
-  const authContext = useContext(AuthContext);
+  const { theme } = useContext(ThemeContext);
+  const { user } = useContext(NewAuthContext);
 
   const styleTheme =
-    authContext.theme === "dark"
+    theme === "dark"
       ? { background: "#151515", color: "white" }
       : { background: "white", color: "black" };
 
@@ -58,7 +60,7 @@ const ChatWallpaper = () => {
     if (downloadLink) {
       localStorage.setItem("chatWallpaper", JSON.stringify(downloadLink));
       setChatWallpaper(downloadLink);
-      await updateDoc(doc(db, "userChats", authContext.user._id), {
+      await updateDoc(doc(db, "userChats", user.id), {
         [chatId + ".userPerference"]: {
           chatWallpaper: downloadLink,
         },
@@ -77,7 +79,7 @@ const ChatWallpaper = () => {
         JSON.stringify(event.target.currentSrc)
       );
       setChatWallpaper(event.target.currentSrc);
-      await updateDoc(doc(db, "userChats", authContext.user._id), {
+      await updateDoc(doc(db, "userChats", user.id), {
         [chatId + ".userPerference"]: {
           chatWallpaper: event.target.currentSrc,
         },

@@ -1,45 +1,101 @@
 import { Button, Grid, TextField } from "@material-ui/core"
 import { makeStyles } from "@material-ui/core/styles"
 import React, { useContext, useState } from "react"
-import { AuthContext } from "../../../context/authContext/authContext"
 import AddPhotoAlternateIcon from "@material-ui/icons/AddPhotoAlternate"
 import { Form, Modal } from "react-bootstrap"
+import ServiceConfig from "../../../helpers/service-endpoint";
+import { NewAuthContext } from './../../../context/newAuthContext';
+import { ThemeContext } from "../../../context/themeContext";
+import { toast } from "react-toastify";
+import HttpRequestPrivate from './../../../helpers/private-client';
 
 export const EventModal = ({
     show,
     handleModal,
-    eventFunction,
     modalTitle,
     event,
 }) => {
-    const authContext = useContext(AuthContext)
-    const [uploadFile, setUploadFile] = useState(null)
-    const [preview, setPreview] = useState(event === undefined ? "" : event.picture)
+    const { user } = useContext(NewAuthContext);
+    const { theme } = useContext(ThemeContext);
+    const [mediaFiles, setMediaFiles] = useState([]);
+    const [uploadFile, setUploadFile] = useState()
+    const [isLoading, setIsLoading] = useState(false);
+    const [preview, setPreview] = useState(event === undefined ? "" : event.media)
     const [description, setDescription] = useState(event === undefined ? "" : event.description)
     const [title, setTitle] = useState(event === undefined ? "" : event.title)
     const [date, setDate] = useState(event === undefined ? "" : event.date)
     const [venue, setVenue] = useState(event === undefined ? "" : event.venue)
 
-    const handleForm = async (e) => {
-        e.preventDefault()
-        const formData = new FormData()
-        formData.append("title", title)
-        formData.append("description", description)
-        formData.append("date", date)
-        formData.append("venue", venue)
-        formData.append("picture", uploadFile)
-        event
-          ? eventFunction(formData, authContext.user._id, event._id)
-          : eventFunction(formData, authContext.user._id)
-        handleModal()
+    async function eventCreate() {
+      setIsLoading(true);
+      try {
+        const requestOptions = {
+          url: ServiceConfig.eventEndpoint,
+          method: "POST",
+          data: {
+            title: title,
+            description: description,
+            date: date,
+            venue: venue,
+            media: mediaFiles,
+          },
+          showActual: true,
+          withCredentials: true,
+        };
+        const response = await HttpRequestPrivate(requestOptions);
+        setIsLoading(false);
+        if(response.data.data){
+          toast.success(response.data.message, { theme: `${theme === "dark" ? "dark" : "light"}` });
+        }
+      } catch (err) {
+        setIsLoading(false);
+        console.log(err);
+        toast.error(err.data.message, { theme: `${theme === "dark" ? "dark" : "light"}` });
       }
+    }
+  
+    async function eventUpdate(eventId) {
+      setIsLoading(true);
+      try {
+        const requestOptions = {
+          url: `${ServiceConfig.eventEndpoint}/${eventId}`,
+          method: "PUT",
+          data: {
+            title: title,
+            description: description,
+            date: date,
+            venue: venue,
+            media: mediaFiles,
+          },
+          showActual: true,
+          withCredentials: true,
+        };
+        const response = await HttpRequestPrivate(requestOptions);
+        setIsLoading(false);
+        if(response.data.data){
+          toast.success(response.data.message, { theme: `${theme === "dark" ? "dark" : "light"}` });
+        }
+      } catch (err) {
+        setIsLoading(false);
+        console.log(err);
+        toast.error(err.data.message, { theme: `${theme === "dark" ? "dark" : "light"}` });
+      }
+    }
+  
+    const handleForm = async (e) => {
+      e.preventDefault();
+      event
+        ? eventUpdate(event._id)
+        : eventCreate();
+      handleModal();
+    };
 
       const styleTheme =
-        authContext.theme === "dark"
+        theme === "dark"
           ? { background: "#121212", color: "whitesmoke" }
           : { background: "white", color: "black" }
       const styleThemeMain =
-        authContext.theme === "dark" ? { background: "rgb(0 0 0 / 88%)" } : null
+        theme === "dark" ? { background: "rgb(0 0 0 / 88%)" } : null
     
       const useStyles = makeStyles((theme) => ({
         textField: {

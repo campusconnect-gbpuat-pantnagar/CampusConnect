@@ -1,38 +1,24 @@
 import { Fab, Grid, Button, Paper, Avatar } from "@material-ui/core"
 import React, { useContext, useState } from "react"
-import { AuthContext } from "../../../context/authContext/authContext"
+import { NewAuthContext } from "../../../context/newAuthContext"
+import { ThemeContext } from "../../../context/themeContext"
 import BrokenImageIcon from "@material-ui/icons/BrokenImage"
 import PollIcon from "@material-ui/icons/Poll"
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
 import { faEdit, faFeather, faGraduationCap, faStickyNote, faCalendarAlt, faChalkboard } from "@fortawesome/free-solid-svg-icons"
 import { PostModal } from "../Modals/PostModal"
-import { PostContext } from "../../../context/postContext/postContext"
 import { BlogModal } from "../Modals/BlogModal"
-import { BlogContext } from "../../../context/blogContext/BlogContext"
 import { PollModal } from "../Modals/PollModal"
 import { NoticeModal } from "../Modals/NoticeModal"
 import { EventModal } from "../Modals/EventModal"
 import { StreamModal } from "../Modals/StreamModal"
 import { API } from "../../../utils/proxy"
-import { PollContext } from "../../../context/pollContext/PollContext"
-import { AdsContext } from "../../../context/adsContext/AdsContext"
-import { NoticeContext } from "../../../context/noticeContext/NoticeContext"
-import { EventContext } from "../../../context/eventContext/EventContext"
-import { StreamContext } from "../../../context/streamContext/StreamContext"
-import { JobContext } from "../../../context/jobContext/JobContext"
 import { JobModal } from "../Modals/JobModal"
 import { AdsModal } from "../Modals/AdsModal"
 
 export const InputBox = () => {
-  const authContext = useContext(AuthContext)
-  const postContext = useContext(PostContext)
-  const blogContext = useContext(BlogContext)
-  const pollContext = useContext(PollContext)
-  const adsContext = useContext(AdsContext)
-  const noticeContext = useContext(NoticeContext)
-  const eventContext = useContext(EventContext)
-  const streamContext = useContext(StreamContext)
-  const jobContext = useContext(JobContext)
+  const { user } = useContext(NewAuthContext);
+  const { theme } = useContext(ThemeContext);
   const [showPost, setShowPost] = useState(false)
   const [showBlog, setShowBlog] = useState(false)
   const [showPoll, setShowPoll] = useState(false)
@@ -71,7 +57,7 @@ export const InputBox = () => {
   }
 
   const styleTheme =
-    authContext.theme === "dark"
+    theme === "dark"
       ? { background: "#121212", color: "whitesmoke" }
       : null
 
@@ -81,7 +67,6 @@ export const InputBox = () => {
         <PostModal
           show={showPost}
           handleModal={handleModalPost}
-          postFunction={postContext.createPost}
           modalTitle="Create post"
           post={undefined}
         />
@@ -90,7 +75,6 @@ export const InputBox = () => {
         <BlogModal
           show={showBlog}
           handleModal={handleModalBlog}
-          blogFunction={blogContext.createBlog}
           modalTitle="Write Blog"
           blog={undefined}
         />
@@ -99,7 +83,6 @@ export const InputBox = () => {
         <AdsModal
           modalTitle="Create ads"
           show={showAds}
-          adsFunction={adsContext.createAds}
           ads={undefined}
           handleModal={handleModalAds}
         />
@@ -108,7 +91,6 @@ export const InputBox = () => {
         <PollModal
           modalTitle="Create poll"
           show={showPoll}
-          pollFunction={pollContext.createPoll}
           poll={undefined}
           handleModal={handleModalPoll}
         />
@@ -117,7 +99,6 @@ export const InputBox = () => {
         <NoticeModal
           modalTitle="Create Notice"
           show={showNotices}
-          noticeFunction={noticeContext.createNotice}
           notice={undefined}
           handleModal={handleNotices}
         />
@@ -126,7 +107,6 @@ export const InputBox = () => {
         <EventModal
           modalTitle="Create Event"
           show={showEvents}
-          eventFunction={eventContext.createEvent}
           event={undefined}
           handleModal={handleEvents}
         />
@@ -135,7 +115,6 @@ export const InputBox = () => {
         <StreamModal
           modalTitle="Create Live Stream"
           show={showStreams}
-          streamFunction={streamContext.createStream}
           stream={undefined}
           handleModal={handleStreams}
         />
@@ -144,7 +123,6 @@ export const InputBox = () => {
         <JobModal
           modalTitle="Create Job"
           show={showJobs}
-          jobFunction={jobContext.createJob}
           job={undefined}
           handleModal={handleModalJob}
         />
@@ -159,8 +137,8 @@ export const InputBox = () => {
         >
           <Grid item xs={1}>
             <Avatar
-              alt={authContext.user.name}
-              src={`${API}/pic/user/${authContext.user._id}`}
+              alt={user.firstName}
+              src={user.profilePicture}
             />
           </Grid>
           <Grid item xs={10}>
@@ -170,7 +148,7 @@ export const InputBox = () => {
               style={{ width: "100%", ...styleTheme }}
               size="medium"
             >
-              {`What's on your mind? ${authContext.user.name}`}
+              {`What's on your mind? ${user.firstName}`}
             </Fab>
           </Grid>
         </Grid>
@@ -204,7 +182,7 @@ export const InputBox = () => {
               Post Ad
             </Button>
           </Grid>
-          {authContext.user.role === 2 && (
+          {user.role === "admin" && (
             <Grid item>
               <Button onClick={handleModalJob} startIcon={<FontAwesomeIcon icon={faGraduationCap} />} style={styleTheme}>
                 Add Job
@@ -216,21 +194,21 @@ export const InputBox = () => {
               Create Poll
             </Button>
           </Grid>
-          {authContext.user.role === 2 && (
+          {user.role === "admin" && (
             <Grid item>
               <Button onClick={handleNotices} startIcon={<FontAwesomeIcon icon={faStickyNote} />} style={styleTheme}>
                 Add Notice
               </Button>
             </Grid>
           )}
-          {authContext.user.role === 2 && (
+          {user.role === "admin" && (
             <Grid item>
               <Button onClick={handleEvents} startIcon={<FontAwesomeIcon icon={faCalendarAlt} />} style={styleTheme}>
                 Add Event
               </Button>
             </Grid>
           )}
-          {authContext.user.role === 2 && (
+          {user.role === "admin" && (
             <Grid item>
               <Button onClick={handleStreams} startIcon={<FontAwesomeIcon icon={faChalkboard} />} style={styleTheme}>
                 Add Live Stream

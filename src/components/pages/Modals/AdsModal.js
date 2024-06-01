@@ -2,49 +2,107 @@ import { Button, Grid, TextField } from "@material-ui/core"
 import { makeStyles } from "@material-ui/core/styles"
 import React, { useContext, useState } from "react"
 import { Form, Modal } from "react-bootstrap"
-import { AuthContext } from "../../../context/authContext/authContext"
 import AddPhotoAlternateIcon from "@material-ui/icons/AddPhotoAlternate"
 import { sendNotificationToUserWithImage } from "../../../utils/notification"
+import ServiceConfig from "../../../helpers/service-endpoint";
+import { NewAuthContext } from './../../../context/newAuthContext';
+import { ThemeContext } from "../../../context/themeContext";
+import { toast } from "react-toastify";
+import HttpRequestPrivate from './../../../helpers/private-client';
 
 
 export const AdsModal = ({
   show,
   handleModal,
-  adsFunction,
   modalTitle,
   ads,
 }) => {
-  const authContext = useContext(AuthContext)
-  const [uploadFile, setUploadFile] = useState(null)
-  const [preview, setPreview] = useState(ads === undefined ? "" : ads.picture)
+  const { user } = useContext(NewAuthContext);
+  const { theme } = useContext(ThemeContext);
+  const [mediaFiles, setMediaFiles] = useState([]);
+  const [isLoading, setIsLoading] = useState(false);
+  const [preview, setPreview] = useState(ads === undefined ? "" : ads.media)
+  const [uploadFile, setUploadFile] = useState()
   const [content, setContent] = useState(ads === undefined ? "" : ads.content)
   const [title, setTitle] = useState(ads === undefined ? "" : ads.title)
   const [price, setPrice] = useState(ads === undefined ? "" : ads.price)
   const [contact, setContact] = useState(ads === undefined ? "" : ads.contact)
-  //
-
-  console.log(preview)
-  const handleForm = async (e) => {
-    e.preventDefault()
-    const formData = new FormData()
-    formData.append("user", authContext.user._id)
-    formData.append("title", title)
-    formData.append("content", content)
-    formData.append("price", price)
-    formData.append("contact", contact)
-    formData.append("picture", uploadFile)
-    ads
-      ? adsFunction(formData, authContext.user._id, ads._id)
-      : adsFunction(formData, authContext.user._id)
-      sendNotificationToUserWithImage("New Ad", `${authContext.user.name} posted a new ad`, authContext?.user?._id, authContext.user._id);
-    handleModal()
+  
+  async function adCreate() {
+    setIsLoading(true);
+    try {
+      const requestOptions = {
+        url: ServiceConfig.adEndpoint,
+        method: "POST",
+        data: {
+          title: title,
+          content: content,
+          price: price,
+          contact: contact,
+          media: mediaFiles,
+        },
+        showActual: true,
+        withCredentials: true,
+      };
+      const response = await HttpRequestPrivate(requestOptions);
+      setIsLoading(false);
+      if(response.data.data){
+        toast.success(response.data.message, { theme: `${theme === "dark" ? "dark" : "light"}` });
+        sendNotificationToUserWithImage(
+          "New Ad",
+          `${user.firstName} posted a new ad`, user.id,
+          user.id
+        );
+      }
+    } catch (err) {
+      setIsLoading(false);
+      console.log(err);
+      toast.error(err.data.message, { theme: `${theme === "dark" ? "dark" : "light"}` });
+    }
   }
+
+  async function adUpdate(adId) {
+    setIsLoading(true);
+    try {
+      const requestOptions = {
+        url: `${ServiceConfig.adEndpoint}/${adId}`,
+        method: "PUT",
+        data: {
+          title: title,
+          content: content,
+          price: price,
+          contact: contact,
+          media: mediaFiles,
+        },
+        showActual: true,
+        withCredentials: true,
+      };
+      const response = await HttpRequestPrivate(requestOptions);
+      setIsLoading(false);
+      if(response.data.data){
+        toast.success(response.data.message, { theme: `${theme === "dark" ? "dark" : "light"}` });
+      }
+    } catch (err) {
+      setIsLoading(false);
+      console.log(err);
+      toast.error(err.data.message, { theme: `${theme === "dark" ? "dark" : "light"}` });
+    }
+  }
+
+  const handleForm = async (e) => {
+    e.preventDefault();
+    ads
+      ? adUpdate(ads._id)
+      : adCreate();
+    handleModal();
+  };
+
   const styleTheme =
-    authContext.theme === "dark"
+    theme === "dark"
       ? { background: "#121212", color: "whitesmoke" }
       : { background: "white", color: "black" }
   const styleThemeMain =
-    authContext.theme === "dark" ? { background: "rgb(0 0 0 / 88%)" } : null
+    theme === "dark" ? { background: "rgb(0 0 0 / 88%)" } : null
 
   const useStyles = makeStyles((theme) => ({
     textField: {
