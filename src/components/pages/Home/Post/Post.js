@@ -8,11 +8,13 @@ import ServiceConfig from "../../../../helpers/service-endpoint";
 import HttpRequestPrivate from "../../../../helpers/private-client";
 import { toast } from "react-toastify";
 import { ThemeContext } from "../../../../context/themeContext";
+import { NewAuthContext } from "../../../../context/newAuthContext";
 
 export const Post = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [posts, setPosts] = useState([]);
   const { theme } = useContext(ThemeContext);
+  const { tokens } = useContext(NewAuthContext);
 
   async function getPosts() {
     setIsLoading(true);
@@ -22,6 +24,9 @@ export const Post = () => {
         method: "GET",
         showActual: true,
         withCredentials: true,
+        headers: {
+          Authorization: `Bearer ${tokens?.access_token}`, // Assuming 'userToken' holds the token
+        },
       };
       const response = await HttpRequestPrivate(requestOptions);
       console.log(response);
@@ -49,6 +54,9 @@ export const Post = () => {
         method: "DELETE",
         showActual: true,
         withCredentials: true,
+        headers: {
+          Authorization: `Bearer ${tokens?.access_token}`, // Assuming 'userToken' holds the token
+        },
       };
       const response = await HttpRequestPrivate(requestOptions);
       if (response.data.data) {

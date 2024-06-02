@@ -27,6 +27,8 @@ import {
   requestFirebaseNotificationPermission,
   unsubscribeUserFromTopic,
 } from "../../../utils/notification";
+import { signOut } from "firebase/auth";
+import { auth } from "../../../utils/config/firebase";
 
 const currentTab = (location, path) => {
   if (location.pathname === path) {
@@ -83,12 +85,23 @@ const Header = () => {
 
   const classes = useStyles();
 
+  const signoutUser = async () => {
+    await signOut(auth);
+    localStorage.removeItem("_tokens");
+    localStorage.removeItem("_users");
+    localStorage.removeItem("talkingWithId");
+    localStorage.removeItem("chatId");
+    localStorage.clear();
+    navigate("/signin");
+    window.location.reload();
+  };
+
   return (
     <div className="header">
       {showFeedback ? (
         <FeedbackModal show={showFeedback} onhide={handleFeedback} />
       ) : null}
-      <AppBar style={styleTheme} elevation={3}>
+      <AppBar style={styleTheme}>
         <Toolbar className="header">
           <div className="header-part-1">
             <Button
@@ -252,7 +265,7 @@ const Header = () => {
                   if (Notification.permission === "granted") {
                     requestFirebaseNotificationPermission()
                       .then((token) => {
-                        if (user.role !== 'admin') {
+                        if (user.role !== "admin") {
                           unsubscribeUserFromTopic(token, "campus")
                             .then(() => {
                               console.log("Unsubscribed (common)");
@@ -264,7 +277,7 @@ const Header = () => {
                               );
                             });
                         }
-                        if (user.role !== 'admin') {
+                        if (user.role !== "admin") {
                           unsubscribeUserFromTopic(token, "marketing")
                             .then(() => {
                               console.log("Unsubscribed (marketing)");
@@ -305,7 +318,7 @@ const Header = () => {
                         );
                       });
                   }
-                  // New Auth signoutUser()
+                  signoutUser();
                 }}
                 style={styleTheme}
               >

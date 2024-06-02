@@ -1,29 +1,44 @@
-import React, { useContext } from "react"
-import { PostCard } from "../../Home/Post/PostCard"
-import { AdsCard } from "../../Home/Ads/AdsCard"
-import { LoadingPost } from "../../Home/Post/LoadingPost"
-import { LoadingBlog } from "../../Home/Blog/LoadingBlog"
-import { LoadingAds } from "../../Home/Ads/LoadingAds"
-import { BlogCard } from "../../Home/Blog/BlogCard"
-import { PostContext } from "../../../../context/postContext/postContext"
-import { AdsContext } from "../../../../context/adsContext/AdsContext"
-import { Grid } from "@material-ui/core"
-import CameraIcon from "@material-ui/icons/Camera"
-import { BlogContext } from "../../../../context/blogContext/BlogContext"
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
-import { faPencilAlt } from "@fortawesome/free-solid-svg-icons"
+import React, { useContext } from "react";
+import { PostCard } from "../../Home/Post/PostCard";
+import { AdsCard } from "../../Home/Ads/AdsCard";
+import { LoadingPost } from "../../Home/Post/LoadingPost";
+import { LoadingBlog } from "../../Home/Blog/LoadingBlog";
+import { LoadingAds } from "../../Home/Ads/LoadingAds";
+import { BlogCard } from "../../Home/Blog/BlogCard";
+import { PostContext } from "../../../../context/postContext/postContext";
+import { AdsContext } from "../../../../context/adsContext/AdsContext";
+import { Grid } from "@material-ui/core";
+import CameraIcon from "@material-ui/icons/Camera";
+import { BlogContext } from "../../../../context/blogContext/BlogContext";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faPencilAlt } from "@fortawesome/free-solid-svg-icons";
 
-export const HomeTab = ({ data, type }) => {
-  const postContext = useContext(PostContext)
-  const blogContext = useContext(BlogContext)
-  const adsContext = useContext(AdsContext)
+export const HomeTab = ({
+  data,
+  type,
+  isLoading,
+  updatePostList,
+  deletePost,
+}) => {
+  // const postContext = useContext(PostContext);
+  // const blogContext = useContext(BlogContext);
+  // const adsContext = useContext(AdsContext);
+
+  console.log(data);
   if (type === "post")
     return (
       <div className="mt-3">
-        {!postContext.loading ? (
+        {!isLoading ? (
           data.length > 0 ? (
             data.map((post) => {
-              return <PostCard post={post} key={post._id} />
+              return (
+                <PostCard
+                  updatePostList={updatePostList}
+                  deletePost={deletePost}
+                  post={post}
+                  key={post.id}
+                />
+              );
             })
           ) : (
             <div
@@ -50,14 +65,15 @@ export const HomeTab = ({ data, type }) => {
           <LoadingPost />
         )}
       </div>
-    )
+    );
+
   if (type === "blog")
     return (
       <div className="mt-3">
-        {!blogContext.loading ? (
+        {!isLoading ? (
           data.length > 0 ? (
             data.map((blog) => {
-              return <BlogCard blog={blog} key={blog._id} />
+              return <BlogCard blog={blog} key={blog._id} />;
             })
           ) : (
             <div
@@ -84,14 +100,14 @@ export const HomeTab = ({ data, type }) => {
           <LoadingBlog />
         )}
       </div>
-    )
+    );
   if (type === "ads")
     return (
       <div className="mt-3">
-        {!adsContext.loading ? (
+        {!isLoading ? (
           data.length > 0 ? (
             data.map((ads) => {
-              return <AdsCard ads={ads} key={ads._id} />
+              return <AdsCard ads={ads} key={ads._id} />;
             })
           ) : (
             <div
@@ -118,5 +134,5 @@ export const HomeTab = ({ data, type }) => {
           <LoadingAds />
         )}
       </div>
-    )
-}
+    );
+};

@@ -28,7 +28,7 @@ export const App = () => {
                 <ModalContextProvider>
                   <ModalProvider />
                   <Routing />
-                  <ToastContainer position="top-right" />          
+                  <ToastContainer position="top-right" />
                 </ModalContextProvider>
               </ChatContextProvider>
             </FirebaseContextProvider>

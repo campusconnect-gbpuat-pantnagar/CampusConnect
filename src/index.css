@@ -38,3 +38,11 @@ body {
 .swiper-button-prev::after {
   font-size: 15px !important;
 }
+.MuiPaper-elevation2,
+.MuiPaper-elevation3,
+.MuiPaper-elevation4,
+.MuiPaper-elevation1 {
+  box-shadow: rgba(0, 0, 0, 0.1) 0px 1px 3px 0px,
+    rgba(0, 0, 0, 0.06) 0px 1px 2px 0px !important;
+  /* box-shadow: none !important; */
+}

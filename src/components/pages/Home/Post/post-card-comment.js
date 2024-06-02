@@ -11,7 +11,7 @@ const PostCardComment = ({ comment }) => {
     try {
       setIsLoading(true);
       const requestOptions = {
-        url: `${ServiceConfig.getUserEndpoint}/profile/${comment.userId}`,
+        url: `${ServiceConfig.userEndpoint}/profile/${comment.userId}`,
         method: "GET",
         showActual: true,
         withCredentials: true,

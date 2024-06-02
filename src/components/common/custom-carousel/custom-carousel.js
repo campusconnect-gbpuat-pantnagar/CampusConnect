@@ -8,6 +8,7 @@ import styles from "./custom-carousel.module.css";
 import ReactPlayer from "react-player/lazy";
 
 export default function CustomCarousel({ slides }) {
+  console.log(slides);
   return (
     <Swiper
       pagination={true}
@@ -26,7 +27,7 @@ export default function CustomCarousel({ slides }) {
           ) : slide.resource_type === "video" ? (
             <ReactPlayer
               style={{ objectFit: "contain" }}
-              url={slide.secure_url}
+              url={slide.url}
               loop
               playIcon={true}
               controls={true}

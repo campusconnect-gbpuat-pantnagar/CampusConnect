@@ -48,7 +48,7 @@ import PostCardComment from "./post-card-comment";
 
 export const PostCard = ({ post, deletePost, updatedPost }) => {
   const navigate = useNavigate();
-  const { user } = useContext(NewAuthContext);
+  const { user, tokens } = useContext(NewAuthContext);
   const { theme } = useContext(ThemeContext);
   const [bookmarkStatus, setBookmarkStatus] = useState(false);
   const [comment, setComment] = useState("");
@@ -65,10 +65,13 @@ export const PostCard = ({ post, deletePost, updatedPost }) => {
     try {
       setIsLoading(true);
       const requestOptions = {
-        url: `${ServiceConfig.getUserEndpoint}/profile/${post.userId}`,
+        url: `${ServiceConfig.userEndpoint}/profile/${post.userId}`,
         method: "GET",
         showActual: true,
         withCredentials: true,
+        headers: {
+          Authorization: `Bearer ${tokens?.access_token}`, // Assuming 'userToken' holds the token
+        },
       };
       const response = await HttpRequestPrivate(requestOptions);
       if (response.data.data && response.data.data.user) {
@@ -210,13 +213,14 @@ export const PostCard = ({ post, deletePost, updatedPost }) => {
         showActual: true,
         withCredentials: true,
       };
+
       const response = await HttpRequestPrivate(requestOptions);
       if (response.data.data) {
-        toast.success(response.data.message, {
+        toast.success("you commented on a post", {
           theme: `${theme === "dark" ? "dark" : "light"}`,
         });
       }
-      // toggleComments();
+      toggleComments();
       setComment("");
     } catch (err) {
       console.log(err);
@@ -321,7 +325,7 @@ export const PostCard = ({ post, deletePost, updatedPost }) => {
             }
           />
           <CardContent className="py-1">
-            <Typography variant="body1" component="p">
+            <Typography variant="body1" style={{ color: "grey" }} component="p">
               {post.content}
             </Typography>
           </CardContent>

@@ -29,7 +29,7 @@ import HttpRequestPrivate from "../../../../helpers/private-client";
 export const PollCard = () => {
   const ref = useRef(null);
   const navigate = useNavigate();
-  const { user } = useContext(NewAuthContext);
+  const { user, tokens } = useContext(NewAuthContext);
   const { theme } = useContext(ThemeContext);
   const pollContext = useContext(PollContext);
   const [index, setIndex] = useState(0);

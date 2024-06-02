@@ -115,7 +115,7 @@ export const Routing = () => {
 
           <Route path="/" element={<PrivateRoute component={Post} />} />
           {/* <Route path="/chats" element={<PrivateRoute component={Chat} />} /> */}
-          {/* <Route path="/posts" element={<PrivateRoute component={Post} />} /> */}
+          <Route path="/posts" element={<PrivateRoute component={Post} />} />
           {/* <Route
               path="/bookmarks"
               element={<PrivateRoute component={Bookmarks} />}
@@ -126,10 +126,10 @@ export const Routing = () => {
             /> */}
           {/* <Route path="/ads" element={<PrivateRoute component={Ads} />} /> */}
           {/* <Route path="/blogs" element={<PrivateRoute component={Blog} />} /> */}
-          {/* <Route
-              path="/profile/:userId"
-              element={<PrivateRoute component={Profile} />}
-            /> */}
+          <Route
+            path="/profile/:username"
+            element={<PrivateRoute component={Profile} />}
+          />
           {/* <Route
               path="/connections"
               element={<PrivateRoute component={Connections} />}
@@ -146,10 +146,10 @@ export const Routing = () => {
               path="/notices"
               element={<PrivateRoute component={Notice} />}
             /> */}
-          {/* <Route
-              path="/about-university"
-              element={<PrivateRoute component={AboutUniversity} />}
-            /> */}
+          <Route
+            path="/about-university"
+            element={<PrivateRoute component={AboutUniversity} />}
+          />
           {/* <Route
               path="/settings-privacy"
               element={<PrivateRoute component={SettingsPrivacy} />}

@@ -35,84 +35,163 @@ import {
 } from "firebase/firestore";
 import { db } from "../../../utils/config/firebase";
 import { ChatContext } from "../../../context/chatContext/chatContext";
+import HttpRequestPrivate from "../../../helpers/private-client";
+import ServiceConfig from "../../../helpers/service-endpoint";
+import { toast } from "react-toastify";
 
 export const Profile = () => {
-  const { userId } = useParams();
+  const { username } = useParams();
   const navigate = useNavigate();
   const { user } = useContext(NewAuthContext);
   const { theme } = useContext(ThemeContext);
-  const authContext = useContext(AuthContext);
-  const userContext = useContext(UserContext);
-  const [data, setData] = useState(null);
-  const [dataPost, setDataPost] = useState([]);
-  const [dataBlog, setDataBlog] = useState([]);
-  const [dataAds, setDataAds] = useState([]);
+  const [posts, setPosts] = useState([]);
+  const [data, setData] = useState([]);
+  const [blogs, setBlogs] = useState([]);
+  const [ads, setAds] = useState([]);
   const [type, setType] = useState("post");
   const [picModal, setPicModal] = useState(false);
   const [editStatus, setEditStatus] = useState(false);
   // chatContext State
+
+  const [isLoading, setIsLoading] = useState(false);
+  const [userProfileData, setUserProfileData] = useState();
+
+  const getUserByUsername = async () => {
+    try {
+      setIsLoading(true);
+      const requestOptions = {
+        url: `${ServiceConfig.userEndpoint}/profile/${username}`,
+        method: "GET",
+        showActual: true,
+        withCredentials: true,
+      };
+      const response = await HttpRequestPrivate(requestOptions);
+      if (response.data.data && response.data.data.user) {
+        setUserProfileData(response.data.data.user);
+        setIsLoading(false);
+      }
+      setIsLoading(false);
+    } catch (err) {
+      setIsLoading(false);
+      console.log(err);
+    }
+  };
+
+  useEffect(() => {
+    getUserByUsername();
+  }, [username]);
+
   const { setChatId } = useContext(ChatContext);
 
   const handleClickBtn = async (e, func) => {
     try {
-      await func(authContext.user._id, userId);
+      await func(user.id, username);
     } catch (error) {}
   };
 
   function checkFriend() {
     let isFriend = false;
-    userContext.user.friendList.map((friend, i) => {
-      if (friend._id.toString() == authContext.user._id.toString()) {
+    userProfileData.connectionLists.map((friend, i) => {
+      if (friend.userId.toString() == user.id.toString()) {
         isFriend = true;
       }
     });
     return isFriend;
   }
 
-  useEffect(() => {
-    const fetchUserDetails = async (userId) => {
-      try {
-        await userContext.getUserById(userId);
-      } catch (error) {}
-    };
-    fetchUserDetails(userId);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [userId]);
+  // useEffect(() => {
+  //   const fetchUserDetails = async (userId) => {
+  //     try {
+  //       await userContext.getUserById(userId);
+  //     } catch (error) {}
+  //   };
+  //   fetchUserDetails(username);
+  //   // eslint-disable-next-line react-hooks/exhaustive-deps
+  // }, [username]);
+  async function fetchPostsByUser() {
+    setIsLoading(true);
+    try {
+      const requestOptions = {
+        url: `${ServiceConfig.postEndpoint}/users/${userProfileData.id}`,
+        method: "GET",
+        showActual: true,
+        withCredentials: true,
+      };
+      const response = await HttpRequestPrivate(requestOptions);
+      // console.log(response, "this is posts");
+      setIsLoading(false);
+      if (response.data.data) {
+        setPosts(response.data.data);
+        setData(response.data.data);
+      }
+    } catch (err) {
+      setIsLoading(false);
+      console.log(err);
+    }
+  }
+
+  async function fetchAdsByUser() {
+    setIsLoading(true);
+    try {
+      const requestOptions = {
+        url: `${ServiceConfig.adEndpoint}/users/${userProfileData.id}`,
+        method: "GET",
+        showActual: true,
+        withCredentials: true,
+      };
+      const response = await HttpRequestPrivate(requestOptions);
+      console.log(response);
+      setIsLoading(false);
+      if (response.data.data) {
+        setAds(response.data.data);
+      }
+    } catch (err) {
+      setIsLoading(false);
+      console.log(err);
+    }
+  }
+  async function fetchBlogsByUser() {
+    setIsLoading(true);
+    try {
+      const requestOptions = {
+        url: `${ServiceConfig.blogEndpoint}/users/${userProfileData.id}`,
+        method: "GET",
+        showActual: true,
+        withCredentials: true,
+      };
+      const response = await HttpRequestPrivate(requestOptions);
+      console.log(response, "this is blog");
+      setIsLoading(false);
+      if (response.data.data) {
+        setBlogs(response.data.data);
+      }
+    } catch (err) {
+      setIsLoading(false);
+      console.log(err);
+    }
+  }
 
   useEffect(() => {
-    async function fetchPostsByUser() {
-      // const abc = await postContext.getAllPostByUserId(userId);
-      // setDataPost(abc);
-      // setData(abc);
-    }
-    async function fetchBlogsByUser() {
-      // const abc = await blogContext.getAllBlogsByUserId(userId);
-      // setDataBlog(abc);
-    }
-    async function fetchAdsByUser() {
-      // const abc = await adsContext.getAllAdsByUser(userId);
-      // setDataAds(abc);
-    }
-    if (userContext.user) {
-      fetchPostsByUser();
-      fetchBlogsByUser();
-      fetchAdsByUser();
-    }
+    fetchPostsByUser();
+    fetchBlogsByUser();
+    fetchAdsByUser();
     // setData(abc.data)
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [userId]);
+  }, [userProfileData]);
+
+  console.log(posts);
 
   const handleClick = async (typeOf) => {
     if (typeOf === "post") {
-      setData(dataPost);
+      setData(posts);
       setType(typeOf);
     }
     if (typeOf === "blog") {
-      setData(dataBlog);
+      setData(blogs);
       setType(typeOf);
     }
     if (typeOf === "ads") {
-      setData(dataAds);
+      setData(ads);
       setType(typeOf);
     }
     if (typeOf === "bookmark") {
@@ -120,18 +199,17 @@ export const Profile = () => {
     }
     // setData(response)
   };
+
+  console.log(posts, ads, blogs, "thi is ");
   // Chat handler
   const handleChat = async (userId) => {
-    const combineId =
-      authContext.user._id > userId
-        ? authContext.user._id + userId
-        : userId + authContext.user._id;
+    const combineId = user.id > userId ? user.id + userId : userId + user.id;
 
     try {
       const response = await getDoc(doc(db, "chats", combineId));
       if (!response.exists()) {
         await setDoc(doc(db, "chats", combineId), { messages: [] });
-        const chatDocRef = doc(db, "userChats", authContext.user._id);
+        const chatDocRef = doc(db, "userChats", user.id);
         // const chatDocSnapshot = await getDoc(chatDocRef);
         // const existingData = chatDocSnapshot.data();
         // console.log(existingData);
@@ -141,8 +219,15 @@ export const Profile = () => {
           [combineId + ".chatId"]: combineId,
           [combineId + ".talkingWith"]: {
             userId: userId,
-            name: userContext.user?.name,
-            imageUrl: "https://i.pravatar.cc/200",
+            name: `${
+              userProfileData?.firstName[0].toUpperCase() +
+              userProfileData?.firstName.slice(1)
+            } ${
+              userProfileData?.lastName[0].toUpperCase() +
+              userProfileData?.lastName.slice(1)
+            }`,
+            imageUrl:
+              userProfileData.profilePicture || "https://i.pravatar.cc/200",
           },
           [combineId + ".userPerference"]: {
             chatWallpaper:
@@ -155,8 +240,10 @@ export const Profile = () => {
         await updateDoc(chatDocSecondRef, {
           [combineId + ".chatId"]: combineId,
           [combineId + ".talkingWith"]: {
-            userId: authContext.user._id,
-            name: authContext.user?.name,
+            userId: user.id,
+            name: `${
+              user?.firstName[0].toUpperCase() + user?.firstName.slice(1)
+            } ${user?.lastName[0].toUpperCase() + user?.lastName.slice(1)}`,
             imageUrl: "https://i.pravatar.cc/200",
           },
           [combineId + ".userPerference"]: {
@@ -179,7 +266,7 @@ export const Profile = () => {
     }
   };
 
-  if (userContext.user === null || userContext.user._id !== userId) {
+  if (isLoading || userProfileData?.username !== username) {
     return <Loading />;
   }
   const handleEditBtn = () => {
@@ -200,6 +287,40 @@ export const Profile = () => {
       ? { color: "#03DAC6", borderColor: "#03DAC6" }
       : { color: "blue", borderColor: "blue" };
 
+  console.log(data, "this is posts data");
+
+  const deletePost = async (postId) => {
+    try {
+      const updatedPosts = posts.filter((post) => post.id !== postId);
+      setPosts(updatedPosts);
+      const requestOptions = {
+        url: `${ServiceConfig.postEndpoint}/${postId}`,
+        method: "DELETE",
+        showActual: true,
+        withCredentials: true,
+      };
+      const response = await HttpRequestPrivate(requestOptions);
+      if (response.data.data) {
+        toast.success(response.data.message, {
+          theme: `${theme === "dark" ? "dark" : "light"}`,
+        });
+      }
+    } catch (err) {
+      console.log(err);
+      toast.error(err?.data?.message, {
+        theme: `${theme === "dark" ? "dark" : "light"}`,
+      });
+    }
+  };
+
+  const updatePostList = (updatedPost) => {
+    if (updatedPost) {
+      const updatedPosts = posts.map((post) =>
+        post.id === updatedPost.id ? updatedPost : post
+      );
+      setPosts(updatedPosts);
+    }
+  };
   return (
     <div className="home" style={{ overflowY: "auto" }}>
       <HeaderMobile />
@@ -215,7 +336,7 @@ export const Profile = () => {
         <ProfilePictureModal
           show={picModal}
           onHide={handlePicAvatar}
-          userContext={userContext}
+          userProfileData={userProfileData}
         />
       }
       <div className="container top-margin">
@@ -233,15 +354,13 @@ export const Profile = () => {
                   <Grid container justifyContent="center" alignContent="center">
                     <IconButton
                       onClick={
-                        userContext.user._id === authContext.user._id
-                          ? handlePicAvatar
-                          : null
+                        userProfileData.id === user.id ? handlePicAvatar : null
                       }
                     >
                       <Avatar
                         style={{ width: "150px", height: "150px" }}
-                        alt={userContext.user.name}
-                        src={`${API}/pic/user/${userContext.user._id}`}
+                        alt={userProfileData?.firstName}
+                        src={userProfileData?.profilePicture}
                       />
                     </IconButton>
                   </Grid>
@@ -250,22 +369,29 @@ export const Profile = () => {
                   <Grid container justifyContent="center">
                     <CardContent>
                       <Typography gutterBottom variant="h4" component="h2">
-                        {userContext.user.name}
+                        {`${
+                          userProfileData?.firstName[0].toUpperCase() +
+                          userProfileData?.firstName.slice(1)
+                        } ${
+                          userProfileData?.lastName[0].toUpperCase() +
+                          userProfileData?.lastName.slice(1)
+                        }`}
                       </Typography>
                       <Grid container spacing={3} justifyContent="flex-start">
                         <Grid item>
                           <h6>
-                            <b>{dataPost.length} </b>Post
+                            <b>{posts ? posts.length : ""} </b>Post
                           </h6>
                         </Grid>
                         <Grid item>
                           <h6>
-                            <b>{dataBlog.length} </b>Blogs
+                            <b>{blogs ? blogs.length : ""} </b>Blogs
                           </h6>
                         </Grid>
                         <Grid item>
                           <h6>
-                            <b>{userContext.user.friendList.length} </b>Friends
+                            <b>{userProfileData?.connectionLists.length} </b>
+                            Connections
                           </h6>
                         </Grid>
                       </Grid>
@@ -276,19 +402,20 @@ export const Profile = () => {
                         style={styleTheme}
                         className="mb-3"
                       >
-                        {userContext.user.intro}
+                        {userProfileData?.bio}
                       </Typography>
                       <Grid container direction="row">
                         <Grid item>
-                          {authContext.user._id != userId ? (
+                          {user?.username !== username ? (
                             checkFriend() ? (
                               <>
                                 <Button
                                   size="small"
                                   variant="outlined"
-                                  onClick={(e) =>
-                                    handleClickBtn(e, userContext.unFriend)
-                                  }
+                                  // onClick={
+                                  //   (e) => {}
+                                  //   // handleClickBtn(e, userContext.unFriend)
+                                  // }
                                   style={{ color: "red", borderColor: "red" }}
                                 >
                                   Remove Connection
@@ -299,12 +426,7 @@ export const Profile = () => {
                                 <Button
                                   size="small"
                                   variant="outlined"
-                                  onClick={(e) =>
-                                    handleClickBtn(
-                                      e,
-                                      userContext.sendFriendRequest
-                                    )
-                                  }
+                                  // onClick={(e) => handleClickBtn()}
                                   style={clickStyleTheme}
                                 >
                                   Add Connection
@@ -314,12 +436,12 @@ export const Profile = () => {
                           ) : null}
                         </Grid>
                         <Grid item>
-                          {authContext.user._id != userId ? (
+                          {user?.username !== username ? (
                             <Button
                               size="small"
                               variant="outlined"
                               className="ml-3"
-                              onClick={() => handleChat(userId)}
+                              // onClick={() => handleChat(userId)}
                               style={clickStyleTheme}
                             >
                               Chat
@@ -332,7 +454,7 @@ export const Profile = () => {
                 </Grid>
                 <Grid item xs={12} md={1}>
                   <Grid container justifyContent="center">
-                    {userContext.user._id === authContext.user._id ? (
+                    {userProfileData.id === user.id ? (
                       <Button
                         variant="text"
                         color="primary"
@@ -358,7 +480,7 @@ export const Profile = () => {
                         alignItems="center"
                       >
                         <Grid item>
-                          {userContext.user.role === 0 && (
+                          {userProfileData?.role === "student" && (
                             <Typography
                               variant="button"
                               color="primary"
@@ -368,7 +490,7 @@ export const Profile = () => {
                               Student
                             </Typography>
                           )}
-                          {userContext.user.role === 1 && (
+                          {userProfileData?.role === "faculty" && (
                             <Typography
                               variant="button"
                               color="primary"
@@ -378,7 +500,7 @@ export const Profile = () => {
                               Faculty
                             </Typography>
                           )}
-                          {userContext.user.role === 2 && (
+                          {userProfileData?.role === "admin" && (
                             <Typography
                               variant="button"
                               color="primary"
@@ -391,12 +513,12 @@ export const Profile = () => {
                         </Grid>
                         <Grid item>
                           <Typography variant="caption">
-                            Year {userContext.user.year}
+                            Year {userProfileData?.academicDetails?.batchYear}
                           </Typography>
                         </Grid>
                       </Grid>
                       <Typography variant="body1">
-                        {userContext.user.branch}
+                        {userProfileData?.academicDetails?.department?.name}
                       </Typography>
 
                       <Typography variant="body2">
@@ -409,7 +531,7 @@ export const Profile = () => {
                         justifyContent="flex-end"
                         alignItems="center"
                       >
-                        {userContext.user._id === authContext.user._id ? (
+                        {userProfileData.id === user.id ? (
                           <Button
                             onClick={handleEditBtn}
                             size="small"
@@ -434,15 +556,15 @@ export const Profile = () => {
                       </IconButton>
                       <Typography>Joined on</Typography>
                       <Typography variant="button">
-                        {new Date(userContext.user.createdAt).toDateString()}
+                        {new Date(
+                          userProfileData?.academicDetails?.batchYear
+                        ).toDateString()}
                       </Typography>
                     </CardContent>
                   </Card>
                 </Grid>
                 <Grid item md={8} xs={12}>
-                  {userContext.user._id === authContext.user._id ? (
-                    <InputBox />
-                  ) : null}
+                  {userProfileData.id === user.id ? <InputBox /> : null}
                   <Paper variant="outlined" style={styleTheme}>
                     <Grid container justifyContent="space-around">
                       <Grid item xs={3}>
@@ -502,7 +624,7 @@ export const Profile = () => {
                           Ads
                         </Button>
                       </Grid>
-                      {userContext.user._id === authContext.user._id && (
+                      {userProfileData?.id === user.id && (
                         <Grid item xs={3}>
                           <Button
                             variant="text"
@@ -525,10 +647,14 @@ export const Profile = () => {
                       )}
                     </Grid>
                   </Paper>
-                  {data ? (
-                    <HomeTab data={data} type={type} />
-                  ) : (
-                    <div> loading</div>
+                  {data && (
+                    <HomeTab
+                      updatePostList={updatePostList}
+                      deletePost={deletePost}
+                      isLoading={isLoading}
+                      data={data}
+                      type={type}
+                    />
                   )}
                 </Grid>
               </Grid>

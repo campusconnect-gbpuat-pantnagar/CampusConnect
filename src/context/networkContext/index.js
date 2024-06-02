@@ -1,12 +1,13 @@
-import { createContext, useEffect, useState } from "react";
+import { createContext, useContext, useEffect, useState } from "react";
 import useNetwork from "../../hooks/useNetwork";
+import { toast } from "react-toastify";
+import { ThemeContext } from "../themeContext";
 
 export const NetworkContext = createContext();
 
 export const NetworkContextProvider = ({ children }) => {
   const networkState = useNetwork();
   const [isOfflineForLong, setIsOfflineForLong] = useState(false);
-
   useEffect(() => {
     let offlineTimer = null;
 
@@ -14,7 +15,7 @@ export const NetworkContextProvider = ({ children }) => {
       if (!networkState.online) {
         offlineTimer = setTimeout(() => {
           setIsOfflineForLong(true);
-          alert("You have been offline for more than 30 seconds");
+          toast.success("You have been offline for more than 30 seconds");
         }, 30000); // 30 seconds
       } else {
         if (offlineTimer) {

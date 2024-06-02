@@ -7,34 +7,35 @@ import {
   ListItemText,
   Paper,
   Typography,
-} from "@material-ui/core"
-import React, { useContext } from "react"
-import { NewAuthContext } from "../../../context/newAuthContext"
-import { ThemeContext } from "../../../context/themeContext"
-import PeopleAltRoundedIcon from "@material-ui/icons/PeopleAltRounded"
-import SupervisedUserCircleRoundedIcon from "@material-ui/icons/SupervisedUserCircleRounded"
-import { faBookReader, faHandsHelping } from "@fortawesome/free-solid-svg-icons";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
-import { faStickyNote } from "@fortawesome/free-solid-svg-icons"
-import BookmarksRoundedIcon from "@material-ui/icons/BookmarksRounded"
-import EventNoteRoundedIcon from "@material-ui/icons/EventNoteRounded"
-import LiveTvIcon from "@material-ui/icons/LiveTv"
-import { useNavigate, useLocation } from "react-router-dom"
-import { API } from "../../../utils/proxy"
+} from "@material-ui/core";
+import React, { useContext } from "react";
+import { NewAuthContext } from "../../../context/newAuthContext";
+import { ThemeContext } from "../../../context/themeContext";
+import PeopleAltRoundedIcon from "@material-ui/icons/PeopleAltRounded";
+import SupervisedUserCircleRoundedIcon from "@material-ui/icons/SupervisedUserCircleRounded";
+import {
+  faBookReader,
+  faHandsHelping,
+} from "@fortawesome/free-solid-svg-icons";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faStickyNote } from "@fortawesome/free-solid-svg-icons";
+import BookmarksRoundedIcon from "@material-ui/icons/BookmarksRounded";
+import EventNoteRoundedIcon from "@material-ui/icons/EventNoteRounded";
+import LiveTvIcon from "@material-ui/icons/LiveTv";
+import { useNavigate, useLocation } from "react-router-dom";
+import { API } from "../../../utils/proxy";
 
 export const HomeSideBar = () => {
-  const navigate = useNavigate()
-  const location = useLocation()
+  const navigate = useNavigate();
+  const location = useLocation();
   const { user } = useContext(NewAuthContext);
   const { theme } = useContext(ThemeContext);
   const styleTheme =
-    theme === "dark"
-      ? { background: "#121212", color: "whitesmoke" }
-      : null
+    theme === "dark" ? { background: "#121212", color: "whitesmoke" } : null;
 
   const iconStyle = {
-    fontSize: '1.4em',
-    marginLeft: '4px',
+    fontSize: "1.4em",
+    marginLeft: "4px",
   };
 
   const currentTab = (location, path) => {
@@ -52,7 +53,7 @@ export const HomeSideBar = () => {
           <ListItem
             button
             onClick={() => {
-              navigate(`/profile/${user.username}`)
+              navigate(`/profile/${user.username}`);
             }}
           >
             <ListItemIcon>
@@ -65,7 +66,11 @@ export const HomeSideBar = () => {
             <ListItemText
               primary={<b>{user.firstName}</b>}
               secondary={
-                <Typography variant="subtitle2" color="textSecondary" style={styleTheme}>
+                <Typography
+                  variant="subtitle2"
+                  color="textSecondary"
+                  style={styleTheme}
+                >
                   {user.role === "student" && "Student"}
                   {user.role === "faculty" && "Faculty"}
                   {user.role === "admin" && "Admin"}
@@ -78,7 +83,7 @@ export const HomeSideBar = () => {
           <ListItem
             button
             onClick={() => {
-              navigate("/blogs")
+              navigate("/blogs");
             }}
           >
             <ListItemIcon style={styleTheme}>
@@ -102,7 +107,7 @@ export const HomeSideBar = () => {
           <ListItem
             button
             onClick={() => {
-              navigate("/events")
+              navigate("/events");
             }}
           >
             <ListItemIcon style={styleTheme}>
@@ -115,7 +120,7 @@ export const HomeSideBar = () => {
           <ListItem
             button
             onClick={() => {
-              navigate("/live-streams")
+              navigate("/live-streams");
             }}
           >
             <ListItemIcon style={styleTheme}>
@@ -128,7 +133,7 @@ export const HomeSideBar = () => {
           <ListItem
             button
             onClick={() => {
-              navigate("/ads")
+              navigate("/ads");
             }}
           >
             <ListItemIcon style={styleTheme}>
@@ -144,11 +149,13 @@ export const HomeSideBar = () => {
           <ListItem
             button
             onClick={() => {
-              navigate("/bookmarks")
+              navigate("/bookmarks");
             }}
           >
             <ListItemIcon style={styleTheme}>
-              <BookmarksRoundedIcon style={currentTab(location, "/bookmarks")} />
+              <BookmarksRoundedIcon
+                style={currentTab(location, "/bookmarks")}
+              />
             </ListItemIcon>
             <ListItemText
               primary={<Typography variant="button">Bookmarks</Typography>}
@@ -157,5 +164,5 @@ export const HomeSideBar = () => {
         </List>
       </Paper>
     </div>
-  )
-}
+  );
+};

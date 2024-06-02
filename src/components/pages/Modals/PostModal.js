@@ -12,7 +12,7 @@ import { NewAuthContext } from "./../../../context/newAuthContext";
 import { ThemeContext } from "../../../context/themeContext";
 import { toast } from "react-toastify";
 import HttpRequestPrivate from "./../../../helpers/private-client";
-
+import DeleteIcon from "@material-ui/icons/Delete";
 export const PostModal = ({ show, handleModal, modalTitle, post }) => {
   const { user } = useContext(NewAuthContext);
   const { theme } = useContext(ThemeContext);
@@ -173,7 +173,16 @@ export const PostModal = ({ show, handleModal, modalTitle, post }) => {
               {/* cloudinary upload widget  */}
               <CloudinaryUploadWidget setMediaFiles={setMediaFiles} />
               {/* css pending for delete button */}
-              <button onClick={handleRemoveMediafiles}>Delete All</button>
+              <span
+                style={{
+                  alignSelf: "center",
+                  marginLeft: "10px",
+                  cursor: "pointer",
+                }}
+                onClick={handleRemoveMediafiles}
+              >
+                <DeleteIcon />
+              </span>
             </Grid>
           </Grid>
           {mediaFiles.length > 0 && (
