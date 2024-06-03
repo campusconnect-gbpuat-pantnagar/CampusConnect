@@ -12,11 +12,14 @@ import CancelIcon from "@material-ui/icons/Cancel";
 import PdfIcon from "@material-ui/icons/FileCopy";
 
 import { getDownloadURL, ref, uploadBytesResumable } from "firebase/storage";
+import { NewAuthContext } from "../../context/newAuthContext";
+import { ThemeContext } from "../../context/themeContext";
 const FileUpload = () => {
   const { modalState, setModalState, onClose } = useContext(ModalContext);
   const { chatId, talkingWithId, setIsLoading, isLoading } =
     useContext(ChatContext);
-  const authContext = useContext(AuthContext);
+  const { user } = useContext(NewAuthContext);
+  const { theme } = useContext(ThemeContext);
   const [uploadProgress, setUploadProgress] = useState(0);
   const [isUploading, setIsUploading] = useState(false);
   const [uploadItemFromUrl, setUploadItemFromUrl] = useState("");
@@ -29,7 +32,7 @@ const FileUpload = () => {
   }
 
   const styleTheme =
-    authContext.theme === "dark"
+    theme === "dark"
       ? { background: "#151515", color: "white" }
       : { background: "white", color: "black" };
 

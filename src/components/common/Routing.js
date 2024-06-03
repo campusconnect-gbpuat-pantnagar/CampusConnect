@@ -114,7 +114,7 @@ export const Routing = () => {
           {/* <Route path="/signin" element={<SimpleRoute component={Login} />} /> */}
 
           <Route path="/" element={<PrivateRoute component={Post} />} />
-          {/* <Route path="/chats" element={<PrivateRoute component={Chat} />} /> */}
+          <Route path="/chats" element={<PrivateRoute component={Chat} />} />
           <Route path="/posts" element={<PrivateRoute component={Post} />} />
           {/* <Route
               path="/bookmarks"
@@ -131,17 +131,14 @@ export const Routing = () => {
             element={<PrivateRoute component={Profile} />}
           />
           {/* <Route
-              path="/connections"
-              element={<PrivateRoute component={Connections} />}
-            /> */}
+            path="/my-network"
+            element={<PrivateRoute component={Connections} />}
+          /> */}
           {/* <Route
               path="/events"
               element={<PrivateRoute component={Events} />}
             /> */}
-          {/* <Route
-              path="/live-streams"
-              element={<PrivateRoute component={Streams} />}
-            /> */}
+
           {/* <Route
               path="/notices"
               element={<PrivateRoute component={Notice} />}
@@ -150,10 +147,10 @@ export const Routing = () => {
             path="/about-university"
             element={<PrivateRoute component={AboutUniversity} />}
           />
-          {/* <Route
-              path="/settings-privacy"
-              element={<PrivateRoute component={SettingsPrivacy} />}
-            /> */}
+          <Route
+            path="/settings-privacy"
+            element={<PrivateRoute component={SettingsPrivacy} />}
+          />
           <Route
             path="/our-team"
             element={<PrivateRoute component={OurTeam} />}
@@ -163,18 +160,15 @@ export const Routing = () => {
               element={<PrivateRoute component={BooksBrowse} />}
             /> */}
           {/* <Route
-              path="/feedback"
-              element={<PrivateRoute component={Feedback} />}
-            /> */}
+            path="/feedback"
+            element={<PrivateRoute component={Feedback} />}
+          /> */}
           {/* <Route
               path="/help-support"
               element={<PrivateRoute component={HelpSupport} />}
             /> */}
           {/* ✅ Added a library route for embedding the library page in the campus connect */}
-          {/* <Route
-              path="/library"
-              element={<PrivateRoute component={LibraryPage} />}
-            /> */}
+
           {/* TODO ✅ : Implements a route for login with new auth flow   */}
           <Route
             path="/signin"
@@ -194,10 +188,6 @@ export const Routing = () => {
             path="/account-recovery-consent"
             element={<PublicRoute component={AccountRecoveryConsentPage} />}
           />
-          {/* <Route
-            path="/"
-            element={<PrivateRoute component={TestingHomePage} />}
-          /> */}
         </Routes>
       </ThemeProvider>
     </div>

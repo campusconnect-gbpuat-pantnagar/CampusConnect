@@ -25,13 +25,14 @@ export default function CustomCarousel({ slides }) {
               alt="sdkhfksdf"
             />
           ) : slide.resource_type === "video" ? (
-            <ReactPlayer
-              style={{ objectFit: "contain" }}
-              url={slide.url}
+            <video
+              className={styles.video}
+              src={slide.url}
               loop
-              playIcon={true}
-              controls={true}
-              volume
+              autoPlay
+              controls
+              muted={true} // Change to true if you want the video to start muted
+              style={{ objectFit: "contain", width: "100%", height: "300px" }}
             />
           ) : null}
         </SwiperSlide>

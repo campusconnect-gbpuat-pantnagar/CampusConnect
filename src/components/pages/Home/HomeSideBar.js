@@ -117,7 +117,7 @@ export const HomeSideBar = () => {
               primary={<Typography variant="button">Events</Typography>}
             />
           </ListItem>
-          <ListItem
+          {/* <ListItem
             button
             onClick={() => {
               navigate("/live-streams");
@@ -129,7 +129,7 @@ export const HomeSideBar = () => {
             <ListItemText
               primary={<Typography variant="button">Live Streams</Typography>}
             />
-          </ListItem>
+          </ListItem> */}
           <ListItem
             button
             onClick={() => {

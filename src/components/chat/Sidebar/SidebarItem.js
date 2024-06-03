@@ -7,11 +7,14 @@ import ImageIcon from "@material-ui/icons/ImageOutlined";
 import FileCopyOutlined from "@material-ui/icons/FileCopyOutlined";
 
 import moment from "moment";
+import { ThemeContext } from "../../../context/themeContext";
+import { NewAuthContext } from "../../../context/newAuthContext";
 
 const SidebarItem = ({ chat }) => {
   const { setTalkingWithId, setChatId, chatId, setChatWallpaper } =
     useContext(ChatContext);
-  const authContext = useContext(AuthContext);
+  const { theme } = useContext(ThemeContext);
+  const { user } = useContext(NewAuthContext);
   const handleSelect = () => {
     localStorage.setItem("chatId", chat?.chatId);
     localStorage.setItem("talkingWithId", chat?.talkingWith?.userId);
@@ -25,7 +28,7 @@ const SidebarItem = ({ chat }) => {
   };
 
   const styleTheme =
-    authContext.theme === "dark"
+    theme === "dark"
       ? { background: "#151515", color: "white" }
       : { background: "#DEDEDE", color: "black" };
 
@@ -33,9 +36,7 @@ const SidebarItem = ({ chat }) => {
 
   const activeChat = chatId === chat?.chatId;
 
-  const isDeletedByMe = chat?.lastMessage?.deletedFor.includes(
-    authContext?.user._id
-  );
+  const isDeletedByMe = chat?.lastMessage?.deletedFor.includes(user?.id);
 
   console.log(isDeletedByMe);
 
@@ -99,12 +100,9 @@ const SidebarItem = ({ chat }) => {
     >
       <div className={styles.avatar}>
         {/*avatar div  */}
+        {/* implement the get ProfilePicture from the firebase db */}
         <img
-          src={`${
-            userData?.photoUrl
-              ? "https://firebasestorage.googleapis.com/v0/b/campus-connect-90a41.appspot.com/o/image%2F2024644_login_user_avatar_person_users_icon.png?alt=media&token=639b6775-2181-4c05-985c-a7797d4a95bd"
-              : userData?.photoUrl
-          }`}
+          src={`${"https://firebasestorage.googleapis.com/v0/b/campus-connect-90a41.appspot.com/o/image%2F2024644_login_user_avatar_person_users_icon.png?alt=media&token=639b6775-2181-4c05-985c-a7797d4a95bd"}`}
           alt="user_avatar"
         />
       </div>
@@ -121,7 +119,7 @@ const SidebarItem = ({ chat }) => {
           <div className={styles.SidebarRightBottomLeft}>
             <span>
               {chat?.lastMessage
-                ? chat?.lastMessage?.senderId === authContext.user._id
+                ? chat?.lastMessage?.senderId === user.id
                   ? "you:"
                   : `${userData?.name.split(" ")[0]}:`
                 : ""}

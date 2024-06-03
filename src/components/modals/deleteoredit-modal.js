@@ -6,11 +6,13 @@ import { doc, getDoc, serverTimestamp, updateDoc } from "firebase/firestore";
 import { db } from "../../utils/config/firebase";
 import { ChatContext } from "../../context/chatContext/chatContext";
 import { AuthContext } from "../../context/authContext/authContext";
+import { NewAuthContext } from "../../context/newAuthContext";
+import { ThemeContext } from "../../context/themeContext";
 const DeleteOrEditModal = () => {
   const { modalState, setModalState, onClose } = useContext(ModalContext);
   const { chatId, talkingWithId } = useContext(ChatContext);
-  const authContext = useContext(AuthContext);
-
+  const { theme } = useContext(ThemeContext);
+  const { user } = useContext(NewAuthContext);
   const isCurrentModalOpen =
     modalState.type === ModalType.DeleteOrEdit && modalState.open;
 
@@ -19,7 +21,7 @@ const DeleteOrEditModal = () => {
   }
 
   const styleTheme =
-    authContext.theme === "dark"
+    theme === "dark"
       ? { background: "#151515", color: "white" }
       : { background: "white", color: "black" };
 
@@ -33,22 +35,17 @@ const DeleteOrEditModal = () => {
       if (messageIndex !== -1) {
         messages[messageIndex] = {
           ...messages[messageIndex],
-          deletedFor: [
-            ...messages[messageIndex].deletedFor,
-            authContext?.user._id,
-          ],
+          deletedFor: [...messages[messageIndex].deletedFor, user.id],
         };
       }
       await updateDoc(doc(db, "chats", chatId), { messages: messages });
 
-      const chatsWith = await getDoc(
-        doc(db, "userChats", authContext.user._id)
-      );
+      const chatsWith = await getDoc(doc(db, "userChats", user.id));
       console.log(chatsWith.data()[chatId].lastMessage);
-      await updateDoc(doc(db, "userChats", authContext.user._id), {
+      await updateDoc(doc(db, "userChats", user.id), {
         [chatId + ".lastMessage"]: {
           ...chatsWith.data()[chatId].lastMessage,
-          deletedFor: [authContext?.user._id],
+          deletedFor: [user],
         },
         [chatId + ".date"]: serverTimestamp(),
       });
@@ -72,22 +69,20 @@ const DeleteOrEditModal = () => {
           ...messages[messageIndex],
           deletedFor: [
             ...messages[messageIndex].deletedFor,
-            authContext?.user._id,
+            user,
             talkingWithId,
           ],
         };
       }
       await updateDoc(doc(db, "chats", chatId), { messages: messages });
 
-      const chatsWith = await getDoc(
-        doc(db, "userChats", authContext.user._id)
-      );
+      const chatsWith = await getDoc(doc(db, "userChats", user.id));
 
       console.log(chatsWith.data()[chatId].lastMessage);
-      await updateDoc(doc(db, "userChats", authContext.user._id), {
+      await updateDoc(doc(db, "userChats", user.id), {
         [chatId + ".lastMessage"]: {
           ...chatsWith.data()[chatId].lastMessage,
-          deletedFor: [authContext?.user._id],
+          deletedFor: [user.id],
         },
         [chatId + ".date"]: serverTimestamp(),
       });
@@ -98,7 +93,7 @@ const DeleteOrEditModal = () => {
       await updateDoc(doc(db, "userChats", talkingWithId), {
         [chatId + ".lastMessage"]: {
           ...chatsTalkingWith.data()[chatId].lastMessage,
-          deletedFor: [authContext?.user._id],
+          deletedFor: [user.id],
         },
         [chatId + ".date"]: serverTimestamp(),
       });
@@ -110,7 +105,7 @@ const DeleteOrEditModal = () => {
     }
   };
 
-  const isOwnerofMessage = modalState.data.senderId === authContext.user._id;
+  const isOwnerofMessage = modalState.data.senderId === user.id;
   return (
     <div className={styles.modal}>
       <div onClick={onClose} className={styles.modalDropShadow}></div>

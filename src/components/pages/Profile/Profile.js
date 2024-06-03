@@ -441,7 +441,7 @@ export const Profile = () => {
                               size="small"
                               variant="outlined"
                               className="ml-3"
-                              // onClick={() => handleChat(userId)}
+                              onClick={() => handleChat(userProfileData?.id)}
                               style={clickStyleTheme}
                             >
                               Chat

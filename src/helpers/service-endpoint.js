@@ -24,6 +24,7 @@ const ServiceConfig = {
   siteUpdateEndpoint: `${CAMPUSCONNECT_BACKEND_API}/api/v1/site-updates`,
   feedbackEndpoint: `${CAMPUSCONNECT_BACKEND_API}/api/v1/feedbacks`,
   userEndpoint: `${CAMPUSCONNECT_AUTH_BACKEND_API}/api/v1/users`,
+  
 };
 
 export default ServiceConfig;

@@ -5,28 +5,28 @@ import {
   SnackbarContent,
   TextField,
   Typography,
-} from "@material-ui/core"
-import { makeStyles } from "@material-ui/core/styles"
-import React, { useContext, useEffect, useState } from "react"
-import { Modal } from "react-bootstrap"
-import { NewAuthContext } from "../../../context/newAuthContext"
-import { ThemeContext } from "../../../context/themeContext"
-import ServiceConfig from "../../../helpers/service-endpoint"
-import HttpRequestPrivate from "../../../helpers/private-client"
-import { toast } from "react-toastify"
+} from "@material-ui/core";
+import { makeStyles } from "@material-ui/core/styles";
+import React, { useContext, useEffect, useState } from "react";
+import { Modal } from "react-bootstrap";
+import { NewAuthContext } from "../../../context/newAuthContext";
+import { ThemeContext } from "../../../context/themeContext";
+import ServiceConfig from "../../../helpers/service-endpoint";
+import HttpRequestPrivate from "../../../helpers/private-client";
+import { toast } from "react-toastify";
 
 export const EditProfileModal = ({ show, onHide }) => {
   const { user } = useContext(NewAuthContext);
   const { theme } = useContext(ThemeContext);
-  const [isLoading, setIsLoading] = useState(false)
-  const [color, setColor] = useState(null)
-  const [error, setError] = useState("")
+  const [isLoading, setIsLoading] = useState(false);
+  const [color, setColor] = useState(null);
+  const [error, setError] = useState("");
   const [userDetails, setUserDetails] = useState({
     firstName: "",
     lastName: "",
     // username: "",
     bio: "",
-  })
+  });
   useEffect(() => {
     setUserDetails({
       ...userDetails,
@@ -34,18 +34,18 @@ export const EditProfileModal = ({ show, onHide }) => {
       lastName: user.lastName,
       // username: user.username,
       bio: user.bio,
-    })
+    });
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [])
+  }, []);
   const handleChangeData = (e) => {
     setUserDetails({
       ...userDetails,
       [e.target.name]: e.target.value,
-    })
-  }
-  
+    });
+  };
+
   const handleForm = async (e) => {
-    e.preventDefault()
+    e.preventDefault();
     setIsLoading(true);
     try {
       const requestOptions = {
@@ -54,29 +54,32 @@ export const EditProfileModal = ({ show, onHide }) => {
         data: {
           firstName: userDetails.firstName,
           lastName: userDetails.lastName,
-          // username: userDetails.username,
-          bio: userDetails.bio,
         },
         showActual: true,
         withCredentials: true,
       };
+      
       const response = await HttpRequestPrivate(requestOptions);
       setIsLoading(false);
-      if(response.data.data){
-        toast.success(response.data.message, { theme: `${theme === "dark" ? "dark" : "light"}` });
+      if (response.data.data) {
+        toast.success(response.data.message, {
+          theme: `${theme === "dark" ? "dark" : "light"}`,
+        });
       }
     } catch (err) {
       setIsLoading(false);
       console.log(err);
-      toast.error(err.data.message, { theme: `${theme === "dark" ? "dark" : "light"}` });
+      toast.error(err.data.message, {
+        theme: `${theme === "dark" ? "dark" : "light"}`,
+      });
     }
-  }
+  };
 
   const handleClose = () => {
-    setColor("")
-    setIsLoading(false)
-    setError("")
-  }
+    setColor("");
+    setIsLoading(false);
+    setError("");
+  };
   const showResponseMsg = () => {
     return (
       <Snackbar
@@ -97,21 +100,19 @@ export const EditProfileModal = ({ show, onHide }) => {
           }}
         />
       </Snackbar>
-    )
-  }
+    );
+  };
 
   const styleThemeMain =
-    theme === "dark" ? { background: "rgb(0 0 0 / 88%)" } : null
+    theme === "dark" ? { background: "rgb(0 0 0 / 88%)" } : null;
 
   const styleTheme =
     theme === "dark"
       ? { background: "#212121", color: "whitesmoke" }
-      : { background: "white", color: "black" }
+      : { background: "white", color: "black" };
 
   const clickStyleTheme =
-    theme === "dark"
-      ? { color: "#03DAC6" }
-      : { color: "blue" }
+    theme === "dark" ? { color: "#03DAC6" } : { color: "blue" };
 
   const useStyles = makeStyles((theme) => ({
     textField: {
@@ -268,7 +269,7 @@ export const EditProfileModal = ({ show, onHide }) => {
               label="Branch"
               className={`mt-3 ${classes.textField}`}
             /> */}
-            <TextField
+            {/* <TextField
               variant="outlined"
               size="small"
               name="bio"
@@ -282,12 +283,14 @@ export const EditProfileModal = ({ show, onHide }) => {
               minRows={3}
               value={userDetails.bio}
               label="Bio"
-            />
+            /> */}
           </form>
         </div>
       </Modal.Body>
       <Modal.Footer style={styleTheme}>
-        <Button onClick={onHide} style={styleTheme}>Close</Button>
+        <Button onClick={onHide} style={styleTheme}>
+          Close
+        </Button>
         <Button
           type="submit"
           onClick={handleForm}
@@ -299,5 +302,5 @@ export const EditProfileModal = ({ show, onHide }) => {
         </Button>
       </Modal.Footer>
     </Modal>
-  )
-}
+  );
+};

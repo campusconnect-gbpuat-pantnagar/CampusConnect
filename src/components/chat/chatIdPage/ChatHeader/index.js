@@ -10,6 +10,8 @@ import { AuthContext } from "../../../../context/authContext/authContext";
 import { ModalContext } from "../../../../context/modalContext";
 import { ModalType } from "../../../../context/modalContext/modalTypes";
 import { NewAuthContext } from "../../../../context/newAuthContext";
+import HttpRequestPrivate from "../../../../helpers/private-client";
+import ServiceConfig from "../../../../helpers/service-endpoint";
 
 export const ChatHeader = ({ userData }) => {
   // console.log(userData);
@@ -17,6 +19,8 @@ export const ChatHeader = ({ userData }) => {
   const [chatSettingsPopOver, setChatSettingsPopOver] = useState(false);
   const { setChatId, setTalkingWithId, setChatWallpaper } =
     useContext(ChatContext);
+  const [chatUser, setChatUser] = useState();
+  const [userPresence, setUserPresence] = useState(false);
   // const authContext = useContext(AuthContext);
   const { user } = useContext(NewAuthContext);
   const profilePicture = user.profilePicture
@@ -45,6 +49,74 @@ export const ChatHeader = ({ userData }) => {
   };
 
   console.log(userData);
+
+  useEffect(() => {
+    if (userData) {
+      const controller = new AbortController();
+      const chatUser = async () => {
+        const requestOptions = {
+          url: `${ServiceConfig.userEndpoint}/profile/${userData?.appUserId}`,
+          method: "GET",
+          signal: controller.signal,
+          showActual: true,
+          withCredentials: true,
+        };
+        try {
+          const response = await HttpRequestPrivate(requestOptions);
+          console.log(response.data.data);
+          if (response.data.data) {
+            const { user } = response.data.data;
+            setChatUser(user);
+          }
+        } catch (error) {
+          console.error("Error fetching user:", error);
+        }
+      };
+
+      chatUser();
+
+      console.log("Fetching user ");
+      return () => {
+        controller.abort();
+      };
+    }
+  }, [userData, userData?.appUserId]);
+
+  const userStatus = userPresence ? "online" : "offline";
+  useEffect(() => {
+    if (chatUser) {
+      const controller = new AbortController();
+      const updateCurrentUserPresence = async () => {
+        const requestOptions = {
+          url: `${ServiceConfig.userEndpoint}/presence/${chatUser?.username}`,
+          method: "GET",
+          signal: controller.signal,
+          showActual: true,
+          withCredentials: true,
+        };
+        try {
+          const response = await HttpRequestPrivate(requestOptions);
+          console.log(response);
+          if (response.data && response.data.data) {
+            setUserPresence(response.data?.data?.user?.presence);
+          }
+        } catch (err) {
+          console.error(err);
+        }
+      };
+
+      const interval = setInterval(() => {
+        updateCurrentUserPresence();
+      }, 10000);
+
+      return () => {
+        controller.abort();
+        clearInterval(interval);
+      };
+    }
+  }, [chatUser]);
+
+  console.log(userData, "this is from the chatIdpage");
   return (
     <div className={styles.chatHeader} styles={styleTheme}>
       <div className={styles.user}>
@@ -59,8 +131,8 @@ export const ChatHeader = ({ userData }) => {
         </div>
         <div className={styles.userInfo}>
           {/* userInfo and status */}
-          <p>{`${user?.firstName} ${user?.lastName}`}</p>
-          <span style={styleTheme3}>Online</span>
+          <p>{`${chatUser?.firstName} ${chatUser?.lastName}`}</p>
+          <span style={styleTheme3}>{userStatus}</span>
         </div>
       </div>
       <div

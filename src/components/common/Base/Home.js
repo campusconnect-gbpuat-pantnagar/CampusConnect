@@ -73,9 +73,7 @@ export const Home = ({ children }) => {
         <Grid container spacing={3} justifyContent="center">
           <Grid item md={3}>
             <HomeSideBar />
-            <div id="demo">
-              <DemoAd />
-            </div>
+            <div id="demo">{/* <DemoAd /> */}</div>
           </Grid>
           <Grid item md={6}>
             <div id="home-center-wrapper">

@@ -1,65 +1,70 @@
-import { Fab, Grid, Button, Paper, Avatar } from "@material-ui/core"
-import React, { useContext, useState } from "react"
-import { NewAuthContext } from "../../../context/newAuthContext"
-import { ThemeContext } from "../../../context/themeContext"
-import BrokenImageIcon from "@material-ui/icons/BrokenImage"
-import PollIcon from "@material-ui/icons/Poll"
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
-import { faEdit, faFeather, faGraduationCap, faStickyNote, faCalendarAlt, faChalkboard } from "@fortawesome/free-solid-svg-icons"
-import { PostModal } from "../Modals/PostModal"
-import { BlogModal } from "../Modals/BlogModal"
-import { PollModal } from "../Modals/PollModal"
-import { NoticeModal } from "../Modals/NoticeModal"
-import { EventModal } from "../Modals/EventModal"
-import { StreamModal } from "../Modals/StreamModal"
-import { API } from "../../../utils/proxy"
-import { JobModal } from "../Modals/JobModal"
-import { AdsModal } from "../Modals/AdsModal"
+import { Fab, Grid, Button, Paper, Avatar } from "@material-ui/core";
+import React, { useContext, useState } from "react";
+import { NewAuthContext } from "../../../context/newAuthContext";
+import { ThemeContext } from "../../../context/themeContext";
+import BrokenImageIcon from "@material-ui/icons/BrokenImage";
+import PollIcon from "@material-ui/icons/Poll";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import {
+  faEdit,
+  faFeather,
+  faGraduationCap,
+  faStickyNote,
+  faCalendarAlt,
+  faChalkboard,
+} from "@fortawesome/free-solid-svg-icons";
+import { PostModal } from "../Modals/PostModal";
+import { BlogModal } from "../Modals/BlogModal";
+import { PollModal } from "../Modals/PollModal";
+import { NoticeModal } from "../Modals/NoticeModal";
+import { EventModal } from "../Modals/EventModal";
+import { StreamModal } from "../Modals/StreamModal";
+import { API } from "../../../utils/proxy";
+import { JobModal } from "../Modals/JobModal";
+import { AdsModal } from "../Modals/AdsModal";
 
 export const InputBox = () => {
   const { user } = useContext(NewAuthContext);
   const { theme } = useContext(ThemeContext);
-  const [showPost, setShowPost] = useState(false)
-  const [showBlog, setShowBlog] = useState(false)
-  const [showPoll, setShowPoll] = useState(false)
-  const [showAds, setShowAds] = useState(false)
-  const [showNotices, setShowNotices] = useState(false)
-  const [showEvents, setShowEvents] = useState(false)
-  const [showStreams, setShowStreams] = useState(false)
-  const [showJobs, setShowJobs] = useState(false)
+  const [showPost, setShowPost] = useState(false);
+  const [showBlog, setShowBlog] = useState(false);
+  const [showPoll, setShowPoll] = useState(false);
+  const [showAds, setShowAds] = useState(false);
+  const [showNotices, setShowNotices] = useState(false);
+  const [showEvents, setShowEvents] = useState(false);
+  const [showStreams, setShowStreams] = useState(false);
+  const [showJobs, setShowJobs] = useState(false);
 
   const handleModalPoll = () => {
-    setShowPoll(!showPoll)
-  }
+    setShowPoll(!showPoll);
+  };
   const handleNotices = () => {
-    setShowNotices(!showNotices)
-  }
+    setShowNotices(!showNotices);
+  };
   const handleEvents = () => {
-    setShowEvents(!showEvents)
-  }
+    setShowEvents(!showEvents);
+  };
   const handleStreams = () => {
-    setShowStreams(!showStreams)
-  }
+    setShowStreams(!showStreams);
+  };
   const handleModalJob = () => {
-    setShowJobs(!showJobs)
-  }
+    setShowJobs(!showJobs);
+  };
   const handleModalPost = () => {
     // console.log(showPost)
-    setShowPost(!showPost)
-  }
+    setShowPost(!showPost);
+  };
   const handleModalBlog = () => {
     // console.log(showBlog)
-    setShowBlog(!showBlog)
-  }
+    setShowBlog(!showBlog);
+  };
   const handleModalAds = () => {
     // console.log(showBlog)
-    setShowAds(!showAds)
-  }
+    setShowAds(!showAds);
+  };
 
   const styleTheme =
-    theme === "dark"
-      ? { background: "#121212", color: "whitesmoke" }
-      : null
+    theme === "dark" ? { background: "#121212", color: "whitesmoke" } : null;
 
   return (
     <div className="input-card">
@@ -127,7 +132,12 @@ export const InputBox = () => {
           handleModal={handleModalJob}
         />
       )}
-      <Paper elevation={3} variant="elevation" className="p-3 mb-3" style={styleTheme}>
+      <Paper
+        elevation={3}
+        variant="elevation"
+        className="p-3 mb-3"
+        style={styleTheme}
+      >
         <Grid
           container
           justifyContent="center"
@@ -136,10 +146,7 @@ export const InputBox = () => {
           alignItems="center"
         >
           <Grid item xs={1}>
-            <Avatar
-              alt={user.firstName}
-              src={user.profilePicture}
-            />
+            <Avatar alt={user.firstName} src={user.profilePicture} />
           </Grid>
           <Grid item xs={10}>
             <Fab
@@ -178,45 +185,58 @@ export const InputBox = () => {
             </Button>
           </Grid>
           <Grid item>
-            <Button onClick={handleModalAds} startIcon={<BrokenImageIcon />} style={styleTheme}>
+            <Button
+              onClick={handleModalAds}
+              startIcon={<BrokenImageIcon />}
+              style={styleTheme}
+            >
               Post Ad
             </Button>
           </Grid>
           {user.role === "admin" && (
             <Grid item>
-              <Button onClick={handleModalJob} startIcon={<FontAwesomeIcon icon={faGraduationCap} />} style={styleTheme}>
+              <Button
+                onClick={handleModalJob}
+                startIcon={<FontAwesomeIcon icon={faGraduationCap} />}
+                style={styleTheme}
+              >
                 Add Job
               </Button>
             </Grid>
           )}
           <Grid item>
-            <Button onClick={handleModalPoll} startIcon={<PollIcon />} style={styleTheme}>
+            <Button
+              onClick={handleModalPoll}
+              startIcon={<PollIcon />}
+              style={styleTheme}
+            >
               Create Poll
             </Button>
           </Grid>
           {user.role === "admin" && (
             <Grid item>
-              <Button onClick={handleNotices} startIcon={<FontAwesomeIcon icon={faStickyNote} />} style={styleTheme}>
+              <Button
+                onClick={handleNotices}
+                startIcon={<FontAwesomeIcon icon={faStickyNote} />}
+                style={styleTheme}
+              >
                 Add Notice
               </Button>
             </Grid>
           )}
           {user.role === "admin" && (
             <Grid item>
-              <Button onClick={handleEvents} startIcon={<FontAwesomeIcon icon={faCalendarAlt} />} style={styleTheme}>
+              <Button
+                onClick={handleEvents}
+                startIcon={<FontAwesomeIcon icon={faCalendarAlt} />}
+                style={styleTheme}
+              >
                 Add Event
-              </Button>
-            </Grid>
-          )}
-          {user.role === "admin" && (
-            <Grid item>
-              <Button onClick={handleStreams} startIcon={<FontAwesomeIcon icon={faChalkboard} />} style={styleTheme}>
-                Add Live Stream
               </Button>
             </Grid>
           )}
         </Grid>
       </Paper>
     </div>
-  )
-}
+  );
+};

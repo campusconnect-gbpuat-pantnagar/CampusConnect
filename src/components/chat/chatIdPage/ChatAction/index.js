@@ -19,6 +19,8 @@ import { AuthContext } from "../../../../context/authContext/authContext";
 import { ModalContext } from "../../../../context/modalContext";
 import { ModalType } from "../../../../context/modalContext/modalTypes";
 import { chatNotification } from "../../../../utils/notification";
+import { ThemeContext } from "../../../../context/themeContext";
+import { NewAuthContext } from "../../../../context/newAuthContext";
 
 export const ChatAction = ({ userData }) => {
   const textAreaRef = useRef();
@@ -27,17 +29,18 @@ export const ChatAction = ({ userData }) => {
   const [docsPopover, setDocsPopover] = useState(false);
   const [inputVal, setInputVal] = useState("");
   const { chatId } = useContext(ChatContext);
-  const authContext = useContext(AuthContext);
+  const { theme } = useContext(ThemeContext);
+  const { user } = useContext(NewAuthContext);
 
   const styleTheme =
-    authContext.theme === "dark"
+    theme === "dark"
       ? { background: "#151515", color: "white" }
       : { background: "#DEDEDE", color: "black" };
-  
+
   const styleTheme2 =
-  authContext.theme === "dark"
-    ? { background: "black", color: "white" }
-    : { background: "white", color: "black" };
+    theme === "dark"
+      ? { background: "black", color: "white" }
+      : { background: "white", color: "black" };
 
   const onChangeTextField = (e) => {
     e.preventDefault();
@@ -89,17 +92,17 @@ export const ChatAction = ({ userData }) => {
           type: messageType,
           [messageType]: sendMessage,
           deletedFor: [],
-          senderId: authContext.user._id,
+          senderId: user?.id,
           date: Timestamp.now(),
         }),
       });
-      await updateDoc(doc(db, "userChats", authContext.user._id), {
+      await updateDoc(doc(db, "userChats", user?.id), {
         [chatId + ".lastMessage"]: {
           type: messageType,
           [messageType]: sendMessage,
           deletedFor: [],
           messageId: messageId,
-          senderId: authContext?.user?._id,
+          senderId: user?.id,
         },
         [chatId + ".date"]: serverTimestamp(),
       });
@@ -109,11 +112,16 @@ export const ChatAction = ({ userData }) => {
           [messageType]: sendMessage,
           deletedFor: [],
           messageId: messageId,
-          senderId: authContext?.user?._id,
+          senderId: user?.id,
         },
         [chatId + ".date"]: serverTimestamp(),
       });
-      chatNotification(`${authContext?.user?.name}`, authContext?.user?._id, sendMessage, `${userData?.appUserId}_self`);
+      chatNotification(
+        `${user?.firstName} ${user?.lastName}`,
+        user?.id,
+        sendMessage,
+        `${userData?.appUserId}_self`
+      );
     } catch (error) {
       console.log(error);
     } finally {
@@ -122,6 +130,7 @@ export const ChatAction = ({ userData }) => {
       onClose();
     }
   };
+
   const handleImageModal = () => {
     setDocsPopover(!docsPopover);
     setModalState({
@@ -165,7 +174,6 @@ export const ChatAction = ({ userData }) => {
         <button onClick={handleDocs} className={styles.icon}>
           <DockOutlined style={styleTheme} />
         </button>
-
         <div
           className={
             emojiPopover
