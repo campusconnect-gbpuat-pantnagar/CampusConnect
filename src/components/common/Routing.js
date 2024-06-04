@@ -139,10 +139,10 @@ export const Routing = () => {
               element={<PrivateRoute component={Events} />}
             /> */}
 
-          {/* <Route
-              path="/notices"
-              element={<PrivateRoute component={Notice} />}
-            /> */}
+          <Route
+            path="/notices"
+            element={<PrivateRoute component={Notice} />}
+          />
           <Route
             path="/about-university"
             element={<PrivateRoute component={AboutUniversity} />}

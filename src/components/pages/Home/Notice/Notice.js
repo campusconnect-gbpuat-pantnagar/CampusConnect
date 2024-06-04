@@ -5,51 +5,117 @@ import {
   CardContent,
   Grid,
   Typography,
-} from "@material-ui/core"
-import React, { useContext, useEffect, useState } from "react"
-import { NoticeContext } from "../../../../context/noticeContext/NoticeContext"
-import { AuthContext } from "../../../../context/authContext/authContext"
-import { Home } from "../../../common/Base/Home"
-import CameraIcon from "@material-ui/icons/Camera"
-import { LoadingNotice } from "./LoadingNotice"
-import { NoticeModal } from "../../Modals/NoticeModal"
+} from "@material-ui/core";
+import React, { useContext, useEffect, useState } from "react";
+import { NoticeContext } from "../../../../context/noticeContext/NoticeContext";
+import { AuthContext } from "../../../../context/authContext/authContext";
+import { Home } from "../../../common/Base/Home";
+import CameraIcon from "@material-ui/icons/Camera";
+import { LoadingNotice } from "./LoadingNotice";
+import { NoticeModal } from "../../Modals/NoticeModal";
+import { NewAuthContext } from "../../../../context/newAuthContext";
+import { ThemeContext } from "../../../../context/themeContext";
+import HttpRequestPrivate from "../../../../helpers/private-client";
+import ServiceConfig from "../../../../helpers/service-endpoint";
+import { toast } from "react-toastify";
 
 export const Notice = () => {
-  const noticeContext = useContext(NoticeContext)
-  const authContext = useContext(AuthContext)
-  const [showNoticeModal, setShowNoticeModal] = useState(false)
-  const [noticeModalObj, setNoticeModalObj] = useState()
-  useEffect(() => {
-    noticeContext.getNotices()
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [])
+  // const noticeContext = useContext(NoticeContext);
+  const [isLoading, setIsLoading] = useState(false);
+  const [notices, setNotices] = useState([]);
 
-  const handleModalNotice = (notice) => {
-    setShowNoticeModal(!showNoticeModal)
-    setNoticeModalObj(notice)
+  const { user, tokens } = useContext(NewAuthContext);
+  const { theme } = useContext(ThemeContext);
+  const [showNoticeModal, setShowNoticeModal] = useState(false);
+  const [noticeModalObj, setNoticeModalObj] = useState();
+
+  async function getNotices() {
+    setIsLoading(true);
+    try {
+      const requestOptions = {
+        url: ServiceConfig.noticeEndpoint,
+        method: "GET",
+        showActual: true,
+        withCredentials: true,
+        headers: {
+          Authorization: `Bearer ${tokens?.access_token}`, // Assuming 'userToken' holds the token
+        },
+      };
+
+      const response = await HttpRequestPrivate(requestOptions);
+      console.log(response);
+      setIsLoading(false);
+      if (response.data.data) {
+        setNotices(response.data.data);
+      }
+    } catch (err) {
+      setIsLoading(false);
+      console.log(err);
+    }
   }
 
+  useEffect(() => {
+    getNotices();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  const handleModalNotice = (notice) => {
+    setShowNoticeModal(!showNoticeModal);
+    setNoticeModalObj(notice);
+  };
+
   const styleTheme =
-    authContext.theme === "dark"
+    theme === "dark"
       ? { background: "#121212", color: "whitesmoke" }
-      : { background: "white", color: "black" }
+      : { background: "white", color: "black" };
 
   const clickStyleTheme =
-    authContext.theme === "dark"
+    theme === "dark"
       ? { color: "#03DAC6", borderColor: "#03DAC6" }
-      : { color: "blue", borderColor: "blue" }
+      : { color: "blue", borderColor: "blue" };
+  async function deleteNotice(noticeId) {
+    setIsLoading(true);
+    try {
+      const updatedNotices = notices.filter((post) => post.id !== noticeId);
+      setNotices(updatedNotices);
+      const requestOptions = {
+        url: `${ServiceConfig.noticeEndpoint}/${noticeId}`,
+        method: "DELETE",
+        showActual: true,
+        withCredentials: true,
+        headers: {
+          Authorization: `Bearer ${tokens?.access_token}`, // Assuming 'userToken' holds the token
+        },
+      };
 
+      const response = await HttpRequestPrivate(requestOptions);
+      console.log(response);
+      setIsLoading(false);
+      if (response.data) {
+        console.log(response.data.message);
+        toast.success(response.data.message, {
+          theme: `${theme === "dark" ? "dark" : "light"}`,
+        });
+      }
+    } catch (err) {
+      setIsLoading(false);
+      console.log(err);
+    }
+  }
+
+  console.log(notices);
   return (
     <Home>
       <div>
-        {noticeContext.loading ? (
+        {isLoading ? (
           <LoadingNotice />
-        ) : (
-          Array.isArray(noticeContext.notice) && noticeContext.notice.length ? (
-            noticeContext.notice.slice().reverse().map((not, index) => {
+        ) : notices.length ? (
+          notices
+            .slice()
+            .reverse()
+            .map((not, index) => {
               return (
                 <Card elevation={1} className="mb-3" style={styleTheme}>
-
                   <CardContent>
                     <Grid
                       container
@@ -57,8 +123,12 @@ export const Notice = () => {
                       alignItems="flex-start"
                     >
                       <Grid item className="mb-2">
-                        <Typography color="textSecondary" variant="caption" style={styleTheme}>
-                          Notice no.{noticeContext.notice.length - index}
+                        <Typography
+                          color="textSecondary"
+                          variant="caption"
+                          style={styleTheme}
+                        >
+                          Notice no.{notices.length - index}
                         </Typography>
                       </Grid>
                       <Grid item>
@@ -67,8 +137,12 @@ export const Notice = () => {
                         </Typography>
                       </Grid>
                     </Grid>
-                    <Typography style={clickStyleTheme} className="mb-2">{not.title}</Typography>
-                    <Typography variant="body1" className="mb-2">{not.description}</Typography>
+                    <Typography style={clickStyleTheme} className="mb-2">
+                      {not.title}
+                    </Typography>
+                    <Typography variant="body1" className="mb-2">
+                      {not.description}
+                    </Typography>
                   </CardContent>
                   <Grid
                     container
@@ -83,7 +157,7 @@ export const Notice = () => {
                           size="small"
                           variant="outlined"
                           onClick={() => {
-                            window.open(`${not.link}`)
+                            window.open(`${not.link}`);
                           }}
                           style={clickStyleTheme}
                         >
@@ -94,7 +168,7 @@ export const Notice = () => {
                     <Grid item>
                       <Grid container direction="row">
                         <Grid item>
-                          {authContext.user.role === 2 && (
+                          {user?.role === "admin" && (
                             <CardActions className="pt-0 px-0">
                               <Button
                                 size="small"
@@ -110,13 +184,13 @@ export const Notice = () => {
                           )}
                         </Grid>
                         <Grid item>
-                          {authContext.user.role === 2 && (
+                          {user?.role === "admin" && (
                             <CardActions className="pt-0 px-3">
                               <Button
                                 size="small"
                                 variant="outlined"
                                 onClick={() => {
-                                  noticeContext.deleteNotice(authContext.user._id, not._id);
+                                  deleteNotice(not.id);
                                 }}
                                 style={clickStyleTheme}
                               >
@@ -129,40 +203,39 @@ export const Notice = () => {
                     </Grid>
                   </Grid>
                 </Card>
-              )
+              );
             })
-          ) : (
-            <div
-              className="m-auto"
-              style={{
-                height: "30vh",
-                display: "flex",
-                justifyContent: "center",
-              }}
+        ) : (
+          <div
+            className="m-auto"
+            style={{
+              height: "30vh",
+              display: "flex",
+              justifyContent: "center",
+            }}
+          >
+            <Grid
+              container
+              spacing={3}
+              direction="column"
+              justifyContent="center"
+              alignItems="center"
             >
-              <Grid
-                container
-                spacing={3}
-                direction="column"
-                justifyContent="center"
-                alignItems="center"
-              >
-                <CameraIcon fontSize="large" />
-                <h6 className="mt-2">No notice out there</h6>
-              </Grid>
-            </div>
-          )
+              <CameraIcon fontSize="large" />
+              <h6 className="mt-2">No notice out there</h6>
+            </Grid>
+          </div>
         )}
-        {showNoticeModal && noticeModalObj&& (
+        {showNoticeModal && noticeModalObj && (
           <NoticeModal
             show={showNoticeModal}
             handleModal={handleModalNotice}
-            noticeFunction={noticeContext.updateNotice}
+            // noticeFunction={noticeContext.updateNotice}
             modalTitle="Update Notice"
             notice={noticeModalObj}
           />
         )}
       </div>
     </Home>
-  )
-}
+  );
+};
