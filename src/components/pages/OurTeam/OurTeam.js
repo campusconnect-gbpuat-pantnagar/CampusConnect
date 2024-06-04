@@ -4,8 +4,15 @@ import "./OurTeam.css";
 import Header from "../../common/Header/Header";
 import HeaderMobile from "../../common/Header/HeaderMobile";
 import { ThemeContext } from "../../../context/themeContext";
+import { TextField } from "@material-ui/core";
 
 const members = [
+  {
+    id: "56278",
+    name: "Mayank Tripathi",
+    photo: "/members/mt.png",
+    domain: "Research & Development, Management",
+  },
   {
     id: "56553",
     name: "Anmol Gangwar",
@@ -29,12 +36,6 @@ const members = [
     name: "Abhishek Verma",
     photo: "/members/av.png",
     domain: "Data Collection & Organization",
-  },
-  {
-    id: "56278",
-    name: "Mayank Tripathi",
-    photo: "/members/mt.png",
-    domain: "Research & Development",
   },
 ];
 
@@ -62,6 +63,10 @@ export const OurTeam = () => {
         className="our-group-container mt-4"
         style={{ ...BackgroundStyleTheme }}
       >
+        <h2 style={{ textAlign: "center", textTransform: "uppercase" }}>
+          {"Team"}
+        </h2>
+
         <Row className="justify-content-center">
           {members.slice(0, 3).map((member, index) => (
             <div key={index} className="text-center">
