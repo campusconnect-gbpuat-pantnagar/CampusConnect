@@ -1,14 +1,13 @@
-import { Card, CardContent, CardHeader } from "@material-ui/core"
-import { Skeleton } from "@material-ui/lab"
-import React, { useContext } from "react"
-import { AuthContext } from "../../../../context/authContext/authContext"
+import { Card, CardContent, CardHeader } from "@material-ui/core";
+import { Skeleton } from "@material-ui/lab";
+import React, { useContext } from "react";
+import { AuthContext } from "../../../../context/authContext/authContext";
+import { ThemeContext } from "../../../../context/themeContext";
 
 export const LoadingBlog = () => {
-  const authContext = useContext(AuthContext)
+  const { theme } = useContext(ThemeContext);
   const styleTheme =
-    authContext.theme === "dark"
-      ? { background: "#121212", color: "whitesmoke" }
-      : null
+    theme === "dark" ? { background: "#121212", color: "whitesmoke" } : null;
 
   return (
     <div>
@@ -45,5 +44,5 @@ export const LoadingBlog = () => {
         />
       </Card>
     </div>
-  )
-}
+  );
+};

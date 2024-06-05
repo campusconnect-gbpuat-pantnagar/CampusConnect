@@ -1,30 +1,27 @@
-import { Button, Grid, TextField } from "@material-ui/core"
-import { makeStyles } from "@material-ui/core/styles"
-import React, { useContext, useState } from "react"
-import AddPhotoAlternateIcon from "@material-ui/icons/AddPhotoAlternate"
-import { Form, Modal } from "react-bootstrap"
-import { sendNotificationToUserWithImage } from "../../../utils/notification"
+import { Button, Grid, TextField } from "@material-ui/core";
+import { makeStyles } from "@material-ui/core/styles";
+import React, { useContext, useState } from "react";
+import AddPhotoAlternateIcon from "@material-ui/icons/AddPhotoAlternate";
+import { Form, Modal } from "react-bootstrap";
+import { sendNotificationToUserWithImage } from "../../../utils/notification";
 import ServiceConfig from "../../../helpers/service-endpoint";
-import { NewAuthContext } from './../../../context/newAuthContext';
+import { NewAuthContext } from "./../../../context/newAuthContext";
 import { ThemeContext } from "../../../context/themeContext";
 import { toast } from "react-toastify";
-import HttpRequestPrivate from './../../../helpers/private-client';
+import HttpRequestPrivate from "./../../../helpers/private-client";
 
-export const BlogModal = ({
-  show,
-  handleModal,
-  modalTitle,
-  blog,
-}) => {
+export const BlogModal = ({ show, handleModal, modalTitle, blog }) => {
   const { user } = useContext(NewAuthContext);
   const { theme } = useContext(ThemeContext);
   const [mediaFiles, setMediaFiles] = useState([]);
-  const [uploadFile, setUploadFile] = useState()
+  const [uploadFile, setUploadFile] = useState();
   const [isLoading, setIsLoading] = useState(false);
-  const [preview, setPreview] = useState(blog === undefined ? "" : blog.media)
-  const [content, setContent] = useState(blog === undefined ? "" : blog.content)
-  const [title, setTitle] = useState(blog === undefined ? "" : blog.title)
-  const [link, setLink] = useState(blog === undefined ? "" : blog.link)
+  const [preview, setPreview] = useState(blog === undefined ? "" : blog.media);
+  const [content, setContent] = useState(
+    blog === undefined ? "" : blog.content
+  );
+  const [title, setTitle] = useState(blog === undefined ? "" : blog.title);
+  const [link, setLink] = useState(blog === undefined ? "" : blog.link);
 
   async function blogCreate() {
     setIsLoading(true);
@@ -36,25 +33,37 @@ export const BlogModal = ({
           title: title,
           content: content,
           link: link,
-          media: mediaFiles,
+          media: {
+            url: preview,
+            format: "base64",
+            publicId: "resource_type_new_blog_image",
+            resource_type: "image",
+            thumbnail_url: "thumbnail_url",
+            asset_id: "asset_id",
+          },
         },
         showActual: true,
         withCredentials: true,
       };
       const response = await HttpRequestPrivate(requestOptions);
       setIsLoading(false);
-      if(response.data.data){
-        toast.success(response.data.message, { theme: `${theme === "dark" ? "dark" : "light"}` });
+      if (response.data.data) {
+        toast.success(response.data.message, {
+          theme: `${theme === "dark" ? "dark" : "light"}`,
+        });
         sendNotificationToUserWithImage(
           "New Blog",
-          `${user.firstName} created a new blog`, user.id,
+          `${user.firstName} created a new blog`,
+          user.id,
           user.id
         );
       }
     } catch (err) {
       setIsLoading(false);
       console.log(err);
-      toast.error(err.data.message, { theme: `${theme === "dark" ? "dark" : "light"}` });
+      toast.error(err.data.message, {
+        theme: `${theme === "dark" ? "dark" : "light"}`,
+      });
     }
   }
 
@@ -68,36 +77,45 @@ export const BlogModal = ({
           title: title,
           content: content,
           link: link,
-          media: mediaFiles,
+          media: {
+            url: preview,
+            format: "base64",
+            publicId: "resource_type_new_blog_image",
+            resource_type: "image",
+            thumbnail_url: "thumbnail_url",
+            asset_id: "asset_id",
+          },
         },
         showActual: true,
         withCredentials: true,
       };
       const response = await HttpRequestPrivate(requestOptions);
       setIsLoading(false);
-      if(response.data.data){
-        toast.success(response.data.message, { theme: `${theme === "dark" ? "dark" : "light"}` });
+      if (response.data.data) {
+        toast.success(response.data.message, {
+          theme: `${theme === "dark" ? "dark" : "light"}`,
+        });
       }
     } catch (err) {
       setIsLoading(false);
       console.log(err);
-      toast.error(err.data.message, { theme: `${theme === "dark" ? "dark" : "light"}` });
+      toast.error(err.data.message, {
+        theme: `${theme === "dark" ? "dark" : "light"}`,
+      });
     }
   }
 
   const handleForm = async (e) => {
     e.preventDefault();
-    blog
-      ? blogUpdate(blog._id)
-      : blogCreate();
-    handleModal();
+    blog ? blogUpdate(blog.id) : blogCreate();
+    handleModal({ ...blog, content: content, media: mediaFiles });
   };
   const styleTheme =
     theme === "dark"
       ? { background: "#121212", color: "whitesmoke" }
-      : { background: "white", color: "black" }
+      : { background: "white", color: "black" };
   const styleThemeMain =
-    theme === "dark" ? { background: "rgb(0 0 0 / 88%)" } : null
+    theme === "dark" ? { background: "rgb(0 0 0 / 88%)" } : null;
 
   const useStyles = makeStyles((theme) => ({
     textField: {
@@ -121,8 +139,9 @@ export const BlogModal = ({
     },
   }));
 
-  const classes = useStyles()
+  const classes = useStyles();
 
+  console.log(preview);
   return (
     <Modal
       show={show}
@@ -138,7 +157,12 @@ export const BlogModal = ({
 
       <Modal.Body style={styleTheme}>
         <form onSubmit={handleForm}>
-          <Grid container justifyContent="space-between" direction="row" spacing={3}>
+          <Grid
+            container
+            justifyContent="space-between"
+            direction="row"
+            spacing={3}
+          >
             <Grid item container direction="column" md={6}>
               <Grid item>
                 <TextField
@@ -174,8 +198,14 @@ export const BlogModal = ({
                 <Form.File
                   type="file"
                   onChange={(e) => {
-                    setUploadFile(e.target.files[0])
-                    setPreview(URL.createObjectURL(e.target.files[0]))
+                    setUploadFile(e.target.files[0]);
+                    const reader = new FileReader();
+                    reader.onloadend = () => {
+                      const base64String = reader.result;
+                      console.log(base64String); // You can now store the base64 string as needed
+                      setPreview(base64String); // Assuming you have a state to store base64 string
+                    };
+                    reader.readAsDataURL(e.target.files[0]);
                   }}
                   label="Upload media"
                   multiple
@@ -208,10 +238,15 @@ export const BlogModal = ({
         <Button size="small" onClick={handleModal} style={styleTheme}>
           Discard
         </Button>
-        <Button type="submit" size="small" onClick={handleForm} style={styleTheme}>
+        <Button
+          type="submit"
+          size="small"
+          onClick={handleForm}
+          style={styleTheme}
+        >
           Done
         </Button>
       </Modal.Footer>
     </Modal>
-  )
-}
+  );
+};
