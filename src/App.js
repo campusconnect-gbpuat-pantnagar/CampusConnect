@@ -18,6 +18,7 @@ export const App = () => {
     setFirebaseMessaging();
   }, []);
 
+  console.log("Campusconnect client");
   return (
     <NetworkContextProvider>
       <ThemeContextProvider>
