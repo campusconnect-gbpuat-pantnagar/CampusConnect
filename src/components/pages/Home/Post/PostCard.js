@@ -45,7 +45,7 @@ import { dividerClasses } from "@mui/material";
 import { LoadingPost } from "./LoadingPost";
 import CustomCarousel from "../../../common/custom-carousel/custom-carousel";
 import PostCardComment from "./post-card-comment";
-
+import postCardStyles from "./postCard.module.css";
 export const PostCard = ({ post, deletePost, updatedPost }) => {
   const navigate = useNavigate();
   const { user, tokens } = useContext(NewAuthContext);
@@ -334,7 +334,8 @@ export const PostCard = ({ post, deletePost, updatedPost }) => {
           {post.media.length > 0 && (
             <Grid
               item
-              style={{ width: "100%", margin: "1rem 0", height: "300px" }}
+              className={postCardStyles.postCarousel}
+              style={{ margin: "1rem 0", height: "300px" }}
             >
               <div
                 style={{
