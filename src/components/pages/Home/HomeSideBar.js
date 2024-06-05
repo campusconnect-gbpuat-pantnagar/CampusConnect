@@ -146,7 +146,7 @@ export const HomeSideBar = () => {
               primary={<Typography variant="button">Ads</Typography>}
             />
           </ListItem>
-          <ListItem
+          {/* <ListItem
             button
             onClick={() => {
               navigate("/bookmarks");
@@ -160,7 +160,7 @@ export const HomeSideBar = () => {
             <ListItemText
               primary={<Typography variant="button">Bookmarks</Typography>}
             />
-          </ListItem>
+          </ListItem> */}
         </List>
       </Paper>
     </div>

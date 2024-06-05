@@ -422,7 +422,7 @@ export const BlogCard = ({ blog, updatedBlog, deleteBlog }) => {
                 <Typography variant="overline">{shareCount}</Typography>
               </span> */}
             </Grid>
-            <Grid item>
+            {/* <Grid item>
               <IconButton onClick={handleBookmarkBtn} style={styleTheme}>
                 {bookmarkStatus ? (
                   <FontAwesomeIcon icon={faBookmarkSolid} />
@@ -430,7 +430,7 @@ export const BlogCard = ({ blog, updatedBlog, deleteBlog }) => {
                   <FontAwesomeIcon icon={faBookmarkRegular} />
                 )}
               </IconButton>
-            </Grid>
+            </Grid> */}
           </Grid>
         </CardActions>
         <Collapse in={expanded} timeout="auto" unmountOnExit>

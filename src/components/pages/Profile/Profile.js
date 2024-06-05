@@ -624,7 +624,7 @@ export const Profile = () => {
                           Ads
                         </Button>
                       </Grid>
-                      {userProfileData?.id === user.id && (
+                      {/* {userProfileData?.id === user.id && (
                         <Grid item xs={3}>
                           <Button
                             variant="text"
@@ -644,7 +644,7 @@ export const Profile = () => {
                             Bookmarks
                           </Button>
                         </Grid>
-                      )}
+                      )} */}
                     </Grid>
                   </Paper>
                   {data && (

@@ -372,7 +372,7 @@ export const PostCard = ({ post, deletePost, updatedPost }) => {
           <FontAwesomeIcon icon={faShareSquare} style={styleTheme} />
         </IconButton> */}
               </Grid>
-              <Grid item>
+              {/* <Grid item>
                 <IconButton onClick={handleBookmarkBtn} style={styleTheme}>
                   {bookmarkStatus ? (
                     <FontAwesomeIcon icon={faBookmarkSolid} />
@@ -380,7 +380,7 @@ export const PostCard = ({ post, deletePost, updatedPost }) => {
                     <FontAwesomeIcon icon={faBookmarkRegular} />
                   )}
                 </IconButton>
-              </Grid>
+              </Grid> */}
             </Grid>
           </CardActions>
           <Accordion
