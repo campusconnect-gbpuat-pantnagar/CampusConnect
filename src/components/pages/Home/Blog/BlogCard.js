@@ -335,7 +335,7 @@ export const BlogCard = ({ blog, updatedBlog, deleteBlog }) => {
             <b
               style={{ cursor: "pointer" }}
               onClick={() => {
-                navigate(`/profile/${blog.userId}`);
+                navigate(`/profile/${blogUser?.username}`);
               }}
             >
               {`${

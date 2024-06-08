@@ -27,6 +27,8 @@ export const NewAuthContextProvider = ({ children }) => {
     role: "",
     lastActive: "",
     connectionLists: [],
+    receivedConnections: [],
+    sentConnections: [],
     academicDetails: {
       college: {
         name: "",
@@ -95,6 +97,8 @@ export const NewAuthContextProvider = ({ children }) => {
               role: user?.role,
               lastActive: user?.lastActive,
               connectionLists: user?.connectionLists,
+              receivedConnections: user?.receivedConnections,
+              sentConnections: user?.sentConnections,
               academicDetails: {
                 college: {
                   name: user?.academicDetails?.college?.name,

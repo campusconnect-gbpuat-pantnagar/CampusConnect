@@ -1,0 +1,75 @@
+@import url("https://fonts.googleapis.com/css2?family=Outfit:wght@200;300;400;500;600;700;800&family=Work+Sans:wght@300;400;500;600&display=swap");
+
+.connectionContainer {
+  margin-top: 1rem;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: flex-start;
+  gap: 2rem;
+  justify-content: space-between;
+  font-family: "Work sans";
+}
+.navigationContainer {
+  width: 30%;
+  min-width: 200px;
+  position: sticky;
+  display: flex;
+  top: 30px;
+  flex-direction: column;
+  gap: 1rem;
+  padding: 20px;
+  background-color: #ffff;
+  box-shadow: rgba(0, 0, 0, 0.1) 0px 1px 3px 0px,
+    rgba(0, 0, 0, 0.06) 0px 1px 2px 0px !important;
+  border-radius: 5px;
+}
+
+.navigationContainer > button {
+  padding: 0.4rem 0.2rem;
+  border: none;
+  outline: none;
+
+  /* background-color: #03dac6; */
+  font-weight: 500;
+  border-radius: 5px;
+}
+
+.renderUsersList {
+  width: 70%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+}
+
+.renderUsersList > span {
+  width: 100%;
+  font-size: 1.5rem;
+  font-weight: 600;
+}
+
+.renderUsersList > div {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
+  margin-top: 1rem;
+}
+
+@media (max-width: 768px) {
+  .navigationContainer {
+    display: none;
+  }
+  .renderUsersList {
+    width: 100%;
+  }
+}
+
+@media (max-width: 500px) {
+  .navigationContainer {
+    display: none;
+  }
+  .renderUsersList {
+    width: 90%;
+    margin: 0 auto;
+  }
+}

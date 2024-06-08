@@ -1,0 +1,33 @@
+.loadingSkeleton {
+  background-color: #e0e0e0;
+  border-radius: 4px;
+  min-height: 1rem;
+  animation: pulse 1.5s infinite;
+}
+
+@keyframes pulse {
+  0% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.5;
+  }
+  100% {
+    opacity: 1;
+  }
+}
+
+.profilePicture.loadingSkeleton {
+  width: 100px;
+  height: 100px;
+}
+
+.UserDetails .loadingSkeleton,
+.academicDetails .loadingSkeleton {
+  height: 1rem;
+  margin: 0.2rem 0;
+}
+
+.ActionButtons .loadingSkeleton {
+  height: 35px;
+}

@@ -130,10 +130,10 @@ export const Routing = () => {
             path="/profile/:username"
             element={<PrivateRoute component={Profile} />}
           />
-          {/* <Route
-            path="/my-network"
+          <Route
+            path="/mynetwork"
             element={<PrivateRoute component={Connections} />}
-          /> */}
+          />
           {/* <Route
               path="/events"
               element={<PrivateRoute component={Events} />}

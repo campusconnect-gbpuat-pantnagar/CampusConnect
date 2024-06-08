@@ -139,11 +139,11 @@ const Header = () => {
                 </Link>
               </Grid>
               <Grid item>
-                <Link to="/my-network">
+                <Link to="/mynetwork">
                   <IconButton>
                     <PeopleAltRoundedIcon
                       style={{
-                        ...currentTab(location, "/my-network"),
+                        ...currentTab(location, "/mynetwork"),
                         fontSize: "30px",
                       }}
                     />

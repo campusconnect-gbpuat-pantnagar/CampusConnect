@@ -1,48 +1,76 @@
-import { Grid } from "@material-ui/core"
-import React from "react"
-import Header from "../../common/Header/Header"
-import { HomeSideBar } from "../Home/HomeSideBar"
-import { HomeRightBar } from "../Home/HomeRightBar"
-import { ConnectionsTab } from "./components/ConnectionsTab"
-import { AuthContext } from "../../../context/authContext/authContext"
-import { useContext } from "react"
-import { useEffect } from "react"
-import { UserContext } from "../../../context/userContext/UserContext"
-import HeaderMobile from "../../common/Header/HeaderMobile"
-import DemoAd from "../../common/Base/Ad"
-
+import { Grid } from "@material-ui/core";
+import React, { useContext, useState } from "react";
+import Header from "../../common/Header/Header";
+import HeaderMobile from "../../common/Header/HeaderMobile";
+import DemoAd from "../../common/Base/Ad";
+import connectionsStyles from "./connections.module.css";
+import { NewAuthContext } from "../../../context/newAuthContext";
+import ConnectionCard from "./components/connection-card";
+import MyNetwork from "./components/mynetwork";
+import SentConnections from "./components/sentConnection";
+import ReceivedConnections from "./components/receivedConnection";
+import ConnectionSuggestions from "./components/connection-suggestion";
 export const Connections = () => {
-  const authContext = useContext(AuthContext)
-  const userContext = useContext(UserContext)
-  useEffect(() => {
-    userContext.getUserById(authContext.user._id)
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [authContext.user._id])
+  const { user } = useContext(NewAuthContext);
+  const [page, setPage] = useState("");
 
-  useEffect(() => {
-    userContext.getAllUsers()
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [])
+  const pageText =
+    page === "mynetwork"
+      ? "My Network"
+      : page === "sentrequest"
+      ? "Sent Request"
+      : page === "receivedRequest"
+      ? "Received Request"
+      : "New Suggestions";
   return (
     <div className="home">
       <HeaderMobile />
       <Header />
       <div className="container top-margin">
-        <Grid container spacing={3} justifyContent="center">
-          <Grid item xs={10} md={3}>
-            <HomeSideBar />
-            <div id="demo">
-              {/* <DemoAd /> */}
+        <div className={connectionsStyles.connectionContainer}>
+          <div className={connectionsStyles.navigationContainer}>
+            {/* navigation container */}
+            <button
+              style={{
+                background: page === "mynetwork" ? "#03dac6" : "",
+              }}
+              onClick={() => setPage("mynetwork")}
+            >
+              My Network
+            </button>
+            <button
+              style={{
+                background: page === "sentrequest" ? "#03dac6" : "",
+              }}
+              onClick={() => setPage("sentrequest")}
+            >
+              Sent Requests
+            </button>
+            <button
+              style={{
+                background: page === "receivedRequest" ? "#03dac6" : "",
+              }}
+              onClick={() => setPage("receivedRequest")}
+            >
+              Received Requests
+            </button>
+          </div>
+          <div className={connectionsStyles.renderUsersList}>
+            <span>{pageText}</span>
+            <div>
+              {page === "mynetwork" ? (
+                <MyNetwork />
+              ) : page === "sentrequest" ? (
+                <SentConnections />
+              ) : page === "receivedRequest" ? (
+                <ReceivedConnections />
+              ) : (
+                <ConnectionSuggestions />
+              )}
             </div>
-          </Grid>
-          <Grid item xs={10} md={6}>
-            <ConnectionsTab />
-          </Grid>
-          <Grid item xs={10} md={3}>
-            <HomeRightBar />
-          </Grid>
-        </Grid>
+          </div>
+        </div>
       </div>
     </div>
-  )
-}
+  );
+};

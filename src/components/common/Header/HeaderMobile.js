@@ -122,11 +122,11 @@ const HeaderMobile = () => {
                 </Link>
               </Grid>
               <Grid item>
-                <Link to="/connections">
+                <Link to="/mynetwork">
                   <IconButton>
                     <PeopleAltRoundedIcon
                       style={{
-                        ...currentTab(location, "/connections"),
+                        ...currentTab(location, "/mynetwork"),
                         fontSize: "30px",
                       }}
                     />
@@ -220,27 +220,11 @@ const HeaderMobile = () => {
               </MenuItem>
               <MenuItem
                 onClick={() => {
-                  navigate("/live-streams");
-                }}
-                style={styleTheme}
-              >
-                Live Streams
-              </MenuItem>
-              <MenuItem
-                onClick={() => {
                   navigate("/ads");
                 }}
                 style={styleTheme}
               >
                 Ads
-              </MenuItem>
-              <MenuItem
-                onClick={() => {
-                  navigate("/bookmarks");
-                }}
-                style={styleTheme}
-              >
-                Bookmarks
               </MenuItem>
             </Menu>
           </div>

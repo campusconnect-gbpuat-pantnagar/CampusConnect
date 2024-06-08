@@ -100,6 +100,8 @@ const VerifyEmailPage = () => {
           role: user?.role,
           lastActive: user?.lastActive,
           connectionLists:user?.connectionLists,
+          receivedConnections:user?.receivedConnections,
+          sentConnections:user?.sentConnections,
           academicDetails: {
             college: {
               name: user?.academicDetails?.college?.name,
