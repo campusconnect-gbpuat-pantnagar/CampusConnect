@@ -107,8 +107,29 @@ const ConnectionCard = ({ connection, data, type, updateList }) => {
       break;
   }
 
-  function removeConnection() {
-    console.log("removeConnection");
+  async function removeConnection() {
+    try {
+      const requestOptions = {
+        url: `${ServiceConfig.userEndpoint}/remove-connection/${connectionUser.id}`,
+        method: "POST",
+        showActual: true,
+        withCredentials: true,
+        headers: {
+          Authorization: `Bearer ${tokens?.access_token}`, // Assuming 'userToken' holds the token
+        },
+      };
+      const response = await HttpRequestPrivate(requestOptions);
+      updateList(connectionUser.id);
+
+      if (response.data) {
+        toast.success(response.data?.message);
+        setIsLoading(false);
+      }
+    } catch (err) {
+      toast.success(err.response.data?.message);
+
+      console.log(err);
+    }
   }
   async function withDrawRequest() {
     try {
@@ -159,8 +180,29 @@ const ConnectionCard = ({ connection, data, type, updateList }) => {
       console.log(err);
     }
   }
-  function rejectRequest() {
-    console.log("rejectRequest");
+  async function rejectRequest() {
+    try {
+      const requestOptions = {
+        url: `${ServiceConfig.userEndpoint}/reject-connection/${connectionUser.id}`,
+        method: "POST",
+        showActual: true,
+        withCredentials: true,
+        headers: {
+          Authorization: `Bearer ${tokens?.access_token}`, // Assuming 'userToken' holds the token
+        },
+      };
+      const response = await HttpRequestPrivate(requestOptions);
+      updateList(connectionUser.id);
+
+      if (response.data) {
+        toast.success(response.data?.message);
+        setIsLoading(false);
+      }
+    } catch (err) {
+      toast.success(err.response.data?.message);
+
+      console.log(err);
+    }
   }
   async function sendRequest() {
     try {
