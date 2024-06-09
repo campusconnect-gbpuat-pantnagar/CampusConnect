@@ -11,13 +11,14 @@ import { NewAuthContext } from "../../../../context/newAuthContext";
 import { ThemeContext } from "../../../../context/themeContext";
 import ServiceConfig from "../../../../helpers/service-endpoint";
 import HttpRequestPrivate from "../../../../helpers/private-client";
+import { toast } from "react-toastify";
 
 export const UpdateCard = () => {
-  const updateContext = useContext(UpdateContext);
+  // const updateContext = useContext(UpdateContext);
   const { theme } = useContext(ThemeContext);
   const { user } = useContext(NewAuthContext);
   const [showUpdateModal, setShowUpdateModal] = useState(false);
-
+  const [isRefreshing, setIsRefreshing] = useState(false);
   //   useEffect(() => {
   //     updateContext.getUpdates();
   //     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -51,12 +52,9 @@ export const UpdateCard = () => {
   useEffect(() => {
     getAllSiteUpdates();
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [isRefreshing]);
 
   const handleModalUpdate = () => {
-    {
-      console.log(updateContext);
-    }
     setShowUpdateModal(!showUpdateModal);
   };
 
@@ -70,6 +68,27 @@ export const UpdateCard = () => {
       ? { color: "#03DAC6", borderColor: "#03DAC6" }
       : { color: "blue", borderColor: "blue" };
 
+  async function deleteSiteUpdate(siteUp) {
+    setIsLoading(true);
+    try {
+      const requestOptions = {
+        url: `${ServiceConfig.siteUpdateEndpoint}/${siteUp?.id}`,
+        method: "DELETE",
+        showActual: true,
+        withCredentials: true,
+      };
+      const response = await HttpRequestPrivate(requestOptions);
+      console.log(response);
+      setIsRefreshing(true);
+      setIsLoading(false);
+      if (response.data.data) {
+        toast.success(response.data.message);
+      }
+    } catch (err) {
+      setIsLoading(false);
+      console.log(err);
+    }
+  }
   return (
     <div className="mt-3 notice-card">
       <h6>
@@ -87,7 +106,7 @@ export const UpdateCard = () => {
           <UpdateModal
             show={showUpdateModal}
             handleModal={handleModalUpdate}
-            updateFunction={updateContext.createUpdate}
+            // updateFunction={updateContext.createUpdate}
             modalTitle="Publish Site Update"
             update={undefined}
           />
@@ -95,7 +114,7 @@ export const UpdateCard = () => {
         <Carousel style={{ height: "270px", margin: "auto", padding: "20px" }}>
           {isLoading ? (
             <LoadingNotice />
-          ) : Array.isArray(updateContext?.update) && siteUpdates.length ? (
+          ) : siteUpdates.length > 0 ? (
             siteUpdates.map((up, index) => {
               return (
                 <Carousel.Item key={index}>
@@ -133,9 +152,7 @@ export const UpdateCard = () => {
                         {user.role === "admin" ? (
                           <Button
                             size="small"
-                            onClick={() => {
-                              updateContext.deleteUpdate(user.id, up._id);
-                            }}
+                            onClick={() => deleteSiteUpdate(up)}
                             style={clickStyleTheme}
                           >
                             Delete

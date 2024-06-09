@@ -78,7 +78,7 @@ export const Message = ({ me, userData, message }) => {
   const formattedTime = moment(date).format("HH:mma");
 
   const profilePicture = user.profilePicture
-    ? user.profilePicture
+    ? "https://firebasestorage.googleapis.com/v0/b/campus-connect-90a41.appspot.com/o/image%2F2024644_login_user_avatar_person_users_icon.png?alt=media&token=639b6775-2181-4c05-985c-a7797d4a95bd"
     : "https://firebasestorage.googleapis.com/v0/b/campus-connect-90a41.appspot.com/o/image%2F2024644_login_user_avatar_person_users_icon.png?alt=media&token=639b6775-2181-4c05-985c-a7797d4a95bd";
   return (
     <div
@@ -87,8 +87,8 @@ export const Message = ({ me, userData, message }) => {
         me ? `${styles.message} ${styles.yourMessage}` : styles.message
       }
     >
+      {/* user avatar */}
       <div className={me ? `${styles.hidden}` : styles.userAvatar}>
-        {/* user avatar */}
         <img src={`${profilePicture}`} alt="user_avatar" />
       </div>
       <div

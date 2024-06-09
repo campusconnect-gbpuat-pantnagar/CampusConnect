@@ -30,7 +30,12 @@ const useStyles = makeStyles((theme) => ({
     display: "none",
   },
 }));
-export const ProfilePictureModal = ({ show, onHide, userProfileData }) => {
+export const ProfilePictureModal = ({
+  show,
+  setPicModal,
+  onHide,
+  userProfileData,
+}) => {
   const classes = useStyles();
   const { user } = useContext(NewAuthContext);
   const { theme } = useContext(ThemeContext);
@@ -76,6 +81,7 @@ export const ProfilePictureModal = ({ show, onHide, userProfileData }) => {
           theme: `${theme === "dark" ? "dark" : "light"}`,
         });
       }
+      setPicModal(false);
     } catch (err) {
       setIsLoading(false);
       console.log(err);

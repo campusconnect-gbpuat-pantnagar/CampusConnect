@@ -377,6 +377,7 @@ export const Profile = () => {
       {
         <ProfilePictureModal
           show={picModal}
+          setPicModal={setPicModal}
           onHide={handlePicAvatar}
           userProfileData={userProfileData}
         />
