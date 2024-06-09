@@ -23,9 +23,7 @@ export const ChatHeader = ({ userData }) => {
   const [userPresence, setUserPresence] = useState(false);
   // const authContext = useContext(AuthContext);
   const { user } = useContext(NewAuthContext);
-  const profilePicture = user.profilePicture
-    ? user.profilePicture
-    : "https://firebasestorage.googleapis.com/v0/b/campus-connect-90a41.appspot.com/o/image%2F2024644_login_user_avatar_person_users_icon.png?alt=media&token=639b6775-2181-4c05-985c-a7797d4a95bd";
+
   const styleTheme =
     "light" === "dark"
       ? { background: "#151515", color: "white" }
@@ -117,6 +115,9 @@ export const ChatHeader = ({ userData }) => {
   }, [chatUser]);
 
   console.log(userData, "this is from the chatIdpage");
+  const profilePicture = chatUser?.profilePicture
+    ? chatUser?.profilePicture
+    : "https://firebasestorage.googleapis.com/v0/b/campus-connect-90a41.appspot.com/o/image%2F2024644_login_user_avatar_person_users_icon.png?alt=media&token=639b6775-2181-4c05-985c-a7797d4a95bd";
   return (
     <div className={styles.chatHeader} styles={styleTheme}>
       <div className={styles.user}>
@@ -131,7 +132,10 @@ export const ChatHeader = ({ userData }) => {
         </div>
         <div className={styles.userInfo}>
           {/* userInfo and status */}
-          <p>{`${chatUser?.firstName} ${chatUser?.lastName}`}</p>
+
+          <p>{`${chatUser?.firstName[0].toUpperCase() + chatUser?.firstName.slice(1)} ${
+            chatUser?.lastName[0].toUpperCase() + chatUser?.lastName.slice(1)
+          }`}</p>
           <span style={styleTheme3}>{userStatus}</span>
         </div>
       </div>

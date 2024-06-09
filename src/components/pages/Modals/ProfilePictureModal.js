@@ -12,6 +12,8 @@ import { AuthContext } from "../../../context/authContext/authContext";
 import { toast } from "react-toastify";
 import { NewAuthContext } from "../../../context/newAuthContext";
 import { ThemeContext } from "../../../context/themeContext";
+import ServiceConfig from "../../../helpers/service-endpoint";
+import HttpRequestPrivate from "../../../helpers/private-client";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -33,8 +35,8 @@ export const ProfilePictureModal = ({ show, onHide, userProfileData }) => {
   const { theme } = useContext(ThemeContext);
   const [avatarSrc, setAvatarSrc] = useState("");
   const [avatarAlt, setAvatarAlt] = useState("");
-  const [uploadFile, setUploadFile] = useState(null);
-  const [loading, setLoading] = useState(false);
+  const [uploadFile, setUploadFile] = useState("");
+  const [isLoading, setIsLoading] = useState(false);
 
   useEffect(() => {
     setAvatarAlt(
@@ -50,24 +52,30 @@ export const ProfilePictureModal = ({ show, onHide, userProfileData }) => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
   const handleSubmitBtn = async () => {
-    const formData = new FormData();
-    formData.append("pic", uploadFile);
+    setIsLoading(true);
     try {
-      setLoading(true);
-      // const response = await userContext.updateProfilePicture(
-      //   userContext.user._id,
-      //   formData
-      // );
-      // if (response.status === 200) {
-      //   setLoading(false);
-      //   onHide();
-      //   window.location.reload();
-      // }
-    } catch (error) {
-      setLoading(false);
-      // toast.error(error.response.data.errorMsg, {
-      //   theme: `${authContext.theme === "dark" ? "dark" : "light"}`,
-      // });
+      const requestOptions = {
+        url: `${ServiceConfig.userEndpoint}/account`,
+        method: "PATCH",
+        data: {
+          profilePicture: uploadFile,
+        },
+        showActual: true,
+        withCredentials: true,
+      };
+      const response = await HttpRequestPrivate(requestOptions);
+      setIsLoading(false);
+      if (response.data.data) {
+        toast.success(response.data.message, {
+          theme: `${theme === "dark" ? "dark" : "light"}`,
+        });
+      }
+    } catch (err) {
+      setIsLoading(false);
+      console.log(err);
+      toast.error(err.response.data.message, {
+        theme: `${theme === "dark" ? "dark" : "light"}`,
+      });
     }
   };
 
@@ -112,8 +120,13 @@ export const ProfilePictureModal = ({ show, onHide, userProfileData }) => {
               id="contained-button-file"
               type="file"
               onChange={(e) => {
-                setUploadFile(e.target.files[0]);
                 setAvatarSrc(URL.createObjectURL(e.target.files[0]));
+                const reader = new FileReader();
+                reader.onloadend = () => {
+                  const base64String = reader.result;
+                  setUploadFile(base64String);
+                };
+                reader.readAsDataURL(e.target.files[0]);
               }}
             />
             <label htmlFor="contained-button-file">
@@ -153,10 +166,10 @@ export const ProfilePictureModal = ({ show, onHide, userProfileData }) => {
           type="submit"
           onClick={handleSubmitBtn}
           variant="contained"
-          disabled={loading ? true : false}
+          disabled={isLoading ? true : false}
           style={clickStyleTheme}
         >
-          {loading ? "Updating..." : "Update"}
+          {isLoading ? "Updating..." : "Update"}
         </Button>
       </Modal.Footer>
     </Modal>
