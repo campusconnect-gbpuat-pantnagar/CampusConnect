@@ -475,7 +475,11 @@ export const Profile = () => {
                           ) : null}
                         </Grid>
                         <Grid item>
-                          {user?.username !== username ? (
+                          {user?.username !== username &&
+                          user?.connectionLists.some(
+                            (connection) =>
+                              connection.userId === userProfileData?.id
+                          ) ? (
                             <Button
                               size="small"
                               variant="outlined"
@@ -556,7 +560,10 @@ export const Profile = () => {
                           </Typography>
                         </Grid>
                       </Grid>
-                      <Typography variant="body1">
+                      <Typography
+                        style={{ textTransform: "capitalize" }}
+                        variant="body1"
+                      >
                         {userProfileData?.academicDetails?.department?.name}
                       </Typography>
 
