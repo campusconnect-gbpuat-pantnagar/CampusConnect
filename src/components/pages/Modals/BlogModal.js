@@ -61,7 +61,7 @@ export const BlogModal = ({ show, handleModal, modalTitle, blog }) => {
     } catch (err) {
       setIsLoading(false);
       console.log(err);
-      toast.error(err.data.message, {
+      toast.error(err.response?.data.message, {
         theme: `${theme === "dark" ? "dark" : "light"}`,
       });
     }
@@ -99,7 +99,7 @@ export const BlogModal = ({ show, handleModal, modalTitle, blog }) => {
     } catch (err) {
       setIsLoading(false);
       console.log(err);
-      toast.error(err.data.message, {
+      toast.error(err.response.data.message, {
         theme: `${theme === "dark" ? "dark" : "light"}`,
       });
     }

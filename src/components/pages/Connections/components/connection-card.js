@@ -6,8 +6,9 @@ import ServiceConfig from "../../../../helpers/service-endpoint";
 import { toast } from "react-toastify";
 import { ConnectionLoadingCard } from "./ConnectionsLoading";
 import { useNavigate } from "react-router-dom";
+import { sendNotificationToUserWithImage } from "../../../../utils/notification";
 const ConnectionCard = ({ connection, data, type, updateList }) => {
-  const { tokens } = useContext(NewAuthContext);
+  const { tokens, user } = useContext(NewAuthContext);
   const [isLoading, setIsLoading] = useState(false);
   const [connectionUser, setConnectionUser] = useState();
   const navigate = useNavigate();
@@ -174,6 +175,18 @@ const ConnectionCard = ({ connection, data, type, updateList }) => {
 
       if (response.data) {
         toast.success(response.data?.message);
+        sendNotificationToUserWithImage(
+          `${user.firstName} ${user.lastName}`,
+          `${user.firstName} ${user.lastName} has accepted you connection request.`,
+          user.id,
+          `${connectionUser.id}_self`
+        );
+        // sendNotificationToUserWithImage(
+        //   `${user.firstName} ${user.lastName}`,
+        //   `${user.firstName} ${user.lastName} has accepted you connection request.`,
+        //   user.id,
+        //   `${connectionUser.id}_self`
+        // );
         setIsLoading(false);
       }
     } catch (err) {
@@ -222,6 +235,12 @@ const ConnectionCard = ({ connection, data, type, updateList }) => {
 
       if (response.data) {
         toast.success(response.data?.message);
+        sendNotificationToUserWithImage(
+          "New Connection Request",
+          `${user.firstName} ${user.lastName} is inviting you to connect`,
+          user?.id,
+          `${connectionUser.id}_self`
+        );
         setIsLoading(false);
       }
     } catch (err) {

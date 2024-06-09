@@ -378,7 +378,7 @@ export const BlogCard = ({ blog, updatedBlog, deleteBlog }) => {
           )}
         </CardContent>
         <div className="centered-image-container">
-          {blog.media.length && (
+          {blog.media.length > 0 && blog.media[0].url !== "" && (
             <img
               className="centered-image"
               height="100%"
