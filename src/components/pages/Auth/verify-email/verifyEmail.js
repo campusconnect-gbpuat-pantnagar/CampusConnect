@@ -12,6 +12,7 @@ import FormOtpInput from "../_components/form/form-otp-input/form-otp-input.js";
 import axios from "axios";
 import { CAMPUSCONNECT_AUTH_BACKEND_API } from "../../../../utils/proxy.js";
 import { NewAuthContext } from "../../../../context/newAuthContext/index.js";
+import { toast } from "react-toastify";
 const VerifyEmailPage = () => {
   const [formData, setFormData] = useState({
     otp: "",
@@ -57,19 +58,21 @@ const VerifyEmailPage = () => {
         }
 
         if (user.isPermanentBlocked) {
-          alert(
+          toast.info(
             `${response.data.message} You will be redirected to the admin contact page.`
           );
           // redirect to contact admin page
           return;
         }
         if (user.isTemporaryBlocked) {
-          alert(`${response.data.message}`);
+          toast.info(`${response.data.message}`);
           return;
         }
 
         if (!user.isEmailVerified) {
-          alert(`Email Sent successfully to your mail ${user.gbpuatEmail}`);
+          toast.success(
+            `Email Sent successfully to your mail ${user.gbpuatEmail}`
+          );
           navigate("/verify-email", {
             state: {
               gbpuatEmail: user.gbpuatEmail,
@@ -99,9 +102,9 @@ const VerifyEmailPage = () => {
           showOnBoarding: user.showOnBoarding,
           role: user?.role,
           lastActive: user?.lastActive,
-          connectionLists:user?.connectionLists,
-          receivedConnections:user?.receivedConnections,
-          sentConnections:user?.sentConnections,
+          connectionLists: user?.connectionLists,
+          receivedConnections: user?.receivedConnections,
+          sentConnections: user?.sentConnections,
           academicDetails: {
             college: {
               name: user?.academicDetails?.college?.name,
@@ -132,7 +135,7 @@ const VerifyEmailPage = () => {
 
       setIsLoading(false);
     } catch (err) {
-      alert(`Error: ${err.response.data.message}`);
+      toast.error(`Error: ${err.response.data.message}`);
       setIsLoading(false);
     }
   }
@@ -149,9 +152,9 @@ const VerifyEmailPage = () => {
         `${CAMPUSCONNECT_AUTH_BACKEND_API}/api/v1/auth/send-verification-email`,
         { gbpuatEmail: location.state.gbpuatEmail }
       );
-      alert(`${response.data.message}`);
+      toast.success(`${response.data.message}`);
     } catch (err) {
-      alert(`Error: ${err.response.data.message}`);
+      toast.error(`Error: ${err.response.data.message}`);
     }
   }
   useEffect(() => {

@@ -22,6 +22,7 @@ import HttpRequest from "../../../../helpers/public-client";
 import { createUserWithEmailAndPassword } from "firebase/auth";
 import { auth, db } from "../../../../utils/config/firebase";
 import { doc, getDoc, setDoc } from "firebase/firestore";
+import { toast } from "react-toastify";
 const SignUpPage = () => {
   const navigate = useNavigate();
   const { state } = useLocation();
@@ -167,7 +168,9 @@ const SignUpPage = () => {
             isEmailVerified: user.isEmailVerified,
           },
         });
-        alert(`Email Sent successfully to your mail ${user.gbpuatEmail}`);
+        toast.success(
+          `Email Sent successfully to your mail ${user.gbpuatEmail}`
+        );
         setIsLoading(false);
       }
 
@@ -175,7 +178,7 @@ const SignUpPage = () => {
       setIsLoading(false);
     } catch (err) {
       console.log(err);
-      alert(`Error: ${err.response?.data.message}`);
+      toast.error(`Error: ${err.response?.data.message}`);
       setIsLoading(false);
     }
   };

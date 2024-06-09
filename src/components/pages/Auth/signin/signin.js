@@ -16,6 +16,7 @@ import ServiceConfig from "../../../../helpers/service-endpoint";
 import HttpRequest from "../../../../helpers/public-client";
 import { signInWithEmailAndPassword } from "firebase/auth";
 import { auth } from "../../../../utils/config/firebase";
+import { toast } from "react-toastify";
 const SignInPage = () => {
   const [formData, setFormData] = useState({
     username: "",
@@ -84,19 +85,21 @@ const SignInPage = () => {
         }
 
         if (user.isPermanentBlocked) {
-          alert(
+          toast.info(
             `${response.data.message} You will be redirected to the admin contact page.`
           );
           // redirect to contact admin page
           return;
         }
         if (user.isTemporaryBlocked) {
-          alert(`${response.data.message}`);
+          toast.info(`${response.data.message}`);
           return;
         }
 
         if (!user.isEmailVerified) {
-          alert(`Email Sent successfully to your mail ${user.gbpuatEmail}`);
+          toast.success(
+            `Email Sent successfully to your mail ${user.gbpuatEmail}`
+          );
           navigate("/verify-email", {
             state: {
               gbpuatEmail: user.gbpuatEmail,
@@ -163,7 +166,7 @@ const SignInPage = () => {
 
       setIsLoading(false);
     } catch (err) {
-      alert(`Error: ${err.response.data.message}`);
+      toast.error(`Error: ${err.response.data.message}`);
       setIsLoading(false);
     }
   }
