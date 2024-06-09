@@ -110,101 +110,98 @@ export const Notice = () => {
         {isLoading ? (
           <LoadingNotice />
         ) : notices.length ? (
-          notices
-            .slice()
-            .reverse()
-            .map((not, index) => {
-              return (
-                <Card elevation={1} className="mb-3" style={styleTheme}>
-                  <CardContent>
-                    <Grid
-                      container
-                      justifyContent="space-between"
-                      alignItems="flex-start"
-                    >
-                      <Grid item className="mb-2">
-                        <Typography
-                          color="textSecondary"
-                          variant="caption"
-                          style={styleTheme}
-                        >
-                          Notice no.{notices.length - index}
-                        </Typography>
-                      </Grid>
-                      <Grid item>
-                        <Typography variant="caption">
-                          {new Date(not.createdAt).toDateString()}
-                        </Typography>
-                      </Grid>
-                    </Grid>
-                    <Typography style={clickStyleTheme} className="mb-2">
-                      {not.title}
-                    </Typography>
-                    <Typography variant="body1" className="mb-2">
-                      {not.description}
-                    </Typography>
-                  </CardContent>
+          notices.slice().map((not, index) => {
+            return (
+              <Card elevation={1} className="mb-3" style={styleTheme}>
+                <CardContent>
                   <Grid
                     container
                     justifyContent="space-between"
                     alignItems="flex-start"
-                    direction="row"
-                    className="mb-2"
                   >
-                    <Grid item>
-                      <CardActions className="pt-0 px-3">
-                        <Button
-                          size="small"
-                          variant="outlined"
-                          onClick={() => {
-                            window.open(`${not.link}`);
-                          }}
-                          style={clickStyleTheme}
-                        >
-                          Link
-                        </Button>
-                      </CardActions>
+                    <Grid item className="mb-2">
+                      <Typography
+                        color="textSecondary"
+                        variant="caption"
+                        style={styleTheme}
+                      >
+                        Notice no.{notices.length - index}
+                      </Typography>
                     </Grid>
                     <Grid item>
-                      <Grid container direction="row">
-                        <Grid item>
-                          {user?.role === "admin" && (
-                            <CardActions className="pt-0 px-0">
-                              <Button
-                                size="small"
-                                variant="outlined"
-                                onClick={() => {
-                                  handleModalNotice(not);
-                                }}
-                                style={clickStyleTheme}
-                              >
-                                Edit
-                              </Button>
-                            </CardActions>
-                          )}
-                        </Grid>
-                        <Grid item>
-                          {user?.role === "admin" && (
-                            <CardActions className="pt-0 px-3">
-                              <Button
-                                size="small"
-                                variant="outlined"
-                                onClick={() => {
-                                  deleteNotice(not.id);
-                                }}
-                                style={clickStyleTheme}
-                              >
-                                Delete
-                              </Button>
-                            </CardActions>
-                          )}
-                        </Grid>
+                      <Typography variant="caption">
+                        {new Date(not.createdAt).toDateString()}
+                      </Typography>
+                    </Grid>
+                  </Grid>
+                  <Typography style={clickStyleTheme} className="mb-2">
+                    {not.title}
+                  </Typography>
+                  <Typography variant="body1" className="mb-2">
+                    {not.description}
+                  </Typography>
+                </CardContent>
+                <Grid
+                  container
+                  justifyContent="space-between"
+                  alignItems="flex-start"
+                  direction="row"
+                  className="mb-2"
+                >
+                  <Grid item>
+                    <CardActions className="pt-0 px-3">
+                      <Button
+                        size="small"
+                        variant="outlined"
+                        onClick={() => {
+                          window.open(`${not.link}`);
+                        }}
+                        style={clickStyleTheme}
+                      >
+                        Link
+                      </Button>
+                    </CardActions>
+                  </Grid>
+                  <Grid item>
+                    <Grid container direction="row">
+                      <Grid item>
+                        {user?.role === "admin" && (
+                          <CardActions className="pt-0 px-0">
+                            <Button
+                              size="small"
+                              variant="outlined"
+                              onClick={() => {
+                                handleModalNotice(not);
+                              }}
+                              style={clickStyleTheme}
+                            >
+                              Edit
+                            </Button>
+                          </CardActions>
+                        )}
+                      </Grid>
+                      <Grid item>
+                        {user?.role === "admin" && (
+                          <CardActions className="pt-0 px-3">
+                            <Button
+                              size="small"
+                              variant="outlined"
+                              onClick={() => {
+                                deleteNotice(not.id);
+                              }}
+                              style={clickStyleTheme}
+                            >
+                              Delete
+                            </Button>
+                          </CardActions>
+                        )}
                       </Grid>
                     </Grid>
                   </Grid>
-                </Card>
-              );
-            })
+                </Grid>
+              </Card>
+            );
+          })
         ) : (
           <div
             className="m-auto"

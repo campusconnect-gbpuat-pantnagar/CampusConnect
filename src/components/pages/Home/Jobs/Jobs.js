@@ -107,142 +107,135 @@ export const Jobs = () => {
         {isLoading ? (
           <LoadingJob />
         ) : Array.isArray(jobs) && jobs.length ? (
-          jobs
-            .slice()
-            .reverse()
-            .map((job, index) => {
-              return (
-                <Card
-                  elevation={1}
-                  className="mb-3 job-card"
-                  style={styleTheme}
-                >
-                  <CardContent>
-                    <Grid>
+          jobs.slice().map((job, index) => {
+            return (
+              <Card elevation={1} className="mb-3 job-card" style={styleTheme}>
+                <CardContent>
+                  <Grid>
+                    <Grid item>
                       <Grid item>
-                        <Grid item>
-                          <Grid
-                            container
-                            justifyContent="space-between"
-                            alignItems="flex-start"
-                            className="mb-3"
-                          >
-                            <Grid item>
-                              <Typography style={clickStyleTheme}>
-                                {job.workTitle}
-                              </Typography>
-                            </Grid>
-                            <Grid item>
-                              <Typography variant="caption">
-                                {new Date(job.createdAt).toDateString()}
-                              </Typography>
-                            </Grid>
+                        <Grid
+                          container
+                          justifyContent="space-between"
+                          alignItems="flex-start"
+                          className="mb-3"
+                        >
+                          <Grid item>
+                            <Typography style={clickStyleTheme}>
+                              {job.workTitle}
+                            </Typography>
                           </Grid>
-                        </Grid>
-                        <Grid item className="mb-1">
-                          <Typography variant="body1">
-                            Company: {job.company}
-                          </Typography>
-                        </Grid>
-                        <Grid item className="mb-1">
-                          <Typography variant="body1">
-                            Eligibility Criteria: {job.eligibility}
-                          </Typography>
-                        </Grid>
-                        <Grid item className="mb-2">
-                          <Typography variant="body1">
-                            Skills Required:
-                            <ul className="ml-5">
-                              {job.skillsReq.map((skill, index) => (
-                                <li key={index}>
-                                  {skill.replace(/\b\w/g, (match) =>
-                                    match.toUpperCase()
-                                  )}
-                                </li>
-                              ))}
-                            </ul>
-                          </Typography>
-                        </Grid>
-                        <Grid item>
-                          <Typography variant="body1" className="mb-1">
-                            Work Location: {job.workLocation}
-                          </Typography>
-                        </Grid>
-                        <Grid item>
-                          <Typography variant="body1" className="mb-1">
-                            Expected Salary: {job.salary}
-                          </Typography>
-                        </Grid>
-                        <Grid item>
-                          <Typography variant="body1" className="mb-1">
-                            Apply by {job.applyBy}
-                          </Typography>
+                          <Grid item>
+                            <Typography variant="caption">
+                              {new Date(job.createdAt).toDateString()}
+                            </Typography>
+                          </Grid>
                         </Grid>
                       </Grid>
-                      <Grid
-                        container
-                        justifyContent="space-between"
-                        alignItems="flex-start"
-                      >
+                      <Grid item className="mb-1">
+                        <Typography variant="body1">
+                          Company: {job.company}
+                        </Typography>
+                      </Grid>
+                      <Grid item className="mb-1">
+                        <Typography variant="body1">
+                          Eligibility Criteria: {job.eligibility}
+                        </Typography>
+                      </Grid>
+                      <Grid item className="mb-2">
+                        <Typography variant="body1">
+                          Skills Required:
+                          <ul className="ml-5">
+                            {job.skillsReq.map((skill, index) => (
+                              <li key={index}>
+                                {skill.replace(/\b\w/g, (match) =>
+                                  match.toUpperCase()
+                                )}
+                              </li>
+                            ))}
+                          </ul>
+                        </Typography>
+                      </Grid>
+                      <Grid item>
+                        <Typography variant="body1" className="mb-1">
+                          Work Location: {job.workLocation}
+                        </Typography>
+                      </Grid>
+                      <Grid item>
+                        <Typography variant="body1" className="mb-1">
+                          Expected Salary: {job.salary}
+                        </Typography>
+                      </Grid>
+                      <Grid item>
+                        <Typography variant="body1" className="mb-1">
+                          Apply by {job.applyBy}
+                        </Typography>
+                      </Grid>
+                    </Grid>
+                    <Grid
+                      container
+                      justifyContent="space-between"
+                      alignItems="flex-start"
+                    >
+                      <Grid item>
                         <Grid item>
-                          <Grid item>
-                            <CardActions className="pt-0 px-3 mt-2">
-                              <Button
-                                size="small"
-                                variant="outlined"
-                                onClick={() => {
-                                  window.open(`${job.link}`);
-                                }}
-                                style={{ ...clickStyleTheme, right: "15px" }}
-                                className="mt-2"
-                              >
-                                Apply Now
-                              </Button>
-                            </CardActions>
-                          </Grid>
+                          <CardActions className="pt-0 px-3 mt-2">
+                            <Button
+                              size="small"
+                              variant="outlined"
+                              onClick={() => {
+                                window.open(`${job.link}`);
+                              }}
+                              style={{ ...clickStyleTheme, right: "15px" }}
+                              className="mt-2"
+                            >
+                              Apply Now
+                            </Button>
+                          </CardActions>
                         </Grid>
-                        <Grid item className="mt-3">
-                          <Grid container direction="row">
-                            <Grid item>
-                              {user?.role === "admin" && (
-                                <CardActions className="pt-0 px-0">
-                                  <Button
-                                    size="small"
-                                    variant="outlined"
-                                    onClick={() => {
-                                      handleModalJob(job);
-                                    }}
-                                    style={clickStyleTheme}
-                                  >
-                                    Edit
-                                  </Button>
-                                </CardActions>
-                              )}
-                            </Grid>
-                            <Grid item>
-                              {user?.role === "admin" && (
-                                <CardActions className="pt-0 px-3">
-                                  <Button
-                                    size="small"
-                                    variant="outlined"
-                                    onClick={() => {
-                                      deleteJob(job.id);
-                                    }}
-                                    style={clickStyleTheme}
-                                  >
-                                    Delete
-                                  </Button>
-                                </CardActions>
-                              )}
-                            </Grid>
+                      </Grid>
+                      <Grid item className="mt-3">
+                        <Grid container direction="row">
+                          <Grid item>
+                            {user?.role === "admin" && (
+                              <CardActions className="pt-0 px-0">
+                                <Button
+                                  size="small"
+                                  variant="outlined"
+                                  onClick={() => {
+                                    handleModalJob(job);
+                                  }}
+                                  style={clickStyleTheme}
+                                >
+                                  Edit
+                                </Button>
+                              </CardActions>
+                            )}
+                          </Grid>
+                          <Grid item>
+                            {user?.role === "admin" && (
+                              <CardActions className="pt-0 px-3">
+                                <Button
+                                  size="small"
+                                  variant="outlined"
+                                  onClick={() => {
+                                    deleteJob(job.id);
+                                  }}
+                                  style={clickStyleTheme}
+                                >
+                                  Delete
+                                </Button>
+                              </CardActions>
+                            )}
                           </Grid>
                         </Grid>
                       </Grid>
                     </Grid>
-                  </CardContent>
-                </Card>
-              );
-            })
+                  </Grid>
+                </CardContent>
+              </Card>
+            );
+          })
         ) : (
           <div
             className="m-auto"

@@ -186,7 +186,7 @@ const HeaderMobile = () => {
               TransitionComponent={Fade}
               PaperProps={{ style: { backgroundColor: styleTheme.background } }}
             >
-              <MenuItem
+              {/* <MenuItem
                 // onClick={handleClose}
                 onClick={() => {
                   navigate(`/profile/${user.username}`);
@@ -194,7 +194,7 @@ const HeaderMobile = () => {
                 style={styleTheme}
               >
                 My Profile
-              </MenuItem>
+              </MenuItem> */}
               <MenuItem
                 onClick={() => {
                   navigate("/blogs");

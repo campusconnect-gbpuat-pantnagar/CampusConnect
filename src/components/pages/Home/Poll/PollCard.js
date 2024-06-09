@@ -25,6 +25,7 @@ import { NewAuthContext } from "../../../../context/newAuthContext";
 import { ThemeContext } from "../../../../context/themeContext";
 import ServiceConfig from "../../../../helpers/service-endpoint";
 import HttpRequestPrivate from "../../../../helpers/private-client";
+import PollSubCard from "./poll-sub-card";
 
 export const PollCard = () => {
   const ref = useRef(null);
@@ -54,7 +55,6 @@ export const PollCard = () => {
       console.log(response);
       setIsLoading(false);
       if (response.data.data) {
-        // console.log(response.data.data);
         setPolls(response.data.data);
       }
     } catch (err) {
@@ -65,7 +65,6 @@ export const PollCard = () => {
 
   useEffect(() => {
     getAllPolls();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const handleSelect = (selectedIndex) => {
@@ -83,30 +82,26 @@ export const PollCard = () => {
   const handlePollClick = async (e, option, pollId) => {
     e.preventDefault();
 
-    setResponseValue({
-      ...responseValue,
-      loading: true,
-    });
-
-    try {
-      const response = await pollContext.voteOnPoll(
-        pollId,
-        option._id,
-        user.id
-      );
-      if (response && response.data._id === pollId) {
-        setResponseValue({
-          ...responseValue,
-          loading: false,
-        });
-      }
-    } catch (error) {
-      setResponseValue({
-        ...responseValue,
-        error: error.response?.data.errorMsg || "An error occurred",
-        loading: false,
-      });
-    }
+    // console.log(option, pollId);
+    console.log(polls);
+    // try {
+    //   const requestOptions = {
+    //     url: `${ServiceConfig.pollsEndpoint}/${pollId}/{op}`,
+    //     method: "GET",
+    //     showActual: true,
+    //     withCredentials: true,
+    //   };
+    //   const response = await HttpRequestPrivate(requestOptions);
+    //   console.log(response);
+    //   setIsLoading(false);
+    //   if (response.data.data) {
+    //     // console.log(response.data.data);
+    //     setPolls(response.data.data);
+    //   }
+    // } catch (err) {
+    //   setIsLoading(false);
+    //   console.log(err);
+    // }
   };
 
   const handlePollDelete = async (pollId) => {
@@ -180,173 +175,180 @@ export const PollCard = () => {
                 indicators={false}
                 controls={false}
                 activeIndex={index}
-                // onSelect={handleSelect}
+                onSelect={handleSelect}
               >
                 {polls.length > 0 ? (
-                  polls.map((poll, index) => (
-                    <Carousel.Item key={index}>
-                      <Grid>
-                        <Grid
-                          container
-                          direction="row"
-                          className="m-1"
-                          justifyContent="space-between"
-                        >
-                          <Grid>
-                            <Grid container direction="row">
-                              <Grid item>
-                                <Avatar
-                                  alt={poll?.user?.name}
-                                  src={`${API}/pic/user/${poll?.user?._id}`}
-                                  className="mt-2 ml-2"
-                                />
-                              </Grid>
-                              <Grid item>
-                                <Grid
-                                  container
-                                  direction="column"
-                                  className="ml-2 mt-1"
-                                >
-                                  <Grid>
-                                    <b
-                                      style={{
-                                        ...styleTheme,
-                                        fontSize: "smaller",
-                                        cursor: "pointer",
-                                      }}
-                                      onClick={() => {
-                                        navigate(`/profile/${poll?.user?._id}`);
-                                      }}
-                                    >
-                                      {poll?.user?.name}
-                                    </b>
-                                  </Grid>
-                                  <Grid>
-                                    <Moment
-                                      fromNow
-                                      style={{
-                                        ...styleTheme,
-                                        fontSize: "smaller",
-                                      }}
-                                    >
-                                      {poll.created}
-                                    </Moment>
+                  polls.map((poll, index) => {
+                    return (
+                      <Carousel.Item>
+                        <Grid>
+                          <Grid
+                            container
+                            direction="row"
+                            className="m-1"
+                            justifyContent="space-between"
+                          >
+                            <Grid>
+                              <Grid container direction="row">
+                                <Grid item>
+                                  <Avatar
+                                    alt={"pollUser?.firstName"}
+                                    src={`${"pollUser?.profilePicture"}`}
+                                    className="mt-2 ml-2"
+                                  />
+                                </Grid>
+                                <Grid item>
+                                  <Grid
+                                    container
+                                    direction="column"
+                                    className="ml-2 mt-1"
+                                  >
+                                    <Grid>
+                                      <b
+                                        style={{
+                                          ...styleTheme,
+                                          fontSize: "smaller",
+                                          cursor: "pointer",
+                                        }}
+                                        onClick={() => {
+                                          navigate(
+                                            `/profile/${"pollUser?.username"}`
+                                          );
+                                        }}
+                                      >
+                                        {`${"pollUser?.firstName"} `}
+                                      </b>
+                                    </Grid>
+                                    <Grid>
+                                      <Moment
+                                        fromNow
+                                        style={{
+                                          ...styleTheme,
+                                          fontSize: "smaller",
+                                        }}
+                                      >
+                                        {poll.created}
+                                      </Moment>
+                                    </Grid>
                                   </Grid>
                                 </Grid>
                               </Grid>
                             </Grid>
-                          </Grid>
-                          <Grid>
-                            {user.id === poll?.user?._id ? (
-                              <IconButton
-                                aria-label="settings"
-                                onClick={() => handlePollDelete(poll?._id)}
-                                style={styleTheme}
-                              >
-                                <DeleteIcon />
-                              </IconButton>
-                            ) : null}
+                            <Grid>
+                              {user.id === poll?.userId ? (
+                                <IconButton
+                                  aria-label="settings"
+                                  // onClick={() => handlePollDelete(poll?._id)}
+                                  style={styleTheme}
+                                >
+                                  <DeleteIcon />
+                                </IconButton>
+                              ) : null}
+                            </Grid>
                           </Grid>
                         </Grid>
-                      </Grid>
-                      <CardContent
-                        className="mt-2"
-                        style={{
-                          paddingTop: "0px",
-                          paddingBottom: "0",
-                          ...styleTheme,
-                        }}
-                      >
-                        <Typography
-                          variant="body1"
-                          style={{ padding: "0", ...styleTheme }}
+                        <CardContent
+                          className="mt-2"
+                          style={{
+                            paddingTop: "0px",
+                            paddingBottom: "0",
+                            ...styleTheme,
+                          }}
                         >
-                          {poll.title}
-                        </Typography>
-                        <Typography
-                          variant="body2"
-                          color="textSecondary"
-                          style={{ paddingTop: "0px", ...styleTheme }}
-                        >
-                          {poll?.options?.some((option) =>
-                            option.votes.includes(user.id)
-                          )
-                            ? poll?.options?.map((option, index) => (
-                                <div key={index}>
-                                  <Button
-                                    variant="outlined"
-                                    className="mt-2"
-                                    size="small"
-                                    style={{
-                                      ...styleTheme,
-                                      width: "100%",
-                                      borderRadius: "4px",
-                                      overflow: "hidden",
-                                      position: "relative",
-                                    }}
-                                    disabled
-                                  >
-                                    <div
+                          <Typography
+                            variant="body1"
+                            style={{ padding: "0", ...styleTheme }}
+                          >
+                            {poll.title}
+                          </Typography>
+                          <Typography
+                            variant="body2"
+                            color="textSecondary"
+                            style={{ paddingTop: "0px", ...styleTheme }}
+                          >
+                            {poll?.options?.some((option) =>
+                              option.votes.includes(user.id)
+                            )
+                              ? poll?.options?.map((option, index) => (
+                                  <div key={index}>
+                                    <Button
+                                      variant="outlined"
+                                      className="mt-2"
+                                      size="small"
                                       style={{
-                                        position: "absolute",
-                                        top: 0,
-                                        left: 0,
-                                        backgroundColor: "#4b9de4",
-                                        height: "100%",
-                                        width: `${Math.round(
+                                        ...styleTheme,
+                                        width: "100%",
+                                        borderRadius: "4px",
+                                        overflow: "hidden",
+                                        position: "relative",
+                                      }}
+                                      disabled
+                                    >
+                                      <div
+                                        style={{
+                                          position: "absolute",
+                                          top: 0,
+                                          left: 0,
+                                          backgroundColor: "#4b9de4",
+                                          height: "100%",
+                                          width: `${Math.round(
+                                            (option.votes.length /
+                                              poll.totalVotes.length) *
+                                              100
+                                          )}%`,
+                                        }}
+                                      />
+                                      <div
+                                        style={{
+                                          position: "relative",
+                                          zIndex: 1,
+                                          color: `${
+                                            theme === "dark" ? "white" : "black"
+                                          }`,
+                                          textAlign: "center",
+                                        }}
+                                      >
+                                        <span
+                                          style={{ textTransform: "initial" }}
+                                        >
+                                          {option.text}
+                                        </span>{" "}
+                                        {Math.round(
                                           (option.votes.length /
                                             poll.totalVotes.length) *
                                             100
-                                        )}%`,
-                                      }}
-                                    />
-                                    <div
-                                      style={{
-                                        position: "relative",
-                                        zIndex: 1,
-                                        color: `${
-                                          theme === "dark" ? "white" : "black"
-                                        }`,
-                                        textAlign: "center",
-                                      }}
+                                        )}
+                                        %
+                                      </div>
+                                    </Button>
+                                  </div>
+                                ))
+                              : poll?.options?.map((option, index) => (
+                                  <div key={index}>
+                                    <Button
+                                      variant="outlined"
+                                      className="mt-2"
+                                      size="small"
+                                      style={styleTheme}
+                                      onClick={(e) =>
+                                        handlePollClick(e, option, poll?._id)
+                                      }
+                                      fullWidth
                                     >
                                       <span
                                         style={{ textTransform: "initial" }}
                                       >
                                         {option.text}
-                                      </span>{" "}
-                                      {Math.round(
-                                        (option.votes.length /
-                                          poll.totalVotes.length) *
-                                          100
-                                      )}
-                                      %
-                                    </div>
-                                  </Button>
-                                </div>
-                              ))
-                            : poll?.options?.map((option, index) => (
-                                <div key={index}>
-                                  <Button
-                                    variant="outlined"
-                                    className="mt-2"
-                                    size="small"
-                                    style={styleTheme}
-                                    onClick={(e) =>
-                                      handlePollClick(e, option, poll?._id)
-                                    }
-                                    fullWidth
-                                  >
-                                    <span style={{ textTransform: "initial" }}>
-                                      {option.text}
-                                    </span>
-                                  </Button>
-                                </div>
-                              ))}
-                        </Typography>
-                      </CardContent>
-                    </Carousel.Item>
-                  ))
+                                      </span>
+                                    </Button>
+                                  </div>
+                                ))}
+                          </Typography>
+                        </CardContent>
+                      </Carousel.Item>
+                      // <PollSubCard poll={poll} index={index} key={index} />
+                    );
+                  })
                 ) : (
                   <div
                     className="m-auto"

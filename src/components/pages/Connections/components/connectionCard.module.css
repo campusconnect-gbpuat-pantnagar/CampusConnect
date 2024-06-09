@@ -1,4 +1,5 @@
 .CardContainer {
+  user-select: none;
   min-width: 200px;
   width: 30%;
   height: 320px;
@@ -16,6 +17,7 @@
 }
 
 .profilePicture {
+  cursor: pointer;
   width: 100px;
   height: 100px;
 }
@@ -43,6 +45,7 @@
   max-width: 200px;
   font-size: 0.9rem;
   color: #03ae9d;
+  cursor: pointer;
   overflow-x: hidden;
   white-space: nowrap;
   font-weight: 600;

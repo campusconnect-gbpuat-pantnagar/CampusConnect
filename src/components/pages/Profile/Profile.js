@@ -42,7 +42,7 @@ import { toast } from "react-toastify";
 export const Profile = () => {
   const { username } = useParams();
   const navigate = useNavigate();
-  const { user } = useContext(NewAuthContext);
+  const { user, tokens } = useContext(NewAuthContext);
   const { theme } = useContext(ThemeContext);
   const [posts, setPosts] = useState([]);
   const [data, setData] = useState([]);
@@ -83,11 +83,29 @@ export const Profile = () => {
 
   const { setChatId } = useContext(ChatContext);
 
-  const handleClickBtn = async (e, func) => {
+  async function sendRequest() {
     try {
-      await func(user.id, username);
-    } catch (error) {}
-  };
+      const requestOptions = {
+        url: `${ServiceConfig.userEndpoint}/send-connection/${userProfileData.id}`,
+        method: "POST",
+        showActual: true,
+        withCredentials: true,
+        headers: {
+          Authorization: `Bearer ${tokens?.access_token}`, // Assuming 'userToken' holds the token
+        },
+      };
+      const response = await HttpRequestPrivate(requestOptions);
+
+      if (response.data) {
+        toast.success(response.data?.message);
+        setIsLoading(false);
+      }
+    } catch (err) {
+      toast.success(err.response.data?.message);
+
+      console.log(err);
+    }
+  }
 
   function checkFriend() {
     let isFriend = false;
@@ -321,6 +339,30 @@ export const Profile = () => {
       setPosts(updatedPosts);
     }
   };
+
+  async function removeConnection() {
+    try {
+      const requestOptions = {
+        url: `${ServiceConfig.userEndpoint}/remove-connection/${userProfileData.id}`,
+        method: "POST",
+        showActual: true,
+        withCredentials: true,
+        headers: {
+          Authorization: `Bearer ${tokens?.access_token}`, // Assuming 'userToken' holds the token
+        },
+      };
+      const response = await HttpRequestPrivate(requestOptions);
+
+      if (response.data) {
+        toast.success(response.data?.message);
+        setIsLoading(false);
+      }
+    } catch (err) {
+      toast.success(err.response.data?.message);
+
+      console.log(err);
+    }
+  }
   return (
     <div className="home" style={{ overflowY: "auto" }}>
       <HeaderMobile />
@@ -412,13 +454,10 @@ export const Profile = () => {
                                 <Button
                                   size="small"
                                   variant="outlined"
-                                  // onClick={
-                                  //   (e) => {}
-                                  //   // handleClickBtn(e, userContext.unFriend)
-                                  // }
+                                  onClick={removeConnection}
                                   style={{ color: "red", borderColor: "red" }}
                                 >
-                                  Remove Connection
+                                  Remove
                                 </Button>
                               </>
                             ) : (
@@ -426,10 +465,10 @@ export const Profile = () => {
                                 <Button
                                   size="small"
                                   variant="outlined"
-                                  // onClick={(e) => handleClickBtn()}
+                                  onClick={sendRequest}
                                   style={clickStyleTheme}
                                 >
-                                  Add Connection
+                                  Connect
                                 </Button>
                               </>
                             )

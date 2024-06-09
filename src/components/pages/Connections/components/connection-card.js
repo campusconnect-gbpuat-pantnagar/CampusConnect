@@ -5,10 +5,12 @@ import { NewAuthContext } from "../../../../context/newAuthContext";
 import ServiceConfig from "../../../../helpers/service-endpoint";
 import { toast } from "react-toastify";
 import { ConnectionLoadingCard } from "./ConnectionsLoading";
+import { useNavigate } from "react-router-dom";
 const ConnectionCard = ({ connection, data, type, updateList }) => {
   const { tokens } = useContext(NewAuthContext);
   const [isLoading, setIsLoading] = useState(false);
   const [connectionUser, setConnectionUser] = useState();
+  const navigate = useNavigate();
   const Icon = isLoading ? (
     <span className={ConnectionCardStyles.spinner}></span>
   ) : (
@@ -109,6 +111,7 @@ const ConnectionCard = ({ connection, data, type, updateList }) => {
 
   async function removeConnection() {
     try {
+      updateList(connectionUser.id);
       const requestOptions = {
         url: `${ServiceConfig.userEndpoint}/remove-connection/${connectionUser.id}`,
         method: "POST",
@@ -119,7 +122,6 @@ const ConnectionCard = ({ connection, data, type, updateList }) => {
         },
       };
       const response = await HttpRequestPrivate(requestOptions);
-      updateList(connectionUser.id);
 
       if (response.data) {
         toast.success(response.data?.message);
@@ -133,6 +135,7 @@ const ConnectionCard = ({ connection, data, type, updateList }) => {
   }
   async function withDrawRequest() {
     try {
+      updateList(connectionUser.id);
       const requestOptions = {
         url: `${ServiceConfig.userEndpoint}/withdraw-connection/${connectionUser.id}`,
         method: "POST",
@@ -143,7 +146,6 @@ const ConnectionCard = ({ connection, data, type, updateList }) => {
         },
       };
       const response = await HttpRequestPrivate(requestOptions);
-      updateList(connectionUser.id);
 
       if (response.data) {
         toast.success(response.data?.message);
@@ -158,6 +160,7 @@ const ConnectionCard = ({ connection, data, type, updateList }) => {
 
   async function acceptRequest() {
     try {
+      updateList(connectionUser.id);
       const requestOptions = {
         url: `${ServiceConfig.userEndpoint}/accept-connection/${connectionUser.id}`,
         method: "POST",
@@ -168,7 +171,6 @@ const ConnectionCard = ({ connection, data, type, updateList }) => {
         },
       };
       const response = await HttpRequestPrivate(requestOptions);
-      updateList(connectionUser.id);
 
       if (response.data) {
         toast.success(response.data?.message);
@@ -182,6 +184,7 @@ const ConnectionCard = ({ connection, data, type, updateList }) => {
   }
   async function rejectRequest() {
     try {
+      updateList(connectionUser.id);
       const requestOptions = {
         url: `${ServiceConfig.userEndpoint}/reject-connection/${connectionUser.id}`,
         method: "POST",
@@ -192,7 +195,6 @@ const ConnectionCard = ({ connection, data, type, updateList }) => {
         },
       };
       const response = await HttpRequestPrivate(requestOptions);
-      updateList(connectionUser.id);
 
       if (response.data) {
         toast.success(response.data?.message);
@@ -206,6 +208,7 @@ const ConnectionCard = ({ connection, data, type, updateList }) => {
   }
   async function sendRequest() {
     try {
+      updateList(connectionUser.id);
       const requestOptions = {
         url: `${ServiceConfig.userEndpoint}/send-connection/${connectionUser.id}`,
         method: "POST",
@@ -216,7 +219,6 @@ const ConnectionCard = ({ connection, data, type, updateList }) => {
         },
       };
       const response = await HttpRequestPrivate(requestOptions);
-      updateList(connectionUser.id);
 
       if (response.data) {
         toast.success(response.data?.message);
@@ -234,7 +236,10 @@ const ConnectionCard = ({ connection, data, type, updateList }) => {
   }
   return (
     <div className={ConnectionCardStyles.CardContainer}>
-      <div className={ConnectionCardStyles.profilePicture}>
+      <div
+        onClick={() => navigate(`/profile/${connectionUser?.username}`)}
+        className={ConnectionCardStyles.profilePicture}
+      >
         {/* profile picture */}
         <img alt="user_profile_picture" src={profilePicture} />
       </div>
@@ -248,7 +253,9 @@ const ConnectionCard = ({ connection, data, type, updateList }) => {
             connectionUser?.lastName.slice(1)
           }`}
         </span>
-        <span>{`@${connectionUser?.username}`}</span>
+        <span
+          onClick={() => navigate(`/profile/${connectionUser?.username}`)}
+        >{`@${connectionUser?.username}`}</span>
       </div>
       <div className={ConnectionCardStyles.academicDetails}>
         <span>{departmenName}</span>

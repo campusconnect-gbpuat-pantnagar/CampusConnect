@@ -218,7 +218,7 @@ const Header = () => {
                 }}
                 style={styleTheme}
               >
-                View Profile
+                My Profile
               </MenuItem>
               <MenuItem
                 onClick={() => {
