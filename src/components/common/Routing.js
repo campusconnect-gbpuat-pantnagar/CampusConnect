@@ -134,10 +134,7 @@ export const Routing = () => {
             path="/mynetwork"
             element={<PrivateRoute component={Connections} />}
           />
-          {/* <Route
-              path="/events"
-              element={<PrivateRoute component={Events} />}
-            /> */}
+          <Route path="/events" element={<PrivateRoute component={Events} />} />
 
           <Route
             path="/notices"
