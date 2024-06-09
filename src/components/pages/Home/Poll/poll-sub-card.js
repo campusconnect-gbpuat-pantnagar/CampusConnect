@@ -25,8 +25,9 @@ import { NewAuthContext } from "../../../../context/newAuthContext";
 import { ThemeContext } from "../../../../context/themeContext";
 import ServiceConfig from "../../../../helpers/service-endpoint";
 import HttpRequestPrivate from "../../../../helpers/private-client";
+import { toast } from "react-toastify";
 
-const PollSubCard = ({ poll, index }) => {
+const PollSubCard = ({ poll, index, setIsRefreshing }) => {
   const [pollUser, setPollUser] = useState();
   const [isLoading, setIsLoading] = useState();
   const { user, tokens } = useContext(NewAuthContext);
@@ -61,30 +62,49 @@ const PollSubCard = ({ poll, index }) => {
     getUserById();
   }, [poll]);
 
-  const handlePollClick = async (e, option, pollId) => {
+  const handlePollClick = async (e, option) => {
+    e.preventDefault();
+    console.log(poll);
+    console.log(option);
+    try {
+      const requestOptions = {
+        url: `${ServiceConfig.pollsEndpoint}/${poll.id}/${option._id}/vote`,
+        method: "PUT",
+        showActual: true,
+        withCredentials: true,
+      };
+      const response = await HttpRequestPrivate(requestOptions);
+      setIsRefreshing(true);
+      setIsLoading(false);
+      if (response.data.data) {
+        toast.success(response.data.data.message);
+      }
+    } catch (err) {
+      setIsLoading(false);
+      console.log(err);
+    }
+  };
+  const deletePoll = async (e, option) => {
     e.preventDefault();
 
-    // console.log(option, pollId);
-    // try {
-    //   const requestOptions = {
-    //     url: `${ServiceConfig.pollsEndpoint}/${pollId}/{op}`,
-    //     method: "GET",
-    //     showActual: true,
-    //     withCredentials: true,
-    //   };
-    //   const response = await HttpRequestPrivate(requestOptions);
-    //   console.log(response);
-    //   setIsLoading(false);
-    //   if (response.data.data) {
-    //     // console.log(response.data.data);
-    //     setPolls(response.data.data);
-    //   }
-    // } catch (err) {
-    //   setIsLoading(false);
-    //   console.log(err);
-    // }
+    try {
+      const requestOptions = {
+        url: `${ServiceConfig.pollsEndpoint}/${poll.id}/`,
+        method: "DELETE",
+        showActual: true,
+        withCredentials: true,
+      };
+      const response = await HttpRequestPrivate(requestOptions);
+      setIsRefreshing(true);
+      setIsLoading(false);
+      if (response.data.data) {
+        toast.success(response.data?.data.message);
+      }
+    } catch (err) {
+      setIsLoading(false);
+      console.log(err);
+    }
   };
-
   const styleTheme =
     theme === "dark"
       ? { background: "#121212", color: "whitesmoke" }
@@ -93,14 +113,14 @@ const PollSubCard = ({ poll, index }) => {
   const clickStyleTheme =
     theme === "dark" ? { color: "#03DAC6" } : { color: "blue" };
 
-  console.log(pollUser, "pollUser");
   return (
-    <Carousel.Item>
+    // <Carousel.Item>
+    <>
       <Grid>
         <Grid
           container
           direction="row"
-          className="m-1"
+          className="m-1 "
           justifyContent="space-between"
         >
           <Grid>
@@ -147,7 +167,7 @@ const PollSubCard = ({ poll, index }) => {
             {user.id === poll?.userId ? (
               <IconButton
                 aria-label="settings"
-                // onClick={() => handlePollDelete(poll?._id)}
+                onClick={deletePoll}
                 style={styleTheme}
               >
                 <DeleteIcon />
@@ -226,7 +246,7 @@ const PollSubCard = ({ poll, index }) => {
                     className="mt-2"
                     size="small"
                     style={styleTheme}
-                    onClick={(e) => handlePollClick(e, option, poll?._id)}
+                    onClick={(e) => handlePollClick(e, option)}
                     fullWidth
                   >
                     <span style={{ textTransform: "initial" }}>
@@ -237,7 +257,8 @@ const PollSubCard = ({ poll, index }) => {
               ))}
         </Typography>
       </CardContent>
-    </Carousel.Item>
+      {/* </Carousel.Item> */}
+    </>
   );
 };
 
