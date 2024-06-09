@@ -58,7 +58,7 @@ export const EditProfileModal = ({ show, onHide }) => {
         showActual: true,
         withCredentials: true,
       };
-      
+
       const response = await HttpRequestPrivate(requestOptions);
       setIsLoading(false);
       if (response.data.data) {
@@ -112,7 +112,7 @@ export const EditProfileModal = ({ show, onHide }) => {
       : { background: "white", color: "black" };
 
   const clickStyleTheme =
-    theme === "dark" ? { color: "#03DAC6" } : { color: "blue" };
+    theme === "dark" ? { color: "#336A86ff" } : { color: "blue" };
 
   const useStyles = makeStyles((theme) => ({
     textField: {

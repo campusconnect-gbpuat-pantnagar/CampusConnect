@@ -252,7 +252,7 @@ export const BlogCard = ({ blog, updatedBlog, deleteBlog }) => {
 
   const clickStyleTheme =
     theme === "dark"
-      ? { color: "#03DAC6", borderColor: "#03DAC6" }
+      ? { color: "#336A86ff", borderColor: "#336A86ff" }
       : { color: "blue", borderColor: "blue" };
 
   const handleDelete = () => {
@@ -395,7 +395,7 @@ export const BlogCard = ({ blog, updatedBlog, deleteBlog }) => {
                 {vote ? (
                   <FontAwesomeIcon
                     icon={faArrowAltCircleUpSolid}
-                    color="#03DAC6"
+                    color="#336A86ff"
                   />
                 ) : (
                   <FontAwesomeIcon

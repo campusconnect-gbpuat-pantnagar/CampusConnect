@@ -18,7 +18,7 @@ export const AboutUniversity = () => {
   const styleTheme =
     theme === "dark" ? { background: "#121212", color: "whitesmoke" } : null;
   const clickStyleTheme =
-    theme === "dark" ? { color: "#03DAC6" } : { color: "blue" };
+    theme === "dark" ? { color: "#336A86ff" } : { color: "blue" };
 
   return (
     <div className="home">

@@ -81,7 +81,7 @@ export const Routing = () => {
       ? { background: "black", color: "white" }
       : { background: "whitesmoke", color: "black" };
   const prefersDarkMode = theme;
-  const mainPrimaryColor = prefersDarkMode === "dark" ? "#03DAC6" : "#3551bf";
+  const mainPrimaryColor = prefersDarkMode === "dark" ? "#336A86ff" : "#3551bf";
   const mainSecondaryColor = prefersDarkMode === "dark" ? "#018786" : "#002984";
   const paperColor = prefersDarkMode === "dark" ? "#212121" : "#fff";
   const newTheme = React.useMemo(

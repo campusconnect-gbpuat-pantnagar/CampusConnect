@@ -111,7 +111,7 @@ const PollSubCard = ({ poll, index, setIsRefreshing }) => {
       : { background: "white", color: "black" };
 
   const clickStyleTheme =
-    theme === "dark" ? { color: "#03DAC6" } : { color: "blue" };
+    theme === "dark" ? { color: "#336A86ff" } : { color: "blue" };
 
   return (
     // <Carousel.Item>

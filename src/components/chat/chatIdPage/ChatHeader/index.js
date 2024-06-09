@@ -35,7 +35,7 @@ export const ChatHeader = ({ userData }) => {
       : { background: "white", color: "black" };
 
   const styleTheme3 =
-    "light" === "dark" ? { color: "#03DAC6" } : { color: "black" };
+    "light" === "dark" ? { color: "#336A86ff" } : { color: "black" };
 
   const handleArrowBack = () => {
     localStorage.removeItem("chatId");
@@ -133,7 +133,9 @@ export const ChatHeader = ({ userData }) => {
         <div className={styles.userInfo}>
           {/* userInfo and status */}
 
-          <p>{`${chatUser?.firstName[0].toUpperCase() + chatUser?.firstName.slice(1)} ${
+          <p>{`${
+            chatUser?.firstName[0].toUpperCase() + chatUser?.firstName.slice(1)
+          } ${
             chatUser?.lastName[0].toUpperCase() + chatUser?.lastName.slice(1)
           }`}</p>
           <span style={styleTheme3}>{userStatus}</span>

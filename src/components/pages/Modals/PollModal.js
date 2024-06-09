@@ -86,7 +86,7 @@ export const PollModal = ({ show, handleModal, modalTitle }) => {
       : { background: "white", color: "black" };
 
   const clickStyleTheme =
-    theme === "dark" ? { color: "#03DAC6" } : { color: "blue" };
+    theme === "dark" ? { color: "#336A86ff" } : { color: "blue" };
 
   const styleThemeMain =
     theme === "dark" ? { background: "rgb(0 0 0 / 88%)" } : null;

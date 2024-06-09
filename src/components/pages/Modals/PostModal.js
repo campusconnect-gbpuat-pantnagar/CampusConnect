@@ -216,7 +216,7 @@ export const PostModal = ({ show, handleModal, modalTitle, post }) => {
           style={{
             ...styleTheme,
             width: "100%",
-            backgroundColor: "#03DAC6",
+            backgroundColor: "#336A86ff",
             color: "#ffffff",
             padding: "5px 2px",
             fontWeight: 700,

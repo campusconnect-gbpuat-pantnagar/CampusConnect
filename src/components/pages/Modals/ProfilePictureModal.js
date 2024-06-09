@@ -96,7 +96,7 @@ export const ProfilePictureModal = ({
 
   const clickStyleTheme =
     theme === "dark"
-      ? { backgroundColor: "#03DAC6", color: "white" }
+      ? { backgroundColor: "#336A86ff", color: "white" }
       : { backgroundColor: "blue", color: "white" };
 
   useEffect(() => {

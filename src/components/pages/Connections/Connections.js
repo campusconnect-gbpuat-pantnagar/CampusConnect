@@ -32,7 +32,8 @@ export const Connections = () => {
             {/* navigation container */}
             <button
               style={{
-                background: page === "mynetwork" ? "#03dac6" : "",
+                background: page === "mynetwork" ? "#336A86ff" : "",
+                color: page === "mynetwork" ? "#ffff" : "",
               }}
               onClick={() => setPage("mynetwork")}
             >
@@ -40,7 +41,8 @@ export const Connections = () => {
             </button>
             <button
               style={{
-                background: page === "sentrequest" ? "#03dac6" : "",
+                background: page === "sentrequest" ? "#336A86ff" : "",
+                color: page === "sentrequest" ? "#ffff" : "",
               }}
               onClick={() => setPage("sentrequest")}
             >
@@ -48,7 +50,8 @@ export const Connections = () => {
             </button>
             <button
               style={{
-                background: page === "receivedRequest" ? "#03dac6" : "",
+                background: page === "receivedRequest" ? "#336A86ff" : "",
+                color: page === "receivedRequest" ? "#ffff" : "",
               }}
               onClick={() => setPage("receivedRequest")}
             >

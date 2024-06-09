@@ -40,7 +40,7 @@ export const HomeSideBar = () => {
 
   const currentTab = (location, path) => {
     if (location.pathname === path) {
-      return { color: "#03DAC6", fontSize: "28px" };
+      return { color: "#336A86ff", fontSize: "28px" };
     } else {
       return { color: "grey", fontSize: "24px" };
     }
