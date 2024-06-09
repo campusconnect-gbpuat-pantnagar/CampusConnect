@@ -1,0 +1,24 @@
+.postCarousel {
+  width: 100%;
+}
+
+@media (max-width: 768px) {
+  .postCarousel {
+    width: 500px !important;
+  }
+}
+@media (max-width: 500px) {
+  .postCarousel {
+    width: 400px !important;
+  }
+}
+@media (max-width: 400px) {
+  .postCarousel {
+    width: 350px !important;
+  }
+}
+@media (max-width: 350px) {
+  .postCarousel {
+    width: 320px !important;
+  }
+}

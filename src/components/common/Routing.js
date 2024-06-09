@@ -124,7 +124,7 @@ export const Routing = () => {
             path="/jobs-and-placements"
             element={<PrivateRoute component={Jobs} />}
           />
-          {/* <Route path="/ads" element={<PrivateRoute component={Ads} />} /> */}
+          <Route path="/ads" element={<PrivateRoute component={Ads} />} />
           <Route path="/blogs" element={<PrivateRoute component={Blog} />} />
           <Route
             path="/profile/:username"
