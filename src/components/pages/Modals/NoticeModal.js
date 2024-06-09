@@ -44,7 +44,7 @@ export const NoticeModal = ({ show, handleModal, modalTitle, notice }) => {
     } catch (err) {
       setIsLoading(false);
       console.log(err);
-      toast.error(err.data.message, {
+      toast.error(err.response.data.message, {
         theme: `${theme === "dark" ? "dark" : "light"}`,
       });
     }
@@ -74,7 +74,7 @@ export const NoticeModal = ({ show, handleModal, modalTitle, notice }) => {
     } catch (err) {
       setIsLoading(false);
       console.log(err);
-      toast.error(err.data.message, {
+      toast.error(err.response.data.message, {
         theme: `${theme === "dark" ? "dark" : "light"}`,
       });
     }

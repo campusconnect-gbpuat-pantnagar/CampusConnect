@@ -1,7 +1,8 @@
 import { getToken } from "firebase/messaging";
 import { messaging } from "./config/firebase";
-import { API } from "./proxy";
+
 import axios from "axios";
+import { CAMPUSCONNECT_BACKEND_API } from "./proxy";
 
 export const requestFirebaseNotificationPermission = async () => {
   const permission = Notification.permission;
@@ -53,7 +54,7 @@ export const sendNotificationToUser = async (title, body, topic) => {
     };
 
     const response = await axios.post(
-      `${API}/send-notification`,
+      `${CAMPUSCONNECT_BACKEND_API}/api/v1/send-notification`,
       notificationData
     );
     console.log("Notification sent successfully:", response.data);
@@ -91,7 +92,7 @@ export const sendNotificationToUserWithImage = async (
     };
 
     const response = await axios.post(
-      `${API}/send-notification-with-image`,
+      `${CAMPUSCONNECT_BACKEND_API}/api/v1/send-notification-with-image`,
       notificationData
     );
     console.log("Notification sent successfully:", response.data);
@@ -129,7 +130,10 @@ export const subscribeUserToTopic = async (token, topic) => {
       notificationTopic: topic,
     };
 
-    const response = await axios.post(`${API}/subscribe-to-topic`, data);
+    const response = await axios.post(
+      `${CAMPUSCONNECT_BACKEND_API}/api/v1/subscribe-to-topic`,
+      data
+    );
     console.log("Subscribed successfully:", response.data);
   } catch (error) {
     console.error(
@@ -143,11 +147,15 @@ export const unsubscribeUserFromTopic = async (token, topic) => {
   try {
     const data = JSON.stringify({ token, topic });
 
-    const response = await axios.post(`${API}/unsubscribe-from-topic`, data, {
-      headers: {
-        "Content-Type": "application/json",
-      },
-    });
+    const response = await axios.post(
+      `${CAMPUSCONNECT_BACKEND_API}/api/v1/unsubscribe-from-topic`,
+      data,
+      {
+        headers: {
+          "Content-Type": "application/json",
+        },
+      }
+    );
 
     console.log("Unsubscribed successfully:", response.data);
   } catch (error) {

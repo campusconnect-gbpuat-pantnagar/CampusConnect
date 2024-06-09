@@ -584,7 +584,7 @@ export const Profile = () => {
                       </Grid>
                     </CardActions>
                   </Card>
-                  <Card
+                  {/* <Card
                     variant="elevation"
                     elevation={3}
                     className="mt-3 text-center"
@@ -600,7 +600,7 @@ export const Profile = () => {
                         ).toDateString()}
                       </Typography>
                     </CardContent>
-                  </Card>
+                  </Card> */}
                 </Grid>
                 <Grid item md={8} xs={12}>
                   {userProfileData.id === user.id ? <InputBox /> : null}
