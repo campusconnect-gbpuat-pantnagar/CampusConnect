@@ -14,6 +14,7 @@ import { NewAuthContext } from "../../../context/newAuthContext";
 import { ThemeContext } from "../../../context/themeContext";
 import ServiceConfig from "../../../helpers/service-endpoint";
 import HttpRequestPrivate from "../../../helpers/private-client";
+import CloudinaryUploadWidget from "../../common/cloudinary/cloudinary-upload-widget";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -35,7 +36,7 @@ export const ProfilePictureModal = ({ show, onHide, userProfileData }) => {
   const { theme } = useContext(ThemeContext);
   const [avatarSrc, setAvatarSrc] = useState("");
   const [avatarAlt, setAvatarAlt] = useState("");
-  const [uploadFile, setUploadFile] = useState("");
+  const [uploadFile, setUploadFile] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
 
   useEffect(() => {
@@ -51,18 +52,23 @@ export const ProfilePictureModal = ({ show, onHide, userProfileData }) => {
     setAvatarSrc(userProfileData?.profilePicture);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
+
   const handleSubmitBtn = async () => {
+    if (!uploadFile.length) {
+      return;
+    }
     setIsLoading(true);
     try {
       const requestOptions = {
         url: `${ServiceConfig.userEndpoint}/account`,
         method: "PATCH",
         data: {
-          profilePicture: uploadFile,
+          profilePicture: uploadFile[0]?.url,
         },
         showActual: true,
         withCredentials: true,
       };
+
       const response = await HttpRequestPrivate(requestOptions);
       setIsLoading(false);
       if (response.data.data) {
@@ -87,6 +93,9 @@ export const ProfilePictureModal = ({ show, onHide, userProfileData }) => {
       ? { backgroundColor: "#03DAC6", color: "white" }
       : { backgroundColor: "blue", color: "white" };
 
+  useEffect(() => {
+    setAvatarSrc(uploadFile[0]?.url);
+  }, [uploadFile]);
   return (
     <Modal
       show={show}
@@ -114,7 +123,8 @@ export const ProfilePictureModal = ({ show, onHide, userProfileData }) => {
             />
           </Grid>
           <Grid item>
-            <input
+            <CloudinaryUploadWidget setMediaFiles={setUploadFile} />
+            {/* <input
               accept="image/*"
               className={classes.input}
               id="contained-button-file"
@@ -128,8 +138,8 @@ export const ProfilePictureModal = ({ show, onHide, userProfileData }) => {
                 };
                 reader.readAsDataURL(e.target.files[0]);
               }}
-            />
-            <label htmlFor="contained-button-file">
+            /> */}
+            {/* <label htmlFor="contained-button-file">
               <Button
                 variant="contained"
                 style={clickStyleTheme}
@@ -140,10 +150,10 @@ export const ProfilePictureModal = ({ show, onHide, userProfileData }) => {
               <Button disabled style={styleTheme}>
                 Select
               </Button>
-            </label>
+            </label> */}
           </Grid>
         </Grid>
-        <Grid container justifyContent="center">
+        <Grid container justifyContent="flex-end">
           <Typography
             className="text-center"
             variant="caption"
