@@ -14,9 +14,10 @@ export const Post = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [posts, setPosts] = useState([]);
   const { theme } = useContext(ThemeContext);
-  const { tokens } = useContext(NewAuthContext);
-
+  const { tokens, user } = useContext(NewAuthContext);
+  const [isNewPostAvailable, setIsNewPostAvailable] = useState(false);
   async function getPosts() {
+    setIsNewPostAvailable(false);
     setIsLoading(true);
     try {
       const requestOptions = {
@@ -81,9 +82,39 @@ export const Post = () => {
     }
   };
 
+  useEffect(() => {
+    const interval = setInterval(async () => {
+      try {
+        const requestOptions = {
+          url: ServiceConfig.postEndpoint,
+          method: "GET",
+          showActual: true,
+          withCredentials: true,
+          headers: {
+            Authorization: `Bearer ${tokens?.access_token}`,
+          },
+        };
+        const response = await HttpRequestPrivate(requestOptions);
+        if (response.data.data) {
+          const newPosts = response.data.data;
+          if (JSON.stringify(newPosts) !== JSON.stringify(posts)) {
+            setIsNewPostAvailable(true);
+          }
+        }
+      } catch (err) {
+        console.log(err);
+      }
+    }, 10000); // Fetch every 10 seconds
+
+    return () => {
+      clearInterval(interval);
+      setIsNewPostAvailable(false);
+    };
+  }, [tokens, theme, posts]);
+
   return (
     <Home>
-      <div className="px-2">
+      <div className="px-2" style={{ position: "relative" }}>
         {isLoading ? (
           <LoadingPost />
         ) : posts.length > 0 ? (
@@ -117,6 +148,26 @@ export const Post = () => {
               <CameraIcon fontSize="large" />
               <h6 className="mt-2">No post out there</h6>
             </Grid>
+          </div>
+        )}
+        {isNewPostAvailable && (
+          <div
+            onClick={getPosts}
+            style={{
+              position: "absolute",
+              padding: "5px 10px",
+              background: "#32CD32",
+              color: "#fff",
+              fontWeight: "600",
+              borderRadius: "25px",
+              cursor: "pointer",
+              top: "-150px",
+              left: "40%",
+              boxShadow: "0px 10px 30px rgba(0, 0, 0, 0.5)",
+              zIndex: 100,
+            }}
+          >
+            New Posts
           </div>
         )}
       </div>
