@@ -223,6 +223,7 @@ const ConnectionCard = ({ connection, data, type, updateList }) => {
       console.log(err);
     }
   }
+
   async function sendRequest() {
     try {
       updateList(connectionUser.id);
@@ -240,7 +241,9 @@ const ConnectionCard = ({ connection, data, type, updateList }) => {
       if (response.data) {
         toast.success(response.data?.message);
         sendNotificationToUserWithImage(
-          "New Connection Request",
+          `${user?.firstName[0].toUpperCase() + user?.firstName.slice(1)} ${
+            user?.lastName[0].toUpperCase() + user?.lastName.slice(1)
+          }`,
           `${user?.firstName[0].toUpperCase() + user?.firstName.slice(1)} ${
             user?.lastName[0].toUpperCase() + user?.lastName.slice(1)
           } is inviting you to connect`,
