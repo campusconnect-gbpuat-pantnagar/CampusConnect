@@ -42,12 +42,16 @@
   flex-direction: column;
 }
 
-.renderUsersList > span {
+.Header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+.Header > span {
   width: 100%;
   font-size: 1.5rem;
   font-weight: 600;
 }
-
 .renderUsersList > div {
   display: flex;
   flex-wrap: wrap;
@@ -55,6 +59,9 @@
   margin-top: 1rem;
 }
 
+.mobileNavigationbtn {
+  display: none;
+}
 @media (max-width: 768px) {
   .navigationContainer {
     display: none;
@@ -71,5 +78,8 @@
   .renderUsersList {
     width: 90%;
     margin: 0 auto;
+  }
+  .mobileNavigationbtn {
+    display: flex;
   }
 }

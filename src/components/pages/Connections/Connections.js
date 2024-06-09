@@ -1,4 +1,4 @@
-import { Grid } from "@material-ui/core";
+import { Fade, Grid, IconButton, Menu, MenuItem } from "@material-ui/core";
 import React, { useContext, useState } from "react";
 import Header from "../../common/Header/Header";
 import HeaderMobile from "../../common/Header/HeaderMobile";
@@ -10,9 +10,11 @@ import MyNetwork from "./components/mynetwork";
 import SentConnections from "./components/sentConnection";
 import ReceivedConnections from "./components/receivedConnection";
 import ConnectionSuggestions from "./components/connection-suggestion";
+import MoreVertIcon from "@material-ui/icons/MoreVert";
 export const Connections = () => {
   const { user } = useContext(NewAuthContext);
   const [page, setPage] = useState("");
+  const [moreOption, setMoreOption] = useState(null);
 
   const pageText =
     page === "mynetwork"
@@ -22,6 +24,15 @@ export const Connections = () => {
       : page === "receivedRequest"
       ? "Received Request"
       : "New Suggestions";
+
+  const handleMoreOption = (e) => {
+    setMoreOption(e.currentTarget);
+  };
+  const open = Boolean(moreOption);
+  const handleClose = () => {
+    setMoreOption(null);
+  };
+
   return (
     <div className="home">
       <HeaderMobile />
@@ -59,7 +70,48 @@ export const Connections = () => {
             </button>
           </div>
           <div className={connectionsStyles.renderUsersList}>
-            <span>{pageText}</span>
+            <nav className={connectionsStyles.Header}>
+              <span>{pageText}</span>
+              <IconButton
+                className={connectionsStyles.mobileNavigationbtn}
+                onClick={handleMoreOption}
+              >
+                <MoreVertIcon />
+              </IconButton>
+              <Menu
+                id="fade-menu"
+                anchorEl={moreOption}
+                keepMounted
+                open={open}
+                onClose={handleClose}
+                TransitionComponent={Fade}
+              >
+                <MenuItem
+                  onClick={() => {
+                    setPage("mynetwork");
+                    handleClose();
+                  }}
+                >
+                  My Network
+                </MenuItem>
+                <MenuItem
+                  onClick={() => {
+                    setPage("sentrequest");
+                    handleClose();
+                  }}
+                >
+                  Sent Requests
+                </MenuItem>
+                <MenuItem
+                  onClick={() => {
+                    setPage("receivedRequest");
+                    handleClose();
+                  }}
+                >
+                  Received Requests
+                </MenuItem>
+              </Menu>
+            </nav>
             <div>
               {page === "mynetwork" ? (
                 <MyNetwork />
