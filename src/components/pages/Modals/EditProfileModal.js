@@ -47,6 +47,7 @@ export const EditProfileModal = ({ show, onHide }) => {
   const handleForm = async (e) => {
     e.preventDefault();
     setIsLoading(true);
+    console.log(userDetails);
     try {
       const requestOptions = {
         url: ServiceConfig.updateUserProfile,
@@ -54,6 +55,7 @@ export const EditProfileModal = ({ show, onHide }) => {
         data: {
           firstName: userDetails.firstName,
           lastName: userDetails.lastName,
+          bio: userDetails.bio,
         },
         showActual: true,
         withCredentials: true,
@@ -62,6 +64,7 @@ export const EditProfileModal = ({ show, onHide }) => {
       const response = await HttpRequestPrivate(requestOptions);
       setIsLoading(false);
       if (response.data.data) {
+        onHide();
         toast.success(response.data.message, {
           theme: `${theme === "dark" ? "dark" : "light"}`,
         });
@@ -69,7 +72,7 @@ export const EditProfileModal = ({ show, onHide }) => {
     } catch (err) {
       setIsLoading(false);
       console.log(err);
-      toast.error(err.data.message, {
+      toast.error(err.response.data.message, {
         theme: `${theme === "dark" ? "dark" : "light"}`,
       });
     }
@@ -186,7 +189,6 @@ export const EditProfileModal = ({ show, onHide }) => {
           )}
           <form onSubmit={handleForm}>
             <TextField
-              disabled
               name="firstName"
               variant="outlined"
               size="small"
@@ -197,9 +199,13 @@ export const EditProfileModal = ({ show, onHide }) => {
               label="First Name"
               className={`mt-3 ${classes.textField}`}
               value={userDetails.firstName}
+              onChange={(e) =>
+                setUserDetails((prev) => {
+                  return { ...prev, firstName: e.target.value };
+                })
+              }
             />
             <TextField
-              disabled
               name="lastName"
               variant="outlined"
               size="small"
@@ -210,6 +216,31 @@ export const EditProfileModal = ({ show, onHide }) => {
               label="Last Name"
               className={`mt-3 ${classes.textField}`}
               value={userDetails.lastName}
+              onChange={(e) =>
+                setUserDetails((prev) => {
+                  return { ...prev, lastName: e.target.value };
+                })
+              }
+            />
+            <TextField
+              name="Bio"
+              variant="outlined"
+              size="small"
+              multiline
+              minRows={2}
+              max={4}
+              InputLabelProps={{
+                shrink: true,
+              }}
+              fullWidth
+              label="Bio"
+              className={`mt-3 ${classes.textField}`}
+              value={userDetails.bio}
+              onChange={(e) =>
+                setUserDetails((prev) => {
+                  return { ...prev, bio: e.target.value };
+                })
+              }
             />
             <Grid container justifyContent="space-between" spacing={3}>
               {/* <Grid item xs={6}>

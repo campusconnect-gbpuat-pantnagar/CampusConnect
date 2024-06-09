@@ -442,7 +442,7 @@ export const Profile = () => {
                         variant="body2"
                         color="textSecondary"
                         component="p"
-                        style={styleTheme}
+                        style={{ ...styleTheme, fontWeight: 600 }}
                         className="mb-3"
                       >
                         {userProfileData?.bio}
