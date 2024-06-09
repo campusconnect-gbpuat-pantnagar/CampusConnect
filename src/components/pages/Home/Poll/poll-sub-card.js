@@ -145,7 +145,13 @@ const PollSubCard = ({ poll, index, setIsRefreshing }) => {
                         navigate(`/profile/${pollUser?.username}`);
                       }}
                     >
-                      {`${pollUser?.firstName} `}
+                      {`${
+                        pollUser?.firstName[0].toUpperCase() +
+                        pollUser?.firstName.slice(1)
+                      } ${
+                        pollUser?.lastName[0].toUpperCase() +
+                        pollUser?.lastName.slice(1)
+                      }`}
                     </b>
                   </Grid>
                   <Grid>

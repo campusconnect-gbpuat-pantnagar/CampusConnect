@@ -176,8 +176,12 @@ const ConnectionCard = ({ connection, data, type, updateList }) => {
       if (response.data) {
         toast.success(response.data?.message);
         sendNotificationToUserWithImage(
-          `${user.firstName} ${user.lastName}`,
-          `${user.firstName} ${user.lastName} has accepted you connection request.`,
+          `${user?.firstName[0].toUpperCase() + user?.firstName.slice(1)} ${
+            user?.lastName[0].toUpperCase() + user?.lastName.slice(1)
+          }`,
+          `${user?.firstName[0].toUpperCase() + user?.firstName.slice(1)} ${
+            user?.lastName[0].toUpperCase() + user?.lastName.slice(1)
+          } has accepted you connection request.`,
           user.id,
           `${connectionUser.id}_self`
         );
@@ -237,7 +241,9 @@ const ConnectionCard = ({ connection, data, type, updateList }) => {
         toast.success(response.data?.message);
         sendNotificationToUserWithImage(
           "New Connection Request",
-          `${user.firstName} ${user.lastName} is inviting you to connect`,
+          `${user?.firstName[0].toUpperCase() + user?.firstName.slice(1)} ${
+            user?.lastName[0].toUpperCase() + user?.lastName.slice(1)
+          } is inviting you to connect`,
           user?.id,
           `${connectionUser.id}_self`
         );

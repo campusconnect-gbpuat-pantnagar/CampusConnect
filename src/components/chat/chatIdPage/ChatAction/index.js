@@ -117,7 +117,9 @@ export const ChatAction = ({ userData }) => {
         [chatId + ".date"]: serverTimestamp(),
       });
       chatNotification(
-        `${user?.firstName} ${user?.lastName}`,
+        `${user?.firstName[0].toUpperCase() + user?.firstName.slice(1)} ${
+          user?.lastName[0].toUpperCase() + user?.lastName.slice(1)
+        }`,
         user?.id,
         sendMessage,
         `${userData?.appUserId}_self`

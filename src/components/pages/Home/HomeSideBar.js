@@ -64,7 +64,13 @@ export const HomeSideBar = () => {
               />
             </ListItemIcon>
             <ListItemText
-              primary={<b>{user.firstName}</b>}
+              primary={
+                <b>
+                  {`${
+                    user?.firstName[0].toUpperCase() + user?.firstName.slice(1)
+                  }`}
+                </b>
+              }
               secondary={
                 <Typography
                   variant="subtitle2"
