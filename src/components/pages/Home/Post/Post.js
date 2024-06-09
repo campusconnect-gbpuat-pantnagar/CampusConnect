@@ -97,7 +97,7 @@ export const Post = () => {
         const response = await HttpRequestPrivate(requestOptions);
         if (response.data.data) {
           const newPosts = response.data.data;
-          if (JSON.stringify(newPosts) !== JSON.stringify(posts)) {
+          if (newPosts.length > posts.length) {
             setIsNewPostAvailable(true);
           }
         }
