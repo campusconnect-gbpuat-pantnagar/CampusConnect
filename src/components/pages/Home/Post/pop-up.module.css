@@ -21,7 +21,7 @@
 
 @media (max-width: 500px) {
   .isNewPostAvailable {
-    top: -750px;
+    top: -800px;
     left: 40%;
   }
 }
