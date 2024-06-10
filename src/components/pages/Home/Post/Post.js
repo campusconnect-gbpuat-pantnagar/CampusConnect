@@ -9,6 +9,7 @@ import HttpRequestPrivate from "../../../../helpers/private-client";
 import { toast } from "react-toastify";
 import { ThemeContext } from "../../../../context/themeContext";
 import { NewAuthContext } from "../../../../context/newAuthContext";
+import isNewPostAvailableStyles from "./pop-up.module.css";
 
 export const Post = () => {
   const [isLoading, setIsLoading] = useState(false);
@@ -153,19 +154,7 @@ export const Post = () => {
         {isNewPostAvailable && (
           <div
             onClick={getPosts}
-            style={{
-              position: "absolute",
-              padding: "5px 10px",
-              background: "#32CD32",
-              color: "#fff",
-              fontWeight: "600",
-              borderRadius: "25px",
-              cursor: "pointer",
-              top: "-150px",
-              left: "40%",
-              boxShadow: "0px 10px 30px rgba(0, 0, 0, 0.5)",
-              zIndex: 100,
-            }}
+            className={isNewPostAvailableStyles.isNewPostAvailable}
           >
             New Posts
           </div>
