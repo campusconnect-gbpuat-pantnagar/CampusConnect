@@ -9,6 +9,7 @@ import { ThemeContext } from "../../../context/themeContext";
 import { toast } from "react-toastify";
 import HttpRequestPrivate from "./../../../helpers/private-client";
 import CloudinaryUploadWidget from "../../common/cloudinary/cloudinary-upload-widget";
+import { sendNotificationToUser } from "../../../utils/notification";
 
 export const EventModal = ({
   show,
@@ -54,6 +55,7 @@ export const EventModal = ({
         toast.success(response.data.message, {
           theme: `${theme === "dark" ? "dark" : "light"}`,
         });
+        sendNotificationToUser("New Event!", `${title} on ${date}`, "campus");
       }
     } catch (err) {
       setIsLoading(false);

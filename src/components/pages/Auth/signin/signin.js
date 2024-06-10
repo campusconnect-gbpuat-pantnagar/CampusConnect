@@ -17,6 +17,7 @@ import HttpRequest from "../../../../helpers/public-client";
 import { signInWithEmailAndPassword } from "firebase/auth";
 import { auth } from "../../../../utils/config/firebase";
 import { toast } from "react-toastify";
+import { ThemeContext } from "../../../../context/themeContext";
 const SignInPage = () => {
   const [formData, setFormData] = useState({
     username: "",
@@ -27,6 +28,7 @@ const SignInPage = () => {
   const [typePassword, setTypePassword] = useState("password");
   const [isLoading, setIsLoading] = useState(false);
   const navigate = useNavigate();
+  const { theme } = useContext(ThemeContext);
   const validationSchema = Yup.object({
     username: Yup.string()
       .matches(
@@ -86,7 +88,10 @@ const SignInPage = () => {
 
         if (user.isPermanentBlocked) {
           toast.info(
-            `${response.data.message} You will be redirected to the admin contact page.`
+            `${response.data.message} You will be redirected to the admin contact page.`,
+            {
+              theme: `${theme === "dark" ? "dark" : "light"}`,
+            }
           );
           // redirect to contact admin page
           return;
@@ -98,7 +103,10 @@ const SignInPage = () => {
 
         if (!user.isEmailVerified) {
           toast.success(
-            `Email Sent successfully to your mail ${user.gbpuatEmail}`
+            `Email Sent successfully to your mail ${user.gbpuatEmail}`,
+            {
+              theme: `${theme === "dark" ? "dark" : "light"}`,
+            }
           );
           navigate("/verify-email", {
             state: {
