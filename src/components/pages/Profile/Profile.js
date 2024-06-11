@@ -572,7 +572,7 @@ export const Profile = () => {
                         G. B. Pant University of Agriculture & Technology
                       </Typography>
                     </CardContent>
-                    <CardActions disableSpacing>
+                    {/* <CardActions disableSpacing>
                       <Grid
                         container
                         justifyContent="flex-end"
@@ -590,7 +590,7 @@ export const Profile = () => {
                           </Button>
                         ) : null}
                       </Grid>
-                    </CardActions>
+                    </CardActions> */}
                   </Card>
                   {/* <Card
                     variant="elevation"

@@ -255,7 +255,12 @@ export const PostCard = ({ post, deletePost, updatedPost }) => {
             />
           )}
           <CardHeader
-            avatar={<Avatar alt={postUser?.firstName} src={``} />}
+            avatar={
+              <Avatar
+                alt={postUser?.firstName}
+                src={`${postUser?.profilePicture}`}
+              />
+            }
             action={
               <>
                 {user.id === post.userId ? (
