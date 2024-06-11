@@ -117,19 +117,21 @@ export const AdsCard = ({ ads, deleteHandler }) => {
         }
         action={
           <>
-            <button
-              onClick={() => deleteHandler(ads.id)}
-              style={{
-                color: "red",
-                border: "none",
-                padding: "5pxs",
-                fontSize: "16px",
-                borderRadius: "5px",
-                cursor: "pointer",
-              }}
-            >
-              <Delete />
-            </button>
+            {user.id === ads.userId && (
+              <button
+                onClick={() => deleteHandler(ads.id)}
+                style={{
+                  color: "red",
+                  border: "none",
+                  padding: "5pxs",
+                  fontSize: "16px",
+                  borderRadius: "5px",
+                  cursor: "pointer",
+                }}
+              >
+                <Delete />
+              </button>
+            )}
           </>
           //   <>
           //     <IconButton
