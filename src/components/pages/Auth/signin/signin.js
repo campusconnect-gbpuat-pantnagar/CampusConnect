@@ -87,12 +87,9 @@ const SignInPage = () => {
         }
 
         if (user.isPermanentBlocked) {
-          toast.info(
-            `${response.data.message} You will be redirected to the admin contact page.`,
-            {
-              theme: `${theme === "dark" ? "dark" : "light"}`,
-            }
-          );
+          toast.info(`${response.data.message}`, {
+            theme: `${theme === "dark" ? "dark" : "light"}`,
+          });
           // redirect to contact admin page
           return;
         }

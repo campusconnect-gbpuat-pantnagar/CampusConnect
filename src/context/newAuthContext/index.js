@@ -2,12 +2,15 @@ import { createContext, useEffect, useState } from "react";
 import { useLocalStorage } from "usehooks-ts";
 import HttpRequestPrivate from "../../helpers/private-client";
 import ServiceConfig from "../../helpers/service-endpoint";
-import { useLocation } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
+import { signOut } from "firebase/auth";
+import { auth } from "../../utils/config/firebase";
 
 export const NewAuthContext = createContext();
 
 export const NewAuthContextProvider = ({ children }) => {
   const location = useLocation();
+  const navigate = useNavigate();
 
   const [user, setUser, removeUser] = useLocalStorage("_user", {
     id: "",
@@ -79,44 +82,63 @@ export const NewAuthContextProvider = ({ children }) => {
           console.log(response.data.data);
           if (response.data.data) {
             const { user } = response.data.data;
-            setUser({
-              id: user?.id,
-              firstName: user?.firstName,
-              lastName: user?.lastName ? user?.lastName : "",
-              username: user?.username,
-              gbpuatId: user?.gbpuatId,
-              gbpuatEmail: user?.gbpuatEmail,
-              isEmailVerified: user?.isEmailVerified,
-              isTemporaryBlocked: user?.isTemporaryBlocked,
-              isPermanentBlocked: user?.isPermanentBlocked,
-              isDeleted: user?.isDeleted,
-              profilePicture: user?.profilePicture ? user?.profilePicture : "",
-              bio: user?.bio ? user?.bio : "",
-              showOnBoardingTour: user?.showOnBoardingTour,
-              showOnBoarding: user.showOnBoarding,
-              role: user?.role,
-              lastActive: user?.lastActive,
-              connectionLists: user?.connectionLists,
-              receivedConnections: user?.receivedConnections,
-              sentConnections: user?.sentConnections,
-              academicDetails: {
-                college: {
-                  name: user?.academicDetails?.college?.name,
-                  collegeId: user?.academicDetails?.college?.collegeId,
+
+            if (
+              user?.isPermanentBlocked ||
+              user?.isTemporaryBlocked ||
+              user?.isDeleted
+            ) {
+              await signOut(auth);
+              localStorage.removeItem("_tokens");
+              localStorage.removeItem("_users");
+              localStorage.removeItem("talkingWithId");
+              localStorage.removeItem("chatId");
+              localStorage.clear();
+              window.location.reload();
+              return navigate("/signin");
+            } else {
+              setUser({
+                id: user?.id,
+                firstName: user?.firstName,
+                lastName: user?.lastName ? user?.lastName : "",
+                username: user?.username,
+                gbpuatId: user?.gbpuatId,
+                gbpuatEmail: user?.gbpuatEmail,
+                isEmailVerified: user?.isEmailVerified,
+                isTemporaryBlocked: user?.isTemporaryBlocked,
+                isPermanentBlocked: user?.isPermanentBlocked,
+                isDeleted: user?.isDeleted,
+                profilePicture: user?.profilePicture
+                  ? user?.profilePicture
+                  : "",
+                bio: user?.bio ? user?.bio : "",
+                showOnBoardingTour: user?.showOnBoardingTour,
+                showOnBoarding: user.showOnBoarding,
+                role: user?.role,
+                lastActive: user?.lastActive,
+                connectionLists: user?.connectionLists,
+                receivedConnections: user?.receivedConnections,
+                sentConnections: user?.sentConnections,
+                academicDetails: {
+                  college: {
+                    name: user?.academicDetails?.college?.name,
+                    collegeId: user?.academicDetails?.college?.collegeId,
+                  },
+                  department: {
+                    name: user?.academicDetails?.department?.name,
+                    departmentId:
+                      user?.academicDetails?.department?.departmentId,
+                  },
+                  degreeProgram: {
+                    name: user?.academicDetails?.degreeProgram?.name,
+                    degreeProgramId:
+                      user?.academicDetails?.degreeProgram?.degreeProgramId,
+                  },
+                  batchYear: user?.academicDetails?.batchYear,
+                  designation: user?.academicDetails?.designation,
                 },
-                department: {
-                  name: user?.academicDetails?.department?.name,
-                  departmentId: user?.academicDetails?.department?.departmentId,
-                },
-                degreeProgram: {
-                  name: user?.academicDetails?.degreeProgram?.name,
-                  degreeProgramId:
-                    user?.academicDetails?.degreeProgram?.degreeProgramId,
-                },
-                batchYear: user?.academicDetails?.batchYear,
-                designation: user?.academicDetails?.designation,
-              },
-            });
+              });
+            }
           }
         } catch (error) {
           console.error("Error fetching user:", error);
