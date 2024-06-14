@@ -262,6 +262,18 @@ const Header = () => {
               </MenuItem>
               <MenuItem
                 onClick={() => {
+                  window.open(
+                    "https://mediafiles.botpress.cloud/960b4af7-0e95-4974-908b-1ec6d9622f4d/webchat/bot.html",
+                    "_blank"
+                  );
+                  handleClose();
+                }}
+                style={styleTheme}
+              >
+                Chatbot
+              </MenuItem>
+              <MenuItem
+                onClick={() => {
                   if (Notification.permission === "granted") {
                     requestFirebaseNotificationPermission()
                       .then((token) => {
